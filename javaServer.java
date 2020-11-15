@@ -1,8 +1,8 @@
 import java.io.*;
 import java.net.*; 
 
-public class Server{
-    public static void main(String[] args) {
+public class javaServer{
+    public static void main(String[] args) throws IOException {
         int port = 6666;
         ServerSocket serverSocket = new ServerSocket(port);
         while(true){
