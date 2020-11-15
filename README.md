@@ -1,0 +1,2 @@
+# Build-A-Tree
+Build-A-Tree es un juego al estilo de Super Smash Bros. Los jugadores se mueven sobre un plano 2D donde hay distintas plataformas sobre las que pueden saltar. Los jugadores pueden empujar a los otros jugadores a los precipicios mediante un poder temporal o por una colisión normal (empujando el personaje contra el otro). El juego es por tiempo y durante cada pelea, el juego ofrece ciertos challenges para los jugadores.
