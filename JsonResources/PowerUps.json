@@ -1,0 +1,43 @@
+{
+    "PowerUps":[{
+        "PowerUP-ID": 1,
+        "PowerUpCategory":"push",
+        "UsageTime": 60
+    },
+{
+    "PowerUP-ID":2,
+    "PowerUpCategory":"shield",
+    "UsageTime":60
+},
+{
+    "PowerUP-ID":3,
+    "PowerUpCategory":"air_jump",
+    "UsageTime":60
+},
+{
+    "PowerUP-ID":4,
+    "PowerUpCategory":"extra_points",
+    "UsageTime":60
+},
+{
+    "PowerUP-ID":5,
+    "PowerUpCategory":"both_push",
+    "UsageTime":60
+},
+{
+    "PowerUP-ID":6,
+    "PowerUpCategory":"shoot",
+    "UsageTime":60
+},
+{
+    "PowerUP-ID":7,
+    "PowerUpCategory":"change_background",
+    "UsageTime":60
+},
+{
+    "PowerUP-ID":8,
+    "PowerUpCategory":"temporary_platform",
+    "UsageTime":60
+}
+]
+}
