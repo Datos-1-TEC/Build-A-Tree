@@ -5,7 +5,6 @@ import java.net.*;
 public class javaServer{
     private Boolean flag = true;
     private DataInputStream in;
-    private DataOutputStream out;
     private ConnectionHandler handler; 
     private int port = 6666;
     private String JsonFiles;
