@@ -35,7 +35,5 @@ public class Circle implements Token {
     @Override
     public void setValue(int value) {
         this.value = value;
-    }
-
-    
+    } 
 }
