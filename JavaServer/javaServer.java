@@ -1,21 +1,22 @@
 package JavaServer;
-import java.io.*;
-import java.net.*; 
 
-public class javaServer{
+import java.io.*;
+import java.net.*;
+
+public class javaServer {
     private Boolean flag = true;
-    private DataInputStream in;
-    private ConnectionHandler handler; 
+    private BufferedReader in;
+    private ConnectionHandler handler;
     private int port = 6666;
     private String JsonFiles;
 
-    public void ConnectionListener(){
-        
-        Thread thread = new Thread(()-> {
+    public void ConnectionListener() {
+
+        Thread thread = new Thread(() -> {
             try {
                 ServerSocket incoming = new ServerSocket(this.port);
                 System.out.println("listening connections on: " + incoming.getLocalPort());
-                while (flag){
+                while (flag) {
                     Socket socket = incoming.accept();
                     processConnection(socket);
 
@@ -28,13 +29,18 @@ public class javaServer{
     }
 
     public void processConnection(Socket socket) throws IOException {
-        in = new DataInputStream(socket.getInputStream());
-        String incomingInfo = in.readUTF();
-        System.out.println("Invitado ha ingresado: "+ incomingInfo);
+        this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        String incomingMessage = streamProcessing(this.in);
+        System.out.println("Cliente a ingresado: " + incomingMessage);
+        
+        if (incomingMessage.contains("client")){
+            handler = new ConnectionHandler(socket, this);
+            handler.sendMessage("Hi from server");
+
+        }
 
         //Codigo que genera las condiciones para responderle al cliente
-        handler = new ConnectionHandler(socket, this);
-        handler.sendMessage(this.JsonFiles);
+        
     }
 
     public void processMessage(String message){
@@ -55,6 +61,26 @@ public class javaServer{
         javaServer listener = new javaServer();
         listener.ConnectionListener();
     
+    }
+
+    public String streamProcessing(BufferedReader in) throws IOException {
+        String incomingInfo = "";
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line = this.in.readLine();
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = this.in.readLine();
+            }
+            incomingInfo = sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+            in.close();
+        }
+        return incomingInfo;
+
     }
 
 }
