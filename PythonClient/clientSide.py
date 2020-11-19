@@ -3,18 +3,33 @@ import json
 port = 6666
 flag = True
 file = 'JsonResources/Player.json'
-message = ""
+data = {
+    "Player" :{
+        "ID": 2,
+        "miNodo": 45,
+        "posicion": "x, y"
+}
+}
 
-with open(file, 'r') as f:
-    player = json.load(f)
-    cont = 0
+with open('JsonResources/Player2.json', 'w') as write_file:
+    json.dump(data, write_file)       
 
-    for item in player['Player']:
-        message +=  item + ": " + str(player['Player'][item]) + ","  
-message = "{" + "\n 'Player':" + "{" + message[:-1] + "\n}" + "}"       
+message = json.dumps(data)
 
-while flag:
-    clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    clientSocket.connect(('127.0.0.1', port))
-    clientSocket.send(message.encode()) 
-    flag = False
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as clientSocket:
+    try:
+        clientSocket.connect(('localhost', port))
+    except Exception as e:
+        raise SystemExit(f"No pudo conectarse al server, pues : {e}")
+    while flag:
+        firstMsg = input("Message to server is: ")
+        if firstMsg == "Send Json":
+            clientSocket.send(message.encode('utf-8'))
+        else:
+
+            clientSocket.send(firstMsg.encode('utf-8'))
+            break
+        
+        received  = clientSocket.recv(1024)
+        print(f"Server message: {received.decode('utf-8')}")
+        

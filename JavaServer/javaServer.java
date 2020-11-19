@@ -18,6 +18,7 @@ public class javaServer {
                 System.out.println("listening connections on: " + incoming.getLocalPort());
                 while (flag) {
                     Socket socket = incoming.accept();
+                    System.out.println("Cliente ha ingresado");
                     processConnection(socket);
 
                 }
@@ -31,9 +32,9 @@ public class javaServer {
     public void processConnection(Socket socket) throws IOException {
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         String incomingMessage = streamProcessing(this.in);
-        System.out.println("Cliente a ingresado: " + incomingMessage);
+        System.out.println("Mensaje de cliente: " + incomingMessage);
         
-        if (incomingMessage.contains("client")){
+        if (incomingMessage.contains("posicion")){
             handler = new ConnectionHandler(socket, this);
             handler.sendMessage("Hi from server");
 
