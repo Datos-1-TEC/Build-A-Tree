@@ -40,7 +40,7 @@ while displayFlag:
         if keys[pygame.K_SPACE]:
             isJump = True
     else:
-        if jumpCOunt >= -10:
+        if jumpCount >= -10:
             negative = 1
             if jumpCount < 0:
                 negative = -1
