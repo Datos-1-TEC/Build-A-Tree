@@ -1,50 +1,44 @@
 import pygame
 import time
-from mainGameScreen import *
+import mainGameScreen
 
 pygame.init()
 
 displayWidth = 750
 displayHeight = 600
+x = 50
+y= 50
+width = 40
+height = 60
+vel = 5
+
+window = pygame.display.set_mode((displayWidth,displayHeight))
+
+pygame.display.set_caption("Build a Tree")
+
+displayFlag = True
+while run:
+    pygame.time.delay(100)
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            displayFlag = False
+
+    keys = pygame.key.get_pressed()
+
+    if keys[pygame.K_LEFT] and x > vel:
+        x -= vel
+    if keys[pygame.K_RIGHT] and x < 750 - width - vel:
+        x += vel
+    if keys[pygame.K_UP] and y > vel:
+        y -= vel
+    if keys[pygame.K_DOWN] and y < 500 - height - vel:
+        y += vel
+    
 
 
-def main():
-    displayFlag = True
-
-    game_display = pygame.display.set_mode((displayWidth, displayHeight)) 
-    pygame.display.set_caption("Build a Tree")
-    clock = pygame.time.Clock()
-
-    #Pantalla
-    gameScreen = mainGameScreen(game_display)
-
-    #Loop del juego
-    while displayFlag:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                displayFlag = False
-
-        #Para cuando ventana esté abierta
-            if mainGameScreen.flag:
-                mainGameScreen.events(event)
-
-        if mainGameScreen.flag:
-            mainGameScreen.__update__()
-            mainGameScreen.__draw__()
-
-        pygame.display.flip()
-
-font_name = pygame.font.match_font("arial")
-def draw_text(surf, text, size, x, y):
-    font = pygame.font.Font(font_name, size)
-    text_surface = font.render(text, True, (255, 255, 255))
-    text_rect = text_surface.get_rect()
-    text_rect.midtop = (x, y)
-    surf.blit(text_surface, text_rect)
-
-
-main()
 
 pygame.quit()
-quit()
+
+
 

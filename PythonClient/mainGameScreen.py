@@ -1,7 +1,7 @@
 class mainGameScreen:
     def __init__(self, game_display):
         self.frame = game_display
-        self.flag = False
+        self.flag = True
         self.score = 0
         self.lives = 3
         self.win = 0
@@ -16,7 +16,8 @@ class mainGameScreen:
 
     def respawn(self):
         self.player = Player(100, 460)
-
+    
+    """
     def __update__(self):
         # Gravedad en plataformas
         self.player.falling = True
@@ -38,6 +39,27 @@ class mainGameScreen:
 
     def __draw__(self):
         backGroundImage = pygame.image.load("images/")
+
+    """"
+
+    def events(self, event):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_LEFT]:
+            x -= vel
+
+        if keys[pygame.K_RIGHT]:
+            x += vel
+
+        if keys[pygame.K_UP]:
+            y -= vel
+
+        if keys[pygame.K_DOWN]:
+            y += vel
+
+
+
+
 
         
         
