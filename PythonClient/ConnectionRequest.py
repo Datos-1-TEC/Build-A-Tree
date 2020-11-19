@@ -1,37 +1,57 @@
-import socket
-import struct
-import threading
-import Queue
-import time
+import sys
+import socket as sk
+import json
+host = "127.0.0.1"
+port = 2018
+flag = True
+file = 'JsonResources/Player.json'
+data = {
+    "Player" :{
+        "ID": 2,
+        "miNodo": 45,
+        "posicion": "x, y"
+}
+}
+
+with open('JsonResources/Player2.json', 'w') as write_file:
+    json.dump(data, write_file)       
+
+message = json.dumps(data)
+
+socketClient =  sk.socket()
+socketClient.connect((host, port))
+print("Conectado")
+
+count = 0
+while True: 
+    if count == 0:
+        toServer = message
+        print("Enviar:", toServer)
+        out = toServer.encode("UTF8")
+        print("Salida antes de enviar:", out.decode("utf8"))
+        sending = socketClient.send(out)
+        print("Se han enviado: {} bytes al servidor.".format(sending))   
+        fromServer = socketClient.recv(512)
+        decoded = fromServer.decode("UTF8")
+        print("Servidor retorna:", decoded)
+        count += 1
 
 
-class ConnectionRequest(threading.Thread):
-    def __init__(self):
+    else:
+        toServer = input("Texto para enviar: ")
+        print("Enviar:", toServer)
+        out = toServer.encode("UTF8")
+        print("Salida antes de enviar:", out.decode("utf8"))
+        sending = socketClient.send(out)
+        print("Se han enviado: {} bytes al servidor.".format(sending))   
+        if toServer == "exit":
+            break
+        fromServer = socketClient.recv(512)
+        decoded = fromServer.decode("UTF8")
+        print("Servidor retorna:", decoded)
         
-        self.port = 6666
-        self.flag = True
-        self.request = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        print("socket created")
-        self.request.connect(('localhost', self.port))
-        threading.Thread.__init__(self)
-        while(self.flag):
-            message = self.request.recv(4096)
-            processMessage(message)
-        threading.Thread.start()  
-
-    def processMessage(self, message):
-        if message.find("%"):
-            print(message)
-        else:
-            print("processing message... "+ message)
-
-    def sendMessage(self,message):
-        self.request.send(message.encode())
-        print("Message sent")
-
-
-connectionRequest = ConnectionRequest()
-connectionRequest.sendMessage("Hi from client")
+socketClient.close()
+print("Terminado")
 
 
 

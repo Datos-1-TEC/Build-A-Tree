@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "CodeLens (Launch) - gameServer",
+            "request": "launch",
+            "mainClass": "JavaServer.gameServer",
+            "projectName": "Build-A-Tree_f7844b38"
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
