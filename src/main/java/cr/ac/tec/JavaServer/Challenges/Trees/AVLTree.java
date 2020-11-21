@@ -1,4 +1,4 @@
-package JavaServer.Challenges.Trees;
+package cr.ac.tec.JavaServer.Challenges.Trees;
 
 public class AVLTree {
     NodeT root;

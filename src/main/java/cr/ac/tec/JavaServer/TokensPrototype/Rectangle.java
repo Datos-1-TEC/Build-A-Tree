@@ -1,25 +1,26 @@
-package JavaServer.TokensPrototype;
+package cr.ac.tec.JavaServer.TokensPrototype;
 
-public class Circle implements Token {
-    private String shape = "Circle";
+public class Rectangle implements Token {
+    private String shape = "Rectangle";
     private int value;
 
-    public Circle (){
-        System.out.println("Token circle created");
+    public Rectangle() {
+        System.out.println("Rectangle token created");
     }
 
     @Override
     public Token makeToken() {
-        Circle circleToken = null;
+
+        Rectangle recToken = null;
 
         try {
-            circleToken = (Circle) super.clone();
+            recToken = (Rectangle) super.clone();
         } catch (CloneNotSupportedException e) {
            
             e.printStackTrace();
         }
         
-        return circleToken;
+        return recToken;
     }
 
     @Override
@@ -35,5 +36,6 @@ public class Circle implements Token {
     @Override
     public void setValue(int value) {
         this.value = value;
-    } 
+    }
+    
 }

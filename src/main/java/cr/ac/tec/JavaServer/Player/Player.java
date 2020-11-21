@@ -1,6 +1,6 @@
-package JavaServer.Player;
+package cr.ac.tec.JavaServer.Player;
 
-import JavaServer.TokensPrototype.Token;
+import cr.ac.tec.JavaServer.TokensPrototype.Token;
 
 public class Player {
     private int ID;

@@ -1,5 +1,5 @@
-package JavaServer.Challenges;
-import JavaServer.TokensPrototype.*;
+package cr.ac.tec.JavaServer.Challenges;
+import cr.ac.tec.JavaServer.TokensPrototype.*;
 
 import java.util.Random;
 

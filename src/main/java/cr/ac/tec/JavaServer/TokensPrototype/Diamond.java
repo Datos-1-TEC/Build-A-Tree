@@ -1,26 +1,26 @@
-package JavaServer.TokensPrototype;
+package cr.ac.tec.JavaServer.TokensPrototype;
 
-public class Rectangle implements Token {
-    private String shape = "Rectangle";
+public class Diamond implements Token{
+    private String shape = "Diamond";
     private int value;
 
-    public Rectangle() {
-        System.out.println("Rectangle token created");
+    public Diamond(){
+        System.out.println("Diamond token created");
+
     }
 
     @Override
     public Token makeToken() {
-
-        Rectangle recToken = null;
+        Diamond diamondToken = null;
 
         try {
-            recToken = (Rectangle) super.clone();
+            diamondToken = (Diamond) super.clone();
         } catch (CloneNotSupportedException e) {
            
             e.printStackTrace();
         }
         
-        return recToken;
+        return diamondToken;
     }
 
     @Override
@@ -30,6 +30,7 @@ public class Rectangle implements Token {
 
     @Override
     public Integer getValue() {
+
         return this.value;
     }
 

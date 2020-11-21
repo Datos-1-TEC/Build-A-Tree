@@ -1,4 +1,4 @@
-package JavaServer.TokensPrototype;
+package cr.ac.tec.JavaServer.TokensPrototype;
 
 
 public class CloningTest {

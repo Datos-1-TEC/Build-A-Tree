@@ -1,4 +1,4 @@
-package JavaServer.TokensPrototype;
+package cr.ac.tec.JavaServer.TokensPrototype;
 
 public class Triangle implements Token{
     private String shape = "Triangle";

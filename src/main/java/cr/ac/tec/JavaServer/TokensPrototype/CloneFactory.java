@@ -1,4 +1,4 @@
-package JavaServer.TokensPrototype;
+package cr.ac.tec.JavaServer.TokensPrototype;
 /** Esta clase interactúa con un determinado cliente que requiere instancias de diferentes tokens 
  * para asignarlos como nodos para un tipo de árbol
  * @author Juan P.R

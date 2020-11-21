@@ -1,4 +1,4 @@
-package JavaServer.Challenges.Trees;
+package cr.ac.tec.JavaServer.Challenges.Trees;
 
 class Node {
     int data; // holds the key

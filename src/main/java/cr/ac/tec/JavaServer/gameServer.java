@@ -1,4 +1,4 @@
-package JavaServer;
+package cr.ac.tec.JavaServer;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

@@ -1,26 +1,25 @@
-package JavaServer.TokensPrototype;
+package cr.ac.tec.JavaServer.TokensPrototype;
 
-public class Diamond implements Token{
-    private String shape = "Diamond";
+public class Circle implements Token {
+    private String shape = "Circle";
     private int value;
 
-    public Diamond(){
-        System.out.println("Diamond token created");
-
+    public Circle (){
+        System.out.println("Token circle created");
     }
 
     @Override
     public Token makeToken() {
-        Diamond diamondToken = null;
+        Circle circleToken = null;
 
         try {
-            diamondToken = (Diamond) super.clone();
+            circleToken = (Circle) super.clone();
         } catch (CloneNotSupportedException e) {
            
             e.printStackTrace();
         }
         
-        return diamondToken;
+        return circleToken;
     }
 
     @Override
@@ -30,13 +29,11 @@ public class Diamond implements Token{
 
     @Override
     public Integer getValue() {
-
         return this.value;
     }
 
     @Override
     public void setValue(int value) {
         this.value = value;
-    }
-    
+    } 
 }
