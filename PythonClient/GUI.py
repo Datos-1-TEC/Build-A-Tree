@@ -24,6 +24,7 @@ while displayFlag:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            quit()
             displayFlag = False
 
     keys = pygame.key.get_pressed()
