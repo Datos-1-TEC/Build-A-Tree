@@ -8,8 +8,6 @@ width = 40
 height = 60
 
 
-
-
 pygame.init()
 """
 white = (255, 255, 255)
