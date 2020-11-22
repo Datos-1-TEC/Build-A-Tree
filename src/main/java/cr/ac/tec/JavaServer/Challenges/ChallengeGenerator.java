@@ -11,14 +11,16 @@ public class ChallengeGenerator {
     private Circle avlToken = new Circle();
     private Rectangle bToken = new Rectangle();
     private Triangle splayToken = new Triangle();
-
+    private Random r =  new Random();
 
     //Metodo para generar los tokens
     public void challengeSelector() {
-        Random r =  new Random();
-        int randomN = r.nextInt(challengeList.length);
-        if (randomN == 0){
-            String challenge = challengeList[randomN];
+        int randomTree = r.nextInt(challengeList.length-1);
+        if (randomTree == 0){
+            this.challenge = challengeList[randomTree];
+            if (this.challenge == "BST"){
+                
+            }
 
         }
     }

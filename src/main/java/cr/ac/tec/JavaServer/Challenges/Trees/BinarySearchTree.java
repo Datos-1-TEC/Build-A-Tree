@@ -2,6 +2,8 @@ package cr.ac.tec.JavaServer.Challenges.Trees;
 
 public class BinarySearchTree {
     private NodeT root;
+    private int maxDepth = 0;
+    private SinglyLinkedList<Integer> keysList = new SinglyLinkedList<>();
 
     public boolean isEmpty() {
         return this.root == null;
@@ -43,6 +45,47 @@ public class BinarySearchTree {
         return root;
     }
 
+    public int getMaxDepth(){
+        return getMaxDepth(this.root)-1;
+    }
+
+    private int getMaxDepth(NodeT node) {
+        if (node == null) return 0; 
+
+        else { 
+        /* compute the depth of each subtree */
+            int lDepth = getMaxDepth(node.left); 
+            int rDepth = getMaxDepth(node.right); 
+
+            /* use the larger one */
+            if (lDepth > rDepth) {
+                this.maxDepth = lDepth;
+                return this.maxDepth + 1;
+            } 
+            else {
+                this.maxDepth = rDepth;
+                return this.maxDepth + 1; 
+            }
+    }
+} 
+
+    public SinglyLinkedList<Integer> bstKeys(NodeT root) {
+        traverseTree(root);
+        return keysList;
+    }
+
+    private void traverseTree(NodeT nodeT) {
+        if (nodeT != null) {
+            traverseTree(nodeT.left);
+            keysList.add(nodeT.key);
+            traverseTree(nodeT.right);
+        }
+    }
+    
+    public SinglyLinkedList<Integer> getKeysList() {
+        return keysList;
+    }
+
     public static void main(String[] args){
         BinarySearchTree bst = new BinarySearchTree();
         /*
@@ -60,13 +103,15 @@ public class BinarySearchTree {
         bst.insert(40);
         bst.insert(60);
         bst.insert(70);
-        bst.insert(80);
+        bst.insert(80);        
 
         bst.inOrder();
         System.out.println(bst);
-        System.out.println(bst.getRoot().key);
+        bst.bstKeys(bst.getRoot());
+        bst.getKeysList().print();
+
+        //System.out.println(bst.getRoot().key);
+        System.out.println("La profudidad del BST es: "+ bst.getMaxDepth());
     }
-
-
 
 }
