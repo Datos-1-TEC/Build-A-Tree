@@ -2,6 +2,7 @@ package cr.ac.tec.JavaServer.Challenges.Trees;
 
 public class SinglyLinkedList<T> {
     private NodeL<T> first, tail;
+    private int length = 0;
     //
 
     public SinglyLinkedList() {
@@ -33,12 +34,14 @@ public class SinglyLinkedList<T> {
     public void add(T element) {
         if (this.isEmpty()) {
             this.first = new NodeL<>(element);
+            this.length ++;
         } else {
             NodeL<T> ref = this.first;
             while (ref.getNext() != null) {
                 ref = ref.getNext();
             }
             ref.setNext(new NodeL<>(element));
+            this.length ++;
         }
 
     } 
@@ -49,5 +52,19 @@ public class SinglyLinkedList<T> {
             current = current.getNext();
         }
         System.out.println();
-    }   
+    }
+
+    public int getLength() {
+        return this.length;
+    }
+
+    public T getElementAt(int position){
+        NodeL<T> current = this.first;
+        while (position > 0){
+            current = current.getNext();
+            position --;
+        }
+        return current.getValue();
+
+    }
 }

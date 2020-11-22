@@ -69,7 +69,7 @@ public class BinarySearchTree {
     }
 } 
 
-    public SinglyLinkedList<Integer> bstKeys(NodeT root) {
+    private SinglyLinkedList<Integer> bstKeys(NodeT root) {
         traverseTree(root);
         return keysList;
     }
@@ -87,6 +87,10 @@ public class BinarySearchTree {
     }
 
     public static void main(String[] args){
+
+    }
+
+    public BinarySearchTree createBST(){
         BinarySearchTree bst = new BinarySearchTree();
         /*
         Let us create the tree below
@@ -104,14 +108,12 @@ public class BinarySearchTree {
         bst.insert(60);
         bst.insert(70);
         bst.insert(80);        
-
         bst.inOrder();
-        System.out.println(bst);
         bst.bstKeys(bst.getRoot());
-        bst.getKeysList().print();
-
+        //System.out.println(bst);
         //System.out.println(bst.getRoot().key);
-        System.out.println("La profudidad del BST es: "+ bst.getMaxDepth());
+        //System.out.println("La profudidad del BST es: "+ bst.getMaxDepth());
+        return bst;
     }
 
 }
