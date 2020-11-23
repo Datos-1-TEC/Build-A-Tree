@@ -2,10 +2,17 @@ import pygame
 import time
 
 
+walkRight = [pygame.image.load('resources/megaman1.png'), pygame.image.load('resources/megaman2.png'), pygame.image.load('resources/megaman3.png', pygame.image.load('resources/megaman4.png'))]
+walkLeft = [pygame.image.load('resources/megaman_1.png'), pygame.image.load('resources/megaman_2.png'), pygame.image.load('resources/megaman_3.png'), pygame.image.load('resources/megaman_4.png')]
+
+
 displayWidth = 950
 displayHeight = 700
 width = 40
 height = 60
+left = False
+right = False
+walkCount = 0
 
 
 pygame.init()
