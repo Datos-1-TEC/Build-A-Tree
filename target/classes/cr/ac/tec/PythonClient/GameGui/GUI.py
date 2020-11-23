@@ -2,8 +2,8 @@ import pygame
 import time
 
 
-displayWidth = 750
-displayHeight = 600
+displayWidth = 950
+displayHeight = 700
 width = 40
 height = 60
 
@@ -39,12 +39,12 @@ def main():
 
         if keys[pygame.K_LEFT] and x > vel:
             x -= vel
-        if keys[pygame.K_RIGHT] and x < 750 - width - vel:
+        if keys[pygame.K_RIGHT] and x < 900 - width - vel:
             x += vel
         if not(isJump):
             if keys[pygame.K_UP] and y > vel:
                 y -= vel
-            if keys[pygame.K_DOWN] and y < 500 - height - vel:
+            if keys[pygame.K_DOWN] and y < 700 - height - vel:
                 y += vel
             if keys[pygame.K_SPACE]:
                 isJump = True
@@ -60,15 +60,7 @@ def main():
                 jumpCount = 10
 
         window.fill((0,0,0))
-
-        player = pygame.image.load("resources/megaman1.png").convert_alpha()
-        rect = player.get_rect()
-        rect.center = (200, 300)
-        rect.move(x, y)
-        window.blit(player, rect)
-
-
-
+        pygame.draw.rect(window, (255, 0, 0), (x, y, 60, 65))
         pygame.display.update()
     
     
