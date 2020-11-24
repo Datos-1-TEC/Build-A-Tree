@@ -27,10 +27,9 @@ public class ChallengeGenerator {
             this.challenge = challengeList[0];
             if (this.challenge == "BST"){
                 this.myBST = myBST.createBST();
-
                 int listLength = this.myBST.getKeysList().getLength();
                 mainTokens(this.challenge, listLength, this.myBST.getKeysList());
-                System.out.println("El valor del token en 2 es : " + this.bstTokensList.getElementAt(2).getValue());
+                System.out.println("El valor del token en 0 es : " + this.bstTokensList.getElementAt(0).getValue());
             }
 
         }

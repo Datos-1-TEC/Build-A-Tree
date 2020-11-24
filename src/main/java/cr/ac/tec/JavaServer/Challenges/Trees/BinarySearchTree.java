@@ -1,9 +1,12 @@
 package cr.ac.tec.JavaServer.Challenges.Trees;
 
+import java.util.Random;
+
 public class BinarySearchTree {
     private NodeT root;
     private int maxDepth = 0;
     private SinglyLinkedList<Integer> keysList = new SinglyLinkedList<>();
+ 
 
     public boolean isEmpty() {
         return this.root == null;
@@ -85,31 +88,51 @@ public class BinarySearchTree {
     public SinglyLinkedList<Integer> getKeysList() {
         return keysList;
     }
+    public int getRandomNumber(int min, int max) {
+        Random random = new Random();
+        return random.nextInt(max - min) + min;
+    }
 
     public static void main(String[] args){
+        BinarySearchTree bst = new BinarySearchTree();
+
+        bst.createBST();
+        
 
     }
 
     public BinarySearchTree createBST(){
         BinarySearchTree bst = new BinarySearchTree();
-        /*
-        Let us create the tree below
-                50
-              /      \
-              30    70
-            /   \  /     \
-            20  40 60    80
 
-         */
-        bst.insert(50);
-        bst.insert(30);
-        bst.insert(20);
-        bst.insert(40);
-        bst.insert(60);
-        bst.insert(70);
-        bst.insert(80);        
-        bst.inOrder();
+        int depth = getRandomNumber(1, 4);
+        //int maxInTree = (int) Math.pow(2,depth+1) - 1;
+        //int minInTree = depth + 1;
+        int newKey;
+        int position = 0;
+        
+        while(bst.getMaxDepth() < depth){
+            newKey = getRandomNumber(10, 20);
+            System.out.println("Random key: "+ newKey);
+            if ( bst.isEmpty()){
+                bst.insert(newKey);
+
+                position ++;
+            } 
+            else if( bstKeys(bst.getRoot()).getElementAt(position-1) != newKey ){
+                bst.insert(newKey);                
+                position ++;
+            } else{
+                System.out.println(newKey + " : Key is already in BST"); 
+                position --;
+            } 
+
+        }
         bst.bstKeys(bst.getRoot());
+        System.out.println("La profundidad del arbol es: " + depth);
+        bst.getKeysList().print();
+
+   
+        System.out.println("La raiz del arbol es: " + bst.getRoot().key);
         //System.out.println(bst);
         //System.out.println(bst.getRoot().key);
         //System.out.println("La profudidad del BST es: "+ bst.getMaxDepth());
