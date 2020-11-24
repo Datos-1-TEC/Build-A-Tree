@@ -33,7 +33,7 @@ def redrawGameWindow():
     global walkCount
     window.blit(bg, (0, 0))
 
-    if walkCount + 1 >= 27:
+    if walkCount + 1 >= 12:
         walkCount = 0
 
     if left:
@@ -55,7 +55,7 @@ def main():
     
     #window.blit(player, (100, 100))
     while displayFlag:
-        clock.tick(27)
+        clock.tick(12)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
