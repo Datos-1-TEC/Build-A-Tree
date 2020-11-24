@@ -24,7 +24,9 @@ isJump = False
 x = 250
 y = 250
 vel = 15
-jumpCount = 10  
+jumpCount = 10
+
+clock = pygame.time.Clock()
 
 
 def redrawGameWindow():
@@ -48,12 +50,12 @@ def redrawGameWindow():
 
 pygame.display.set_caption("Build a Tree")
 def main():
-    global displayFlag, isJump, x, y, vel, jumpCount
+    global displayFlag, isJump, x, y, vel, jumpCount, clock
      
     
     #window.blit(player, (100, 100))
     while displayFlag:
-        pygame.time.delay(100)
+        clock.tick(27)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -79,6 +81,9 @@ def main():
         if not(isJump):
             if keys[pygame.K_SPACE]:
                 isJump = True
+                right = False
+                left = False
+                walkCount = 0
         else:
             if jumpCount >= -10:
                 negative = 1
