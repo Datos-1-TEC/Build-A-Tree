@@ -2,35 +2,35 @@ import pygame
 import time
 
 
-walkRight = [pygame.image.load("resources/megaman1.png"), pygame.image.load("resources/megaman2.png"), pygame.image.load("resources/megaman3.png"), pygame.image.load("resources/megaman4.png")]
-walkLeft = [pygame.image.load("resources/megaman_1.png"), pygame.image.load("resources/megaman_2.png"), pygame.image.load("resources/megaman_3.png"), pygame.image.load("resources/megaman_4.png")]
-playerOne = pygame.image.load("resources/megamanstand.png")
-bg = pygame.image.load("resources/background.jpg")
-
 displayWidth = 950
 displayHeight = 700
 width = 40
 height = 60
-left = False
-right = False
-walkCount = 0
 
 
 pygame.init()
+
+walkRight = [pygame.image.load("resources/megaman1.png"), pygame.image.load("resources/megaman2.png"), pygame.image.load("resources/megaman3.png"), pygame.image.load("resources/megaman4.png")]
+walkLeft = [pygame.image.load("resources/megaman_1.png"), pygame.image.load("resources/megaman_2.png"), pygame.image.load("resources/megaman_3.png"), pygame.image.load("resources/megaman_4.png")]
+playerOne = pygame.image.load("resources/megamanstand.png")
+bg = pygame.image.load("resources/background.jpg")
 
 window = pygame.display.set_mode((displayWidth,displayHeight))
 displayFlag = True
 isJump = False
 x = 250
 y = 250
-vel = 15
+vel = 10
 jumpCount = 10
+walkCount = 0
+left = False
+right = False
 
 clock = pygame.time.Clock()
 
 
 def redrawGameWindow():
-    global walkCount
+    global walkCount, left, right
     window.blit(bg, (0, 0))
 
     if walkCount + 1 >= 12:
@@ -50,7 +50,7 @@ def redrawGameWindow():
 
 pygame.display.set_caption("Build a Tree")
 def main():
-    global displayFlag, isJump, x, y, vel, jumpCount, clock
+    global displayFlag, isJump, x, y, vel, jumpCount, clock, walkCount,left, right
      
     
     #window.blit(player, (100, 100))
