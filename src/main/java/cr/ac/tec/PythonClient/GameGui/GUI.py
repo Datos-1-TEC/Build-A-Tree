@@ -21,8 +21,8 @@ pygame.init()
 window = pygame.display.set_mode((displayWidth,displayHeight))
 displayFlag = True
 isJump = False
-x = 50
-y = 50
+x = 250
+y = 250
 vel = 15
 jumpCount = 10  
 
