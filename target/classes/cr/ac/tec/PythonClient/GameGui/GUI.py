@@ -2,6 +2,7 @@ import pygame
 import time
 
 
+
 displayWidth = 950
 displayHeight = 700
 width = 40
