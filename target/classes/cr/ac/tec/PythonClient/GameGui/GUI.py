@@ -2,10 +2,9 @@ import pygame
 import time
 
 
-
 displayWidth = 950
 displayHeight = 700
-width = 40
+width = 65
 height = 60
 
 
@@ -29,30 +28,48 @@ right = False
 
 clock = pygame.time.Clock()
 
+class player(object):
+    def __init__(self, x, y, width, height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.vel = 15
+        self.isJump = False
+        self.jumpCount = 10
+        self.left = False
+        self.right = False
+        self.walkCount = 0
+
+
+    def draw(self, window):
+        if self.walkCount + 1 >= 12:
+            self.walkCount = 0
+
+        if self.left:
+            window.blit(walkLeft[self.walkCount//3], (self.x, self.y))
+            self.walkCount += 1
+        elif self.right:
+            window.blit(walkRight[self.walkCount//3], (self.x, self.y))
+            self.walkCount += 1
+        else:
+            window.blit(playerOne, (self.x, self.y))
+
+
+
+megaman = player(300, 410, 65, 60)
 
 def redrawGameWindow():
-    global walkCount, left, right
+    global megaman
     window.blit(bg, (0, 0))
-
-    if walkCount + 1 >= 12:
-        walkCount = 0
-
-    if left:
-        window.blit(walkLeft[walkCount//3], (x, y))
-        walkCount += 1
-    elif right:
-        window.blit(walkRight[walkCount//3], (x, y))
-        walkCount += 1
-    else:
-        window.blit(playerOne, (x, y))
-
+    megaman.draw(window)
     pygame.display.update()
 
 
 pygame.display.set_caption("Build a Tree")
 def main():
-    global displayFlag, isJump, x, y, vel, jumpCount, clock, walkCount,left, right
-     
+    global displayFlag, isJump, x, y, vel, jumpCount, clock, walkCount,left, right, megaman
+        
     
     #window.blit(player, (100, 100))
     while displayFlag:
@@ -66,43 +83,39 @@ def main():
 
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_LEFT] and x > vel:
-            x -= vel
-            left = True
-            right = False
-        elif keys[pygame.K_RIGHT] and x < 900 - width - vel:
-            x += vel
-            right = True
-            left = False
+        if keys[pygame.K_LEFT] and megaman.x > megaman.vel:
+            megaman.x -= megaman.vel
+            megaman.left = True
+            megaman.right = False
+        elif keys[pygame.K_RIGHT] and megaman.x < 900 - megaman.width - megaman.vel:
+            megaman.x += megaman.vel
+            megaman.right = True
+            megaman.left = False
         else:
-            right = False
-            left = False
-            walkCount = 0
+            megaman.right = False
+            megaman.left = False
+            megaman.walkCount = 0
 
-        if not(isJump):
-            if keys[pygame.K_SPACE]:
-                isJump = True
-                right = False
-                left = False
-                walkCount = 0
+        if not(megaman.isJump):
+            if keys[pygame.K_UP]:
+                megaman.isJump = True
+                megaman.right = False
+                megaman.left = False
+                megaman.walkCount = 0
         else:
-            if jumpCount >= -10:
+            if megaman.jumpCount >= -10:
                 negative = 1
-                if jumpCount < 0:
+                if megaman.jumpCount < 0:
                     negative = -1
-                y -= (jumpCount ** 2) * 0.5 * negative
-                jumpCount -= 1
+                megaman.y -= (megaman.jumpCount ** 2) * 0.5 * negative
+                megaman.jumpCount -= 1
             else:
-                isJump = False
-                jumpCount = 10
+                megaman.isJump = False
+                megaman.jumpCount = 10
 
         redrawGameWindow()
 
     
-    
-
-    
-
 
 main()
     
