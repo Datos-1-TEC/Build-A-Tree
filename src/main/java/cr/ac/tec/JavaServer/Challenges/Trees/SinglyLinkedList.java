@@ -1,5 +1,7 @@
 package cr.ac.tec.JavaServer.Challenges.Trees;
 
+import javax.sound.midi.Track;
+
 public class SinglyLinkedList<T> {
     private NodeL<T> first, tail;
     private int length = 0;
@@ -26,6 +28,26 @@ public class SinglyLinkedList<T> {
             first = ref;
         }
     }
+    public SinglyLinkedList<T> deleteNode(T element){
+        if(!isEmpty()){
+            if(this.first.getNext() == null && element == this.first.getValue())
+                this.first = null;
+            else if (element == this.first.getValue())
+                this.first = this.first.getNext();
+            else{
+                NodeL<T> prev, tmp;
+                for (prev = this.first, tmp = this.first.getNext();
+                tmp != null && tmp.getValue() != element;
+                prev = prev.getNext(), tmp = tmp.getNext());
+                if(tmp != null){
+                    prev.setNext(tmp.getNext());
+                }if (tmp.getNext() == null){
+                    prev.setNext(null);
+                }
+            }
+        }
+        return this;
+    }
     /**
      * Adds an element to the end
      *
@@ -45,6 +67,17 @@ public class SinglyLinkedList<T> {
         }
 
     } 
+    public Boolean contains(T element){
+        NodeL<T> current = this.first;
+        Boolean result = false;
+        while(current.getNext() != null){
+            if (current.getValue() == element){
+                return result;
+            }
+            current = current.getNext();
+        }
+        return result;
+    }
     public void print(){
         NodeL<T> current = this.first;
         while (current != null){

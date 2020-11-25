@@ -95,31 +95,29 @@ public class BinarySearchTree {
 
     public static void main(String[] args){
         BinarySearchTree bst = new BinarySearchTree();
-
-        bst.createBST();
-        
+        bst.createBST();    
 
     }
 
     public BinarySearchTree createBST(){
         BinarySearchTree bst = new BinarySearchTree();
 
-        int depth = getRandomNumber(1, 4);
+        int depth = getRandomNumber(2, 4);
         //int maxInTree = (int) Math.pow(2,depth+1) - 1;
         //int minInTree = depth + 1;
         int newKey;
         int position = 0;
         
         while(bst.getMaxDepth() < depth){
-            newKey = getRandomNumber(10, 20);
+            newKey = getRandomNumber(10, 99);
             System.out.println("Random key: "+ newKey);
-            if ( bst.isEmpty()){
+            if ( bst.isEmpty()){ //agrega el primer key
                 bst.insert(newKey);
 
                 position ++;
             } 
-            else if( bstKeys(bst.getRoot()).getElementAt(position-1) != newKey ){
-                bst.insert(newKey);                
+            else if( bstKeys(bst.getRoot()).getElementAt(position-1) != newKey ){ //agrega y verifica que newKey no sea igual al anterior
+                bst.insert(newKey);             
                 position ++;
             } else{
                 System.out.println(newKey + " : Key is already in BST"); 
@@ -130,12 +128,7 @@ public class BinarySearchTree {
         bst.bstKeys(bst.getRoot());
         System.out.println("La profundidad del arbol es: " + depth);
         bst.getKeysList().print();
-
-   
         System.out.println("La raiz del arbol es: " + bst.getRoot().key);
-        //System.out.println(bst);
-        //System.out.println(bst.getRoot().key);
-        //System.out.println("La profudidad del BST es: "+ bst.getMaxDepth());
         return bst;
     }
 
