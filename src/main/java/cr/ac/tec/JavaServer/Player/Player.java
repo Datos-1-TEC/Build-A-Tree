@@ -16,6 +16,10 @@ public class Player {
             this.score = score;
             this.time = time;
         }
+    public Player(int iD,int lives){
+        this.ID = iD;
+        this.lives = lives;
+    }
         
     public int getID() {
         return ID;

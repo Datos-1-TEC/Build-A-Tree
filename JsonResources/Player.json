@@ -1,7 +1,1 @@
-{
-    "Player" :{
-        "ID": 1,
-        "miNodo": 45,
-        "posicion": [6789, 678]
-}
-}
+{"lives":3,"currentToken":null,"score":0,"time":0,"id":4}
