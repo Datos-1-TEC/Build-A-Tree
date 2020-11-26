@@ -40,35 +40,59 @@ class player(object):
         self.left = False
         self.right = False
         self.walkCount = 0
+        self.standing = True
 
 
     def draw(self, window):
         if self.walkCount + 1 >= 12:
             self.walkCount = 0
 
-        if self.left:
-            window.blit(walkLeft[self.walkCount//3], (self.x, self.y))
-            self.walkCount += 1
-        elif self.right:
-            window.blit(walkRight[self.walkCount//3], (self.x, self.y))
-            self.walkCount += 1
+        if not(self.standing):
+            if self.left:
+                window.blit(walkLeft[self.walkCount//3], (self.x, self.y))
+                self.walkCount += 1
+            elif self.right:
+                window.blit(walkRight[self.walkCount//3], (self.x, self.y))
+                self.walkCount += 1
         else:
-            window.blit(playerOne, (self.x, self.y))
+            if self.right:
+                window.blit(walkRight[0], (self.x, self.y))
+            else:
+                window.blit(walkLeft[0], (self.x, self.y))
+
+
+class projectile(object):
+    def __init__(self, x, y, radius, color, facing):
+        self.x = x
+        self.y = y
+        self.radius = radius
+        self.color = color
+        self.facing = facing #se encarga de direccionar la bala dependiendo de a donde se estaba moviendo
+        self.vel = 30 * facing
+
+    def draw(self, window):
+        pygame.draw.circle(window, self.color, (self.x, self.y), self.radius)
+
+
 
 
 
 megaman = player(300, 410, 65, 60)
+bullets = []
 
 def redrawGameWindow():
-    global megaman
+    global megaman, bullets
     window.blit(bg, (0, 0))
     megaman.draw(window)
+    for bullet in bullets:
+        bullet.draw(window)
+
     pygame.display.update()
 
 
 pygame.display.set_caption("Build a Tree")
 def main():
-    global displayFlag, isJump, x, y, vel, jumpCount, clock, walkCount,left, right, megaman
+    global displayFlag, isJump, x, y, vel, jumpCount, clock, walkCount,left, right, megaman, bullets
         
     
     #window.blit(player, (100, 100))
@@ -81,19 +105,34 @@ def main():
                 quit()
                 displayFlag = False
 
+        for bullet in bullets:
+            if bullet.x < 950 and bullet.x > 0:
+                bullet.x += bullet.vel
+            else:
+                bullets.pop(bullets.index(bullet))
+
         keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_DOWN]:
+            if megaman.left:
+                facing = -1
+            else:
+                facing = 1
+            if len(bullets) < 10:
+                bullets.append(projectile(round(megaman.x + megaman.width //2), round(megaman.y + megaman.height//2), 6, (0,0,0), facing))
 
         if keys[pygame.K_LEFT] and megaman.x > megaman.vel:
             megaman.x -= megaman.vel
             megaman.left = True
             megaman.right = False
+            megaman.standing = False
         elif keys[pygame.K_RIGHT] and megaman.x < 900 - megaman.width - megaman.vel:
             megaman.x += megaman.vel
             megaman.right = True
             megaman.left = False
+            megaman.standing = False
         else:
-            megaman.right = False
-            megaman.left = False
+            megaman.standing = True
             megaman.walkCount = 0
 
         if not(megaman.isJump):
