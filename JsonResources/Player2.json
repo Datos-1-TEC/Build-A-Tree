@@ -1,3 +1,9 @@
 {
-    "Player":{}
+    "Player":{
+        "miNodo":3,
+        "posicion":null,
+        "score":0,
+        "time":0,
+        "id":4
+    }
 }

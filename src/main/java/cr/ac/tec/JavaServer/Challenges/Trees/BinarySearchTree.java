@@ -6,6 +6,7 @@ public class BinarySearchTree {
     private NodeT root;
     private int maxDepth = 0;
     private SinglyLinkedList<Integer> keysList = new SinglyLinkedList<>();
+    private String shape = "Diamond";
  
 
     public boolean isEmpty() {
@@ -131,5 +132,10 @@ public class BinarySearchTree {
         System.out.println("La raiz del arbol es: " + bst.getRoot().key);
         return bst;
     }
+
+    public String getShape() {
+        return shape;
+    }
+
 
 }

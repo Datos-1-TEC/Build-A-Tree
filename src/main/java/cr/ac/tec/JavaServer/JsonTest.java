@@ -22,11 +22,8 @@ public class JsonTest {
                 ObjectMapper objectMapper = new ObjectMapper();
                 String stringPlayer = Json.generateString(nodePlayer, true);
                 JsonNode formatedPlayer = Json.parse(stringPlayer);
-                objectMapper.writeValue(new File("JsonResources/Player.json")., formatedPlayer);
+                objectMapper.writeValue(new File("JsonResources/Player.json"), formatedPlayer);
                 System.out.println(stringPlayer);
-
-
-
 
                 StringBuilder sb = new StringBuilder();
                 String line = br.readLine();
@@ -40,6 +37,7 @@ public class JsonTest {
                 br.close();
             }
             JsonNode node = Json.parse(json);
+            System.out.println((node.get("Player").toPrettyString()));
             System.out.println(node.get("Player").get("miNodo").asText());
             System.out.println(node.get("Player").get("posicion").asText());
 
