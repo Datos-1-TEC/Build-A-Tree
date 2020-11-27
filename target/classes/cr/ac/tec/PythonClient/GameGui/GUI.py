@@ -10,9 +10,16 @@ height = 60
 
 pygame.init()
 
+#Player one
 walkRight = [pygame.image.load("resources/megaman1.png"), pygame.image.load("resources/megaman2.png"), pygame.image.load("resources/megaman3.png"), pygame.image.load("resources/megaman4.png")]
 walkLeft = [pygame.image.load("resources/megaman_1.png"), pygame.image.load("resources/megaman_2.png"), pygame.image.load("resources/megaman_3.png"), pygame.image.load("resources/megaman_4.png")]
 playerOne = pygame.image.load("resources/megamanstand.png")
+
+#Player two
+walkRight2 = [pygame.image.load("resources/samus1.png"), pygame.image.load("resources/samus2.png"), pygame.image.load("resources/samus3.png"), pygame.image.load("resources/samus4.png"), pygame.image.load("resources/samus5.png"), pygame.image.load("resources/samus6.png"), pygame.image.load("resources/samus7.png"), pygame.image.load("resources/samus8.png"), pygame.image.load("resources/samus9.png"), pygame.image.load("resources/samus91.png")]
+walkLeft2 = [pygame.image.load("resources/samus_1.png"), pygame.image.load("resources/samus_2.png"), pygame.image.load("resources/samus_3.png"), pygame.image.load("resources/samus_4.png"), pygame.image.load("resources/samus_5.png"), pygame.image.load("resources/samus_6.png"), pygame.image.load("resources/samus_7.png"), pygame.image.load("resources/samus_8.png"), pygame.image.load("resources/samus_9.png"), pygame.image.load("resources/samus_91.png")]
+playerTwo = 
+
 bg = pygame.image.load("resources/background.jpg")
 
 window = pygame.display.set_mode((displayWidth,displayHeight))
@@ -41,6 +48,7 @@ class player(object):
         self.right = False
         self.walkCount = 0
         self.standing = True
+        self.hitbox = (self.x + 17, self.y + 11, 32, 52)
 
 
     def draw(self, window):
@@ -59,6 +67,8 @@ class player(object):
                 window.blit(walkRight[0], (self.x, self.y))
             else:
                 window.blit(walkLeft[0], (self.x, self.y))
+        self.hitbox = (self.x + 17, self.y + 11, 32, 52)
+        pygame.draw.rect(window, (255, 0, 0), (self.hitbox), 2)
 
 
 class projectile(object):
