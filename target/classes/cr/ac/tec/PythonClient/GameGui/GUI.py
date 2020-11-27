@@ -18,7 +18,7 @@ playerOne = pygame.image.load("resources/megamanstand.png")
 #Player two
 walkRight2 = [pygame.image.load("resources/samus1.png"), pygame.image.load("resources/samus2.png"), pygame.image.load("resources/samus3.png"), pygame.image.load("resources/samus4.png"), pygame.image.load("resources/samus5.png"), pygame.image.load("resources/samus6.png"), pygame.image.load("resources/samus7.png"), pygame.image.load("resources/samus8.png"), pygame.image.load("resources/samus9.png"), pygame.image.load("resources/samus91.png")]
 walkLeft2 = [pygame.image.load("resources/samus_1.png"), pygame.image.load("resources/samus_2.png"), pygame.image.load("resources/samus_3.png"), pygame.image.load("resources/samus_4.png"), pygame.image.load("resources/samus_5.png"), pygame.image.load("resources/samus_6.png"), pygame.image.load("resources/samus_7.png"), pygame.image.load("resources/samus_8.png"), pygame.image.load("resources/samus_9.png"), pygame.image.load("resources/samus_91.png")]
-playerTwo = 
+playerTwo = pygame.image.load("resources/samusstand.png")
 
 bg = pygame.image.load("resources/background.jpg")
 
@@ -36,7 +36,7 @@ right = False
 clock = pygame.time.Clock()
 
 class player(object):
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, name):
         self.x = x
         self.y = y
         self.width = width
@@ -48,6 +48,7 @@ class player(object):
         self.right = False
         self.walkCount = 0
         self.standing = True
+        self.name = name
         self.hitbox = (self.x + 17, self.y + 11, 32, 52)
 
 
@@ -57,16 +58,32 @@ class player(object):
 
         if not(self.standing):
             if self.left:
-                window.blit(walkLeft[self.walkCount//3], (self.x, self.y))
-                self.walkCount += 1
+                if self.name == "megaman":
+                    window.blit(walkLeft[self.walkCount//3], (self.x, self.y))
+                    self.walkCount += 1
+                else:
+                    window.blit(walkLeft2[self.walkCount//3], (self.x, self.y))
+                    self.walkCount += 1                                    
             elif self.right:
-                window.blit(walkRight[self.walkCount//3], (self.x, self.y))
-                self.walkCount += 1
+                if self.name == "megaman":
+                    window.blit(walkRight[self.walkCount//3], (self.x, self.y))
+                    self.walkCount += 1
+                else:
+                    window.blit(walkRight2[self.walkCount//3], (self.x, self.y))
+                    self.walkCount += 1
+                
         else:
             if self.right:
-                window.blit(walkRight[0], (self.x, self.y))
+                if self.name == "megaman":
+                    window.blit(walkRight[0], (self.x, self.y))
+                else:
+                    window.blit(walkRight2[0], (self.x, self.y))               
             else:
-                window.blit(walkLeft[0], (self.x, self.y))
+                if self.name == "megaman":
+                    window.blit(walkLeft[0], (self.x, self.y))
+                else:
+                    window.blit(walkLeft2[0], (self.x, self.y))
+                
         self.hitbox = (self.x + 17, self.y + 11, 32, 52)
         pygame.draw.rect(window, (255, 0, 0), (self.hitbox), 2)
 
@@ -87,13 +104,15 @@ class projectile(object):
 
 
 
-megaman = player(300, 410, 65, 60)
+megaman = player(300, 410, 65, 60, "megaman")
+samus = player(300, 430, 65, 60, "samus")
 bullets = []
 
 def redrawGameWindow():
-    global megaman, bullets
+    global megaman, bullets, samus
     window.blit(bg, (0, 0))
     megaman.draw(window)
+    samus.draw(window)
     for bullet in bullets:
         bullet.draw(window)
 
@@ -102,7 +121,7 @@ def redrawGameWindow():
 
 pygame.display.set_caption("Build a Tree")
 def main():
-    global displayFlag, isJump, x, y, vel, jumpCount, clock, walkCount,left, right, megaman, bullets
+    global displayFlag, isJump, x, y, vel, jumpCount, clock, walkCount,left, right, megaman, bullets, samus
         
     
     #window.blit(player, (100, 100))
@@ -131,27 +150,51 @@ def main():
             if len(bullets) < 10:
                 bullets.append(projectile(round(megaman.x + megaman.width //2), round(megaman.y + megaman.height//2), 6, (0,0,0), facing))
 
+        if keys[pygame.K_s]:
+            if samus.left:
+                facing = -1
+            else:
+                facing = 1
+            if len(bullets) < 10:
+                bullets.append(projectile(round(samus.x + samus.width //2), round(samus.y + samus.height//2), 6, (0,0,0), facing))
+
         if keys[pygame.K_LEFT] and megaman.x > megaman.vel:
             megaman.x -= megaman.vel
             megaman.left = True
             megaman.right = False
             megaman.standing = False
+        
         elif keys[pygame.K_RIGHT] and megaman.x < 900 - megaman.width - megaman.vel:
             megaman.x += megaman.vel
             megaman.right = True
             megaman.left = False
             megaman.standing = False
+
         else:
             megaman.standing = True
             megaman.walkCount = 0
 
-        if not(megaman.isJump):
-            if keys[pygame.K_UP]:
-                megaman.isJump = True
-                megaman.right = False
-                megaman.left = False
-                megaman.walkCount = 0
+        if keys[pygame.K_a] and samus.x > samus.vel:
+            samus.x -= samus.vel
+            samus.left = True
+            samus.right = False
+            samus.standing = False
+
+        elif keys[pygame.K_d] and samus.x < 900 - samus.width - samus.vel:
+            samus.x += samus.vel
+            samus.right = True
+            samus.left = False
+            samus.standing = False
         else:
+            samus.standing = True
+            samus.walkCount = 0
+
+        if not(megaman.isJump) and keys[pygame.K_UP]:
+            megaman.isJump = True
+            megaman.right = False
+            megaman.left = False
+            megaman.walkCount = 0
+        elif megaman.isJump:
             if megaman.jumpCount >= -10:
                 negative = 1
                 if megaman.jumpCount < 0:
@@ -161,6 +204,22 @@ def main():
             else:
                 megaman.isJump = False
                 megaman.jumpCount = 10
+
+        if not(samus.isJump) and keys[pygame.K_w]:
+            samus.isJump = True
+            samus.right = False
+            samus.left = False
+            samus.walkCount = 0
+        elif samus.isJump:
+            if samus.jumpCount >= -10:
+                negative = 1
+                if samus.jumpCount < 0:
+                    negative = -1
+                samus.y -= (samus.jumpCount ** 2) * 0.5 * negative
+                samus.jumpCount -= 1
+            else:
+                samus.isJump = False
+                samus.jumpCount = 10 
 
         redrawGameWindow()
 
