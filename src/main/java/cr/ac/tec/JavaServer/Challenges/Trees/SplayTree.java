@@ -1,10 +1,14 @@
 package cr.ac.tec.JavaServer.Challenges.Trees;
 
+import java.util.Random;
+
 class Node {
     int data; // holds the key
     Node parent; // pointer to the parent
     Node left; // pointer to left child
     Node right; // pointer to right child
+    
+    
 
     public Node(int data) {
         this.data = data;
@@ -16,6 +20,7 @@ class Node {
 
 public class SplayTree {
     private Node root;
+    private SinglyLinkedList<Integer> list = new SinglyLinkedList<>();
 
     public SplayTree() {
         root = null;
@@ -321,8 +326,38 @@ public class SplayTree {
         printHelper(this.root, "", true);
     }
 
-    public static void main(String [] args) {
+    public SplayTree createSplay() {
         SplayTree tree = new SplayTree();
+        
+        Random rand = new Random();
+        int randomNum = rand.nextInt((6 - 4) + 1) + 4;
+        int k = rand.nextInt(100);
+        list.add(k);
+        System.out.println(k);
+
+        for (int i=0; i < randomNum - 1; i++) {
+            int q = rand.nextInt(100);
+            System.out.println(q);
+            for (int j = 0; j < i+1; j++) {
+                if (q != list.getElementAt(j)) { 
+                    if (j == i) {list.add(q);}                    
+                } else{}
+            }
+        }
+
+        for (int n=0 ;n < list.getLength(); n++) {
+            tree.insert(list.getElementAt(n));
+        }
+
+        list.print();
+        tree.preorder();
+        return tree;
+    }
+
+    public static void main(String [] args) {
+        SplayTree a = new SplayTree();
+        a.createSplay();
+        /*SplayTree tree = new SplayTree();
         tree.insert(33);
         tree.insert(44);
         tree.insert(67);
@@ -344,6 +379,6 @@ public class SplayTree {
         tree.deleteNode(1);
         tree.deleteNode(44);
         tree.deleteNode(33);
-        tree.prettyPrint();
+        tree.prettyPrint();*/
     }
 }

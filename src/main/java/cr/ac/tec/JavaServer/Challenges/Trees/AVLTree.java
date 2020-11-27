@@ -1,7 +1,10 @@
 package cr.ac.tec.JavaServer.Challenges.Trees;
 
+import java.util.Random;
+
 public class AVLTree {
-    NodeT root;
+    private NodeT root;
+    private SinglyLinkedList<Integer> list = new SinglyLinkedList<>();
 
     // A utility function to get the height of the tree
     int height(NodeT N) {
@@ -118,10 +121,33 @@ public class AVLTree {
         }
     }
 
-    public static void main(String[] args) {
+    public AVLTree createAVL() {
         AVLTree tree = new AVLTree();
+        
+        Random rand = new Random();
+        int randomNum = rand.nextInt((6 - 4) + 1) + 4;
+        int k = rand.nextInt(100);
+        list.add(k);
+        System.out.println(k);
 
-        /* Constructing tree given in the above figure */
+        for (int i=0; i < randomNum - 1; i++) {
+            int q = rand.nextInt(100);
+            System.out.println(q);
+            for (int j = 0; j < i+1; j++) {
+                if (q != list.getElementAt(j)) { 
+                    if (j == i) {list.add(q);}                    
+                } else{}
+            }
+        }
+
+        for (int n=0 ;n < list.getLength(); n++) {
+            tree.root = tree.insert(tree.root, list.getElementAt(n));
+        }
+
+        list.print();
+
+
+        /* Constructing tree given in the above figure 
         tree.root = tree.insert(tree.root, 40);
         tree.root = tree.insert(tree.root, 20);
         tree.root = tree.insert(tree.root, 640);
@@ -129,16 +155,31 @@ public class AVLTree {
         tree.root = tree.insert(tree.root, 0);
         tree.root = tree.insert(tree.root, 65);
 
-        /* The constructed AVL Tree would be
+        The constructed AVL Tree would be
              30
             /  \
           20   40
          /  \     \
         10  25    50
         */
-        System.out.println("Preorder traversal" +
-                " of constructed tree is : ");
+        System.out.println("Preorder traversal" + " of constructed tree is : ");
         tree.preOrder(tree.root);
+        return tree;
+    }
+    
+    public static void main(String[] args) {
+        AVLTree a = new AVLTree();
+        a.createAVL();
+        //System.out.println("raiz del arbol es: " + a.createAVL().getRoot().key);
+        //System.out.println("Factor de balance es:" + a.createAVL().getBalance(a.createAVL().getRoot()));
+    }
+
+    public SinglyLinkedList<Integer> getList() {
+        return list;
+    }
+
+    public NodeT getRoot() {
+        return root;
     }
 }
 
