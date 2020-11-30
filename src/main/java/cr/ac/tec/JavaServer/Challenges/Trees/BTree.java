@@ -39,6 +39,7 @@ public class BTree {
     }
 
     private Node root;
+    private int order;
 
     // Search key
     private Node Search(Node x, int key) {
@@ -182,6 +183,7 @@ public class BTree {
             tree.insert(list.getElementAt(w));
         }
         //tree.setLevel(tree.root, level);
+        setOrder(2 * tree.T);
         System.out.println("El orden del arbol es: " + 2 * tree.T);
         System.out.println("El nivel del arbol es: " + tree.getLevel());
         list.print();
@@ -213,26 +215,38 @@ public class BTree {
         b.insert(4);
         System.out.println(b.root.n);
 */
-        //b.setLevel(b.root, b.level);
+        b.setLevel(b.root, b.level);
+        b.setLevel(b.level);
         
         //b.Show();
         System.out.println("");
         System.out.println("El nivel del arbol es: " + b.level);
         System.out.println("Numero de elementos en raiz = " +b.root.n);
-        System.out.println(b.root.child[0].child[0]==null);
+        System.out.println(b.root.child[0].n);
         System.out.println("Hijo 0: " + b.root.key[1]);
     }
 
     public int getOrder() {
-        return 2*T;
+        return this.order;
+    }
+    public void setOrder(int order) {
+        this.order = order;
     }
 
     public void setLevel(Node x, int leveln) {
         if (x.leaf) this.level = leveln;
         else { setLevel(x.child[0], leveln + 1); }
     }
+    public void setLevel(int level){
+        this.level = level;
+    }
     
     public int getLevel() {
         return level;
     }
+
+    public SinglyLinkedList<Integer> getList() {
+        return list;
+    }
+
 }

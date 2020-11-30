@@ -1,20 +1,28 @@
 package cr.ac.tec.JavaServer.Challenges;
 
+import cr.ac.tec.JavaServer.Challenges.Trees.AVLTree;
+import cr.ac.tec.JavaServer.Challenges.Trees.BTree;
 import cr.ac.tec.JavaServer.Challenges.Trees.BinarySearchTree;
+import cr.ac.tec.JavaServer.Challenges.Trees.NodeL;
 import cr.ac.tec.JavaServer.Challenges.Trees.SinglyLinkedList;
+import cr.ac.tec.JavaServer.Challenges.Trees.SplayTree;
 import cr.ac.tec.JavaServer.TokensPrototype.*;
 
 import java.util.Random;
+
 /**
- * Esta clase se encarga de generar el reto que se escoja de la lista de árboles, es decir, crea un árbol con 
- * cierta cantidad de tokens clasificados en Main Tokens, que pertenecen a los tokens del árbol
- * y Filler Tokens
+ * Esta clase se encarga de generar el reto que se escoja de la lista de
+ * árboles, es decir, crea un árbol con cierta cantidad de tokens clasificados
+ * en Main Tokens, que pertenecen a los tokens del árbol y Filler Tokens
+ * 
+ * @author Juan Peña
  * 
  */
 public class ChallengeGenerator {
     private String[] challengeList = { "BST", "AVL", "SPLAY", "BTREE" };
     private SinglyLinkedList<String> challengeList2 = new SinglyLinkedList<>();
     private String challenge;
+    private String challengeShape;
     private Diamond bstToken = new Diamond();
     private SinglyLinkedList<Token> bstTokensList = new SinglyLinkedList<>();
     private Circle avlToken = new Circle();
@@ -25,44 +33,69 @@ public class ChallengeGenerator {
     private SinglyLinkedList<Token> splayTokensList = new SinglyLinkedList<>();
     private BinarySearchTree myBST = new BinarySearchTree();
 
-    //Metodo para generar los tokens
+    // Metodo para generar los tokens
     /**
-     * Este método crea el árbol respectivo, y crea los tokens para ese árbol
-     * luego crea 5 tokens de relleno por cada tipo de token restante
+     * Este método crea el árbol respectivo, y crea los tokens para ese árbol luego
+     * crea 5 tokens de relleno por cada tipo de token restante
      */
     public void challengeSelector() {
 
-        this.challengeList2.add("BST"); 
-        this.challengeList2.add("AVL"); 
+        this.challengeList2.add("BST");
+        this.challengeList2.add("AVL");
         this.challengeList2.add("SPLAY");
         this.challengeList2.add("BTREE");
         Random r = new Random();
         int randomTree = r.nextInt(4);
-    
-        this.challenge = challengeList[0];
+
+        this.challenge = challengeList[randomTree];
         if (this.challenge == "BST") {
-            
+            setChallengeShape("Diamond");
             myBST = myBST.createBST();
             int listLength = myBST.getKeysList().getLength();
             mainTokens(this.challenge, listLength, myBST.getKeysList());
             fillingTokens(5, "BST");
-            System.out.println("Tree depth: "+ myBST.getMaxDepth());
-            System.out.println(this.bstTokensList.getElementAt(0).getValue());
-            System.out.println(this.avlTokensList.getElementAt(0).getShape());
-            System.out.println(this.bTokensList.getElementAt(0).getShape());
-            System.out.println(this.splayTokensList.getElementAt(0).getShape());
-        }
-        // else if(this.challenge =="AVL"){
-        //     AVLTree myAVL = new 
+            System.out.println("Tree depth: " + myBST.getMaxDepth());
+            System.out.println(this.challenge);
 
-        // }
-        
+        } else if (this.challenge == "AVL") {
+            setChallengeShape("Circle");
+            AVLTree myAVL = new AVLTree();
+            myAVL.createAVL();
+            System.out.println("Cantidad de elementos: " + myAVL.getList().getLength());
+            int listLength = myAVL.getList().getLength();
+            mainTokens(this.challenge, listLength, myAVL.getList());
+            fillingTokens(5, this.challenge);
+            System.out.println(this.challenge);
+
+        } else if (this.challenge == "BTREE") {
+            setChallengeShape("Rectangle");
+            BTree myBTree = new BTree();
+            myBTree.createB();
+            int listLength = myBTree.getList().getLength();
+            mainTokens(this.challenge, listLength, myBTree.getList());
+            fillingTokens(5, this.challenge);
+            System.out.println("Orden: " + myBTree.getOrder());
+            System.out.println("Niveles: " + myBTree.getLevel());
+            System.out.println(this.challenge);
+
+        } else if (this.challenge == "SPLAY") {
+            setChallengeShape("Triangle");
+            SplayTree mySplay = new SplayTree();
+            mySplay.createSplay();
+            int listLength = mySplay.getList().getLength();
+            mainTokens(this.challenge, listLength, mySplay.getList());
+            fillingTokens(5, this.challenge);
+            System.out.println("Cantidad de elementos: " + mySplay.getList().getLength());
+            System.out.println(this.challenge);
+
+        }
 
     }
 
     /**
-     * Metodo para generar lista de tokens principales pertenecientes al reto, 
-     * @param tokenType String que indica cuál es el tipo de token a generar
+     * Metodo para generar lista de tokens principales pertenecientes al reto,
+     * 
+     * @param tokenType  String que indica cuál es el tipo de token a generar
      * @param length     Longitud de la lista de keys en el árbol
      * @param valuesList Lista de keys en el árbol
      */
@@ -110,85 +143,89 @@ public class ChallengeGenerator {
             }
         }
     }
+
     /**
-     * Este método se encarga se agregar los keys a la lista de tokens que son de relleno
-     * @param elements cantidad de tokens que se van a generar
-     * @param currentChallenge es el String del reto actual que se usa para indicar que no se crearan tokens de ese tipo
+     * Este método se encarga se agregar los keys a la lista de tokens que son de
+     * relleno
+     * 
+     * @param elements         cantidad de tokens que se van a generar
+     * @param currentChallenge es el String del reto actual que se usa para indicar
+     *                         que no se crearan tokens de ese tipo
      */
     public void fillingTokens(int elements, String currentChallenge) {
         CloneFactory tokenMaker = new CloneFactory();
         int copies = elements;
         SinglyLinkedList<String> myFillers = searchChallenge(currentChallenge, 0);
         int cont = 0;
-        while(cont < 3){
+        while (cont < 3) {
 
-            if (myFillers.getElementAt(cont).equals("BST")){
-                while (copies > 0){
+            if (myFillers.getElementAt(cont).equals("BST")) {
+                while (copies > 0) {
                     Diamond clonedDiamond = (Diamond) tokenMaker.getToken(bstToken);
                     clonedDiamond.setValue(getRandomNumber(10, 100));
                     this.bstTokensList.add(clonedDiamond);
-                    copies --;
+                    copies--;
                 }
                 copies = elements;
 
-            }
-            else if(myFillers.getElementAt(cont).equals("AVL")){
-                while (copies > 0){
+            } else if (myFillers.getElementAt(cont).equals("AVL")) {
+                while (copies > 0) {
                     Circle clonedCircle = (Circle) tokenMaker.getToken(avlToken);
                     clonedCircle.setValue(getRandomNumber(10, 100));
                     this.avlTokensList.add(clonedCircle);
-                    copies --;
+                    copies--;
                 }
                 copies = elements;
 
-            }
-            else if(myFillers.getElementAt(cont).equals("SPLAY")){
-                while (copies > 0){
+            } else if (myFillers.getElementAt(cont).equals("BTREE")) {
+                while (copies > 0) {
                     Rectangle clonedRectangle = (Rectangle) tokenMaker.getToken(bToken);
                     clonedRectangle.setValue(getRandomNumber(10, 100));
                     this.bTokensList.add(clonedRectangle);
-                    copies --;
+                    copies--;
                 }
                 copies = elements;
-                
-            }
-            else if(myFillers.getElementAt(cont).equals("BTREE")){
-                while (copies > 0){
+
+            } else if (myFillers.getElementAt(cont).equals("SPLAY")) {
+                while (copies > 0) {
                     Triangle clonedTriangle = (Triangle) tokenMaker.getToken(splayToken);
                     clonedTriangle.setValue(getRandomNumber(10, 100));
                     this.splayTokensList.add(clonedTriangle);
-                    copies --;
+                    copies--;
                 }
-                copies = elements;   
+                copies = elements;
             }
-            cont ++; 
+            cont++;
         }
     }
 
     /**
-     * Método para sacar el reto actual de la lista que se utilizará para recorrer los tipos de tokens a crear de relleno
+     * Método para sacar el reto actual de la lista que se utilizará para recorrer
+     * los tipos de tokens a crear de relleno
+     * 
      * @param currentChallenge reto actual
-     * @param index indice de la lista
+     * @param index            indice de la lista
      * @return challenges lista enlazada de retos para generar tokens de relleno
      */
     public SinglyLinkedList<String> searchChallenge(String currentChallenge, int index) {
 
         SinglyLinkedList<String> challenges = new SinglyLinkedList<>();
-        SinglyLinkedList<String> ref = this.challengeList2;
+        int i = 0;
 
-        while (index < this.challengeList2.getLength()){
-            if (this.challengeList2.getElementAt(index).equals(currentChallenge)) {
-                challenges = ref.deleteNode(this.challengeList2.getElementAt(index));
-                ref.print();
-                System.out.println("Match found");
-                return challenges;
+        while (i < 4) {
+            if (this.challengeList[i] != currentChallenge){
+                challenges.add(this.challengeList[i]);
+                i ++;
             }
-            index ++;
+            else i ++;
         }
+
         return challenges;
     }
+
     /**
      * Método para obtener un número entero random
+     * 
      * @param min mínimo del rango
      * @param max maximo del rango
      * @return numero entero generado
@@ -198,12 +235,18 @@ public class ChallengeGenerator {
         return random.nextInt(max - min) + min;
     }
     // Método para parsear esos tokens a JSON
-    
+
     // Método para pasear JSON a String
-    
+
     public static void main(String[] args) {
         ChallengeGenerator myChGenerator = new ChallengeGenerator();
         myChGenerator.challengeSelector();
+        
+        System.out.println("tokens en lista: " + myChGenerator.getAvlTokensList().getLength());
+        System.out.println("tokens en lista: " + myChGenerator.getBstTokensList().getLength());
+        System.out.println("tokens en lista: " + myChGenerator.getbTokensList().getLength());
+        System.out.println("tokens en lista: " + myChGenerator.getSplayTokensList().getLength());
+
     }
 
     public SinglyLinkedList<Token> getBstTokensList() {
@@ -246,6 +289,12 @@ public class ChallengeGenerator {
         return myBST;
     }
 
+    public String getChallengeShape() {
+        return challengeShape;
+    }
 
+    public void setChallengeShape(String challengeShape) {
+        this.challengeShape = challengeShape;
+    }
 
 }
