@@ -1,7 +1,7 @@
 
+from settings import *
 import pygame as pg
 import sys
-from settings import *
 vec = pg.math.Vector2
 
 
@@ -11,6 +11,7 @@ class Player(pg.sprite.Sprite):
     def __init__(self,game):
         pg.sprite.Sprite.__init__(self)
         self.game = game
+        self.lives = 10
         self.image = pg.Surface((30,40))
         self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
@@ -19,18 +20,17 @@ class Player(pg.sprite.Sprite):
         self.vel = vec(0,0)
         self.acc = vec(0,0)
 
-
-    def jump():
-        #salta solamente si el personaje esta sobre una plataforma
+    def jump(self):
+        #salta unicamente si esta tocando una plataforma 
         self.rect.x += 1
-        hits = pg.sprite.spritecollide(self,self.game.platforms, False)
+        hits = pg.sprite.spritecollide(self,self.game.platforms,False)
         self.rect.x -= 1
         if hits:
-            self.vel.y = -20
+            self.vel.y = -PLAYER_JUMP
 
 
     def update(self):
-        self.acc = vec(0,PLAYER_GRAVITY)
+        self.acc = vec(0,0.5)
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT]:
             self.acc.x = -PLAYER_ACC
@@ -65,10 +65,3 @@ class Platform(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x 
         self.rect.y = y
-
-
-
-
-
-
-
