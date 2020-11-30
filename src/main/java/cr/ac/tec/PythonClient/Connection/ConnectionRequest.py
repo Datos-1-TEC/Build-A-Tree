@@ -2,7 +2,9 @@ import sys
 import socket as sk
 import json
 host = "127.0.0.1"
-port = 2018
+port = 6666
+bts = 4096
+format = "utf8"
 flag = True
 file = 'JsonResources/Player.json'
 data = {
@@ -27,27 +29,26 @@ while True:
     if count == 0:
         toServer = message
         print("Enviar:", toServer)
-        out = toServer.encode("UTF8")
-        print("Salida antes de enviar:", out.decode("utf8"))
+        out = toServer.encode(format)
+        print("Salida antes de enviar:", out.decode(format))
         sending = socketClient.send(out)
         print("Se han enviado: {} bytes al servidor.".format(sending))   
-        fromServer = socketClient.recv(512)
-        decoded = fromServer.decode("UTF8")
+        fromServer = socketClient.recv(bts)
+        decoded = fromServer.decode(format)
         print("Servidor retorna:", decoded)
         count += 1
-
 
     else:
         toServer = input("Texto para enviar: ")
         print("Enviar:", toServer)
-        out = toServer.encode("UTF8")
-        print("Salida antes de enviar:", out.decode("utf8"))
+        out = toServer.encode(format)
+        print("Salida antes de enviar:", out.decode(format))
         sending = socketClient.send(out)
         print("Se han enviado: {} bytes al servidor.".format(sending))   
         if toServer == "exit":
             break
-        fromServer = socketClient.recv(512)
-        decoded = fromServer.decode("UTF8")
+        fromServer = socketClient.recv(bts)
+        decoded = fromServer.decode(format)
         print("Servidor retorna:", decoded)
         
 socketClient.close()
