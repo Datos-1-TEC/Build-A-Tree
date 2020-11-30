@@ -1,90 +1,10 @@
 
-#from target.classes.cr.ac.tec.PythonClient.GameGui.sprites import Player
+from typing import Text
 import pygame as pg
 import random
-
-
-#Game options / settings 
-TITLE = "Build a Tree"
-WIDTH = 1200
-HEIGHT = 600
-FPS = 60
-
-#Propiedades del jugador 
-PLAYER_ACC = 0.5
-PLAYER_FRICTION = -0.12 
-
-#COLORS 
-WHITE = (255,255,255)
-BLACK = (0,0,0)
-RED = (255,0,0)
-GREEN = (0,255,0)
-BLUE = (0,0,255)
-YELLOW = (255,255,0)
-
-vec = pg.math.Vector2
-
-
-#Sprites para el jugador
-
-class Player(pg.sprite.Sprite):
-    def __init__(self,game):
-        pg.sprite.Sprite.__init__(self)
-        self.game = game
-        self.image = pg.Surface((30,40))
-        self.image.fill(YELLOW)
-        self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH / 2, HEIGHT / 2)
-        self.pos = vec(WIDTH / 2, HEIGHT / 2)
-        self.vel = vec(0,0)
-        self.acc = vec(0,0)
-
-    def jump(self):
-        # salta unicamente si el personaje esta sobre una plataforma
-        self.rect.x += 1
-        hits = pg.sprite.spritecollide(self,self.game.platforms,False)
-        self.rect.x -= 1
-        if hits:
-            self.vel.y = -20
-
-    def update(self):
-        self.acc = vec(0,0.5)
-        keys = pg.key.get_pressed()
-        if keys[pg.K_LEFT]:
-            self.acc.x = -PLAYER_ACC
-        if keys[pg.K_RIGHT]:
-            self.acc.x = PLAYER_ACC
-
-        # se aplica fricción al personaje 
-        self.acc.x += self.vel.x * PLAYER_FRICTION
-        #control del movimiento 
-        self.vel += self.acc
-        self.pos += self.vel + 0.5 * self.acc
-
-        #limites para el personaje 
-        if self.pos.x > WIDTH:
-            self.pos.x = 0
-        if self.pos.x < 0:
-            self.pos.x = WIDTH
-        
-        self.rect.midbottom = self.pos
-
-
-class Platform(pg.sprite.Sprite):
-    def __init__(self,x,y,w,h):
-        #parametros de la clase 
-        # x = posicion en x 
-        # y = posicion en y 
-        # w = ancho de la plataforma 
-        # h = altura de la plataforma
-        pg.sprite.Sprite.__init__(self)
-        self.image = pg.Surface((w,h))
-        self.image.fill(GREEN)
-        self.rect = self.image.get_rect()
-        self.rect.x = x 
-        self.rect.y = y
-
-
+import pygame
+from sprites import *
+from settings import *
 
 class Game:
     def __init__(self):
@@ -95,19 +15,19 @@ class Game:
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         self.running = True
+        self.font_name = pg.font.match_font(FONT_NAME)
 
     def new(self):
         # inicia un nuevo juego 
+        self.player_lives = 10
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.player = Player(self)
         self.all_sprites.add(self.player)
-        platform1 = Platform(350, 250, 400, 40)
-        platform2 = Platform(650,450, 200,20)
-        self.all_sprites.add(platform1)
-        self.all_sprites.add(platform2)
-        self.platforms.add(platform1)
-        self.platforms.add(platform2)
+        for plat in PLATFORM_LIST:
+            p = Platform(*plat)
+            self.all_sprites.add(p)
+            self.platforms.add(p)
         self.run()
 
     def run(self):
@@ -128,7 +48,21 @@ class Game:
             if hits:
                 self.player.pos.y = hits[0].rect.top
                 self.player.vel.y = 0
-        
+
+        if self.player.rect.top >= 590:
+            self.player.pos.y += abs(self.player.vel.y)
+            self.player_lives -= 1
+            print(self.player_lives)
+
+        #si el jugador se cae de una plataforma 
+        # añadir las vidas del jugador y descontar una vida cuando se cae de una plataforma
+        if self.player.rect.bottom > HEIGHT:
+            for sprite in self.all_sprites:
+                sprite.rect.y -= max(self.player.vel.y,10)
+                if sprite.rect.bottom < 0:
+                    sprite.kill()
+            self.playing = False
+
 
     def events(self):
         # Game Loop - eventos de pygame 
@@ -148,16 +82,57 @@ class Game:
         # Game Loop - dibuja en la ventana 
         self.screen.fill(BLACK)
         self.all_sprites.draw(self.screen)
+        #self.draw_text(str(self.player_lives),22,WHITE,WIDTH/2,15)
         # después de dibujar o mostrar elementos en pantalla, actualiza la ventana
         pg.display.flip()
 
     def show_start_screen(self):
         # ventana de inicio 
+        self.screen.fill(LIGHTBLUE)
+        self.draw_text("Game Over",48, WHITE, WIDTH/2, HEIGHT/4)
+
         pass
 
     def show_go_screen(self):
         # game over 
+        if not self.running:
+            return 
+        self.screen.fill(LIGHTBLUE)
+        self.draw_text("GAME OVER",48, WHITE, WIDTH/2, HEIGHT/4)
+        self.draw_text("Score: ", 22,WHITE,WIDTH/2,HEIGHT/2)
+        self.draw_text("Press a key to exit", 22,WHITE,WIDTH/2,HEIGHT*3/4)
+        pg.display.flip()
+        self.wait_for_key()
+
+
+        self.wait_for_key()
         pass
+
+    def wait_for_key(self):
+        waiting = True
+        while waiting:
+            self.clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    waiting = False
+                    self.running = False 
+                if event.type == pg.KEYUP:
+                    waiting = False
+
+
+
+
+
+
+    def draw_text(self,text,size,color,x,y):
+        font = pg.font.Font(self.font_name,size)
+        text_surface = font.render(text,True,color)
+        text_rect = text_surface.get_rect()
+        text_rect.midtop = (x,y)
+        self.screen.blit(text_surface,text_rect)
+
+
+
 
 g = Game()
 g.show_start_screen()
