@@ -27,6 +27,8 @@ displayFlag = True
 isJump = False
 x = 250
 y = 250
+a = 30
+b = 15
 vel = 10
 jumpCount = 10
 walkCount = 0
@@ -109,7 +111,7 @@ class projectile(object):
 
 
 
-megaman = player(300, 410, 65, 60, "megaman")
+megaman = player(350, 430, 65, 60, "megaman")
 samus = player(300, 430, 65, 60, "samus")
 bullets = []
 shootLoop = 0
@@ -127,7 +129,7 @@ def redrawGameWindow():
 
 pygame.display.set_caption("Build a Tree")
 def main():
-    global displayFlag, isJump, x, y, vel, jumpCount, clock, walkCount,left, right, megaman, bullets, samus, shootLoop, player
+    global displayFlag, isJump, x, y, vel, jumpCount, clock, walkCount,left, right, megaman, bullets, samus, shootLoop, a, b
         
     
     #window.blit(player, (100, 100))
@@ -171,7 +173,7 @@ def main():
             else:
                 facing = 1
             if len(bullets) < 10:
-                bullets.append(projectile(round(megaman.x + megaman.width //2), round(megaman.y + megaman.height//2), 6, (0,0,0), facing))
+                bullets.append(projectile(round(megaman.x + megaman.width//2), round(megaman.y + megaman.height//2), 6, (0,0,0), facing))
 
             shootLoop = 1
 
