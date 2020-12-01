@@ -52,46 +52,55 @@ class player(object):
         self.standing = True
         self.name = name
         self.hitbox = (self.x + 17, self.y + 11, 32, 52)
+        self.lives = 3
+        self.visible = True
 
 
     def draw(self, window):
-        if self.walkCount + 1 >= 12:
-            self.walkCount = 0
+        if self.visible:
+            if self.walkCount + 1 >= 12:
+                self.walkCount = 0
 
-        if not(self.standing):
-            if self.left:
-                if self.name == "megaman":
-                    window.blit(walkLeft[self.walkCount//3], (self.x, self.y))
-                    self.walkCount += 1
-                else:
-                    window.blit(walkLeft2[self.walkCount//3], (self.x, self.y))
-                    self.walkCount += 1                                    
-            elif self.right:
-                if self.name == "megaman":
-                    window.blit(walkRight[self.walkCount//3], (self.x, self.y))
-                    self.walkCount += 1
-                else:
-                    window.blit(walkRight2[self.walkCount//3], (self.x, self.y))
-                    self.walkCount += 1
-                
-        else:
-            if self.right:
-                if self.name == "megaman":
-                    window.blit(walkRight[0], (self.x, self.y))
-                else:
-                    window.blit(walkRight2[0], (self.x, self.y))               
+            if not(self.standing):
+                if self.left:
+                    if self.name == "megaman":
+                        window.blit(walkLeft[self.walkCount//3], (self.x, self.y))
+                        self.walkCount += 1
+                    else:
+                        window.blit(walkLeft2[self.walkCount//3], (self.x, self.y))
+                        self.walkCount += 1                                    
+                elif self.right:
+                    if self.name == "megaman":
+                        window.blit(walkRight[self.walkCount//3], (self.x, self.y))
+                        self.walkCount += 1
+                    else:
+                        window.blit(walkRight2[self.walkCount//3], (self.x, self.y))
+                        self.walkCount += 1
+                    
             else:
-                if self.name == "megaman":
-                    window.blit(walkLeft[0], (self.x, self.y))
+                if self.right:
+                    if self.name == "megaman":
+                        window.blit(walkRight[0], (self.x, self.y))
+                    else:
+                        window.blit(walkRight2[0], (self.x, self.y))               
                 else:
-                    window.blit(walkLeft2[0], (self.x, self.y))
-                
-        self.hitbox = (self.x + 17, self.y + 11, 32, 52)
-        pygame.draw.rect(window, (255, 0, 0), (self.hitbox), 2)
+                    if self.name == "megaman":
+                        window.blit(walkLeft[0], (self.x, self.y))
+                    else:
+                        window.blit(walkLeft2[0], (self.x, self.y))
+
+            pygame.draw.rect(window, (255, 0, 0), (self.hitbox[0], self.hitbox[1] - 20, 30, 10))
+            pygame.draw.rect(window, (0, 128, 0), (self.hitbox[0], self.hitbox[1] - 20, 30 - (10 * (3 - self.lives)), 10))      
+            self.hitbox = (self.x + 17, self.y + 11, 32, 52)
+            pygame.draw.rect(window, (255, 0, 0), (self.hitbox), 2)
 
     def hit(self):
+        if self.lives > 1:
+            self.lives -= 1
+        else:
+            self.visible = False
         print('Hit')
-        pass
+        
 
 
 
@@ -130,7 +139,7 @@ def redrawGameWindow():
 
 pygame.display.set_caption("Build a Tree")
 def main():
-    global displayFlag, isJump, x, y, vel, jumpCount, clock, walkCount,left, right, megaman, bullets, samus, shootLoop, a, b
+    global displayFlag, isJump, x, y, vel, jumpCount, clock, walkCount,left, right, megaman, bullets, samus, shootLoop, a, b, projectile
         
     
     #window.blit(player, (100, 100))
