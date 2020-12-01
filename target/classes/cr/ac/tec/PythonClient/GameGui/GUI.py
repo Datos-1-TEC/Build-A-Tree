@@ -96,13 +96,14 @@ class player(object):
 
 
 class projectile(object):
-    def __init__(self, x, y, radius, color, facing):
+    def __init__(self, x, y, radius, color, facing, owner):
         self.x = x 
         self.y = y
         self.radius = radius
         self.color = color
         self.facing = facing #se encarga de direccionar la bala dependiendo de a donde se estaba moviendo
         self.vel = 30 * facing
+        self.owner = owner
 
     def draw(self, window):
         pygame.draw.circle(window, self.color, (self.x, self.y), self.radius)
@@ -149,17 +150,18 @@ def main():
                 displayFlag = False
 
         for bullet in bullets:
-            if bullet.y - bullet.radius < megaman.hitbox[1] + megaman.hitbox[3] and bullet.y + bullet.radius > megaman.hitbox[1]:
-                if bullet.x + bullet.radius > megaman.hitbox[0] and bullet.x - bullet.radius < megaman.hitbox[0] + megaman.hitbox[2]:
-                    megaman.hit()
-                    bullets.pop(bullets.index(bullet))
-            """
-            if bullet.y - bullet.radius < samus.hitbox[1] + samus.hitbox[3] and bullet.y + bullet.radius > samus.hitbox[1]:
-                if bullet.x + bullet.radius > samus.hitbox[0] and bullet.x - bullet.radius < samus.hitbox[0] + samus.hitbox[2]:
-                    samus.hit()
-                    bullets.pop(bullets.index(bullet))
-            """
-
+            if bullet.owner == "samus":
+                if bullet.y - bullet.radius < megaman.hitbox[1] + megaman.hitbox[3] and bullet.y + bullet.radius > megaman.hitbox[1]:
+                    if bullet.x + bullet.radius > megaman.hitbox[0] and bullet.x - bullet.radius < megaman.hitbox[0] + megaman.hitbox[2]:
+                        megaman.hit()
+                        bullets.pop(bullets.index(bullet))
+            if bullet.owner == "megaman":
+                if bullet.y - bullet.radius < samus.hitbox[1] + samus.hitbox[3] and bullet.y + bullet.radius > samus.hitbox[1]:
+                    if bullet.x + bullet.radius > samus.hitbox[0] and bullet.x - bullet.radius < samus.hitbox[0] + samus.hitbox[2]:
+                        samus.hit()
+                        bullets.pop(bullets.index(bullet))
+            
+            
             if bullet.x < 950 and bullet.x > 0:
                 bullet.x += bullet.vel 
             else:
@@ -170,20 +172,23 @@ def main():
         if keys[pygame.K_DOWN] and shootLoop == 0:
             if megaman.left:
                 facing = -1
-            else:
+
+            elif megaman.right:
                 facing = 1
+
             if len(bullets) < 10:
-                bullets.append(projectile(round(megaman.x + megaman.width//2), round(megaman.y + megaman.height//2), 6, (0,0,0), facing))
+                bullets.append(projectile(round(megaman.x + megaman.width//2), round(megaman.y + megaman.height//2), 6, (200,0,0), facing, "megaman"))
 
             shootLoop = 1
 
         if keys[pygame.K_s] and shootLoop == 0:
             if samus.left:
                 facing = -1
-            else:
+            elif samus.right:
                 facing = 1
+
             if len(bullets) < 10:
-                bullets.append(projectile(round(samus.x + samus.width //2), round(samus.y + samus.height//2), 6, (0,0,0), facing))
+                bullets.append(projectile(round(samus.x + samus.width //2), round(samus.y + samus.height//2), 6, (0,0,128), facing, "samus"))
 
             shootLoop = 1
 
