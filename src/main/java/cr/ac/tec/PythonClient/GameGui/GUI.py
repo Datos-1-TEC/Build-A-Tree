@@ -179,94 +179,94 @@ def main():
         keys = pygame.key.get_pressed()
 
         #******megaman controles********
+        if megaman.visible == True:
+            if keys[pygame.K_DOWN] and shootLoop == 0:
+                if megaman.left:
+                    facing = -1
 
-        if keys[pygame.K_DOWN] and shootLoop == 0:
-            if megaman.left:
-                facing = -1
+                elif megaman.right:
+                    facing = 1
 
-            elif megaman.right:
-                facing = 1
+                if len(bullets) < 10:
+                    bullets.append(projectile(round(megaman.x + megaman.width//2), round(megaman.y + megaman.height//2), 6, (200,0,0), facing, "megaman"))
 
-            if len(bullets) < 10:
-                bullets.append(projectile(round(megaman.x + megaman.width//2), round(megaman.y + megaman.height//2), 6, (200,0,0), facing, "megaman"))
+                shootLoop = 1
 
-            shootLoop = 1
+            if keys[pygame.K_LEFT] and megaman.x > megaman.vel:
+                megaman.x -= megaman.vel
+                megaman.left = True
+                megaman.right = False
+                megaman.standing = False
+            
+            elif keys[pygame.K_RIGHT] and megaman.x < 900 - megaman.width - megaman.vel:
+                megaman.x += megaman.vel
+                megaman.right = True
+                megaman.left = False
+                megaman.standing = False
 
-        if keys[pygame.K_LEFT] and megaman.x > megaman.vel:
-            megaman.x -= megaman.vel
-            megaman.left = True
-            megaman.right = False
-            megaman.standing = False
-        
-        elif keys[pygame.K_RIGHT] and megaman.x < 900 - megaman.width - megaman.vel:
-            megaman.x += megaman.vel
-            megaman.right = True
-            megaman.left = False
-            megaman.standing = False
-
-        else:
-            megaman.standing = True
-            megaman.walkCount = 0
-
-        if not(megaman.isJump) and keys[pygame.K_UP]:
-            megaman.isJump = True
-            megaman.right = False
-            megaman.left = False
-            megaman.walkCount = 0
-        elif megaman.isJump:
-            if megaman.jumpCount >= -10:
-                negative = 1
-                if megaman.jumpCount < 0:
-                    negative = -1
-                megaman.y -= (megaman.jumpCount ** 2) * 0.5 * negative
-                megaman.jumpCount -= 1
             else:
-                megaman.isJump = False
-                megaman.jumpCount = 10
+                megaman.standing = True
+                megaman.walkCount = 0
+
+            if not(megaman.isJump) and keys[pygame.K_UP]:
+                megaman.isJump = True
+                megaman.right = False
+                megaman.left = False
+                megaman.walkCount = 0
+            elif megaman.isJump:
+                if megaman.jumpCount >= -10:
+                    negative = 1
+                    if megaman.jumpCount < 0:
+                        negative = -1
+                    megaman.y -= (megaman.jumpCount ** 2) * 0.5 * negative
+                    megaman.jumpCount -= 1
+                else:
+                    megaman.isJump = False
+                    megaman.jumpCount = 10
 
         #******Samus******
+        if samus.visible == True:
+            if keys[pygame.K_s] and shootLoop == 0:
+                if samus.left:
+                    facing = -1
+                elif samus.right:
+                    facing = 1
 
-        if keys[pygame.K_s] and shootLoop == 0:
-            if samus.left:
-                facing = -1
-            elif samus.right:
-                facing = 1
+                if len(bullets) < 10:
+                    bullets.append(projectile(round(samus.x + samus.width //2), round(samus.y + samus.height//2), 6, (0,0,128), facing, "samus"))
 
-            if len(bullets) < 10:
-                bullets.append(projectile(round(samus.x + samus.width //2), round(samus.y + samus.height//2), 6, (0,0,128), facing, "samus"))
+                shootLoop = 1
+            
+            if keys[pygame.K_a] and samus.x > samus.vel:
+                samus.x -= samus.vel
+                samus.left = True
+                samus.right = False
+                samus.standing = False
 
-            shootLoop = 1
-        
-        if keys[pygame.K_a] and samus.x > samus.vel:
-            samus.x -= samus.vel
-            samus.left = True
-            samus.right = False
-            samus.standing = False
-
-        elif keys[pygame.K_d] and samus.x < 900 - samus.width - samus.vel:
-            samus.x += samus.vel
-            samus.right = True
-            samus.left = False
-            samus.standing = False
-        else:
-            samus.standing = True
-            samus.walkCount = 0
-
-        if not(samus.isJump) and keys[pygame.K_w]:
-            samus.isJump = True
-            samus.right = False
-            samus.left = False
-            samus.walkCount = 0
-        elif samus.isJump:
-            if samus.jumpCount >= -10:
-                negative = 1
-                if samus.jumpCount < 0:
-                    negative = -1
-                samus.y -= (samus.jumpCount ** 2) * 0.5 * negative
-                samus.jumpCount -= 1
+            elif keys[pygame.K_d] and samus.x < 900 - samus.width - samus.vel:
+                samus.x += samus.vel
+                samus.right = True
+                samus.left = False
+                samus.standing = False
             else:
-                samus.isJump = False
-                samus.jumpCount = 10 
+                samus.standing = True
+                samus.walkCount = 0
+
+            if not(samus.isJump) and keys[pygame.K_w]:
+                samus.isJump = True
+                samus.right = False
+                samus.left = False
+                samus.walkCount = 0
+            elif samus.isJump:
+                if samus.jumpCount >= -10:
+                    negative = 1
+                    if samus.jumpCount < 0:
+                        negative = -1
+                    samus.y -= (samus.jumpCount ** 2) * 0.5 * negative
+                    samus.jumpCount -= 1
+                else:
+                    samus.isJump = False
+                    samus.jumpCount = 10 
 
         redrawGameWindow()
 
