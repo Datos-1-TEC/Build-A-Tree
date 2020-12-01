@@ -89,8 +89,8 @@ class player(object):
                     else:
                         window.blit(walkLeft2[0], (self.x, self.y))
 
-            pygame.draw.rect(window, (255, 0, 0), (self.hitbox[0], self.hitbox[1] - 20, 30, 10))
-            pygame.draw.rect(window, (0, 128, 0), (self.hitbox[0], self.hitbox[1] - 20, 30 - (10 * (3 - self.lives)), 10))      
+            pygame.draw.rect(window, (255, 0, 0), (self.hitbox[0], self.hitbox[1] - 20, 30, 10)) #(coordenada x, coordenada y, largo de barra, ancho de barra)
+            pygame.draw.rect(window, (0, 128, 0), (self.hitbox[0], self.hitbox[1] - 20, 30 - (10 * (3 - self.lives)), 10)) #(coordenada x, coordenada y, largo de barra, ancho de barra)     
             self.hitbox = (self.x + 17, self.y + 11, 32, 52)
             pygame.draw.rect(window, (255, 0, 0), (self.hitbox), 2)
 
@@ -178,6 +178,8 @@ def main():
 
         keys = pygame.key.get_pressed()
 
+        #******megaman controles********
+
         if keys[pygame.K_DOWN] and shootLoop == 0:
             if megaman.left:
                 facing = -1
@@ -187,17 +189,6 @@ def main():
 
             if len(bullets) < 10:
                 bullets.append(projectile(round(megaman.x + megaman.width//2), round(megaman.y + megaman.height//2), 6, (200,0,0), facing, "megaman"))
-
-            shootLoop = 1
-
-        if keys[pygame.K_s] and shootLoop == 0:
-            if samus.left:
-                facing = -1
-            elif samus.right:
-                facing = 1
-
-            if len(bullets) < 10:
-                bullets.append(projectile(round(samus.x + samus.width //2), round(samus.y + samus.height//2), 6, (0,0,128), facing, "samus"))
 
             shootLoop = 1
 
@@ -217,21 +208,6 @@ def main():
             megaman.standing = True
             megaman.walkCount = 0
 
-        if keys[pygame.K_a] and samus.x > samus.vel:
-            samus.x -= samus.vel
-            samus.left = True
-            samus.right = False
-            samus.standing = False
-
-        elif keys[pygame.K_d] and samus.x < 900 - samus.width - samus.vel:
-            samus.x += samus.vel
-            samus.right = True
-            samus.left = False
-            samus.standing = False
-        else:
-            samus.standing = True
-            samus.walkCount = 0
-
         if not(megaman.isJump) and keys[pygame.K_UP]:
             megaman.isJump = True
             megaman.right = False
@@ -247,6 +223,34 @@ def main():
             else:
                 megaman.isJump = False
                 megaman.jumpCount = 10
+
+        #******Samus******
+
+        if keys[pygame.K_s] and shootLoop == 0:
+            if samus.left:
+                facing = -1
+            elif samus.right:
+                facing = 1
+
+            if len(bullets) < 10:
+                bullets.append(projectile(round(samus.x + samus.width //2), round(samus.y + samus.height//2), 6, (0,0,128), facing, "samus"))
+
+            shootLoop = 1
+        
+        if keys[pygame.K_a] and samus.x > samus.vel:
+            samus.x -= samus.vel
+            samus.left = True
+            samus.right = False
+            samus.standing = False
+
+        elif keys[pygame.K_d] and samus.x < 900 - samus.width - samus.vel:
+            samus.x += samus.vel
+            samus.right = True
+            samus.left = False
+            samus.standing = False
+        else:
+            samus.standing = True
+            samus.walkCount = 0
 
         if not(samus.isJump) and keys[pygame.K_w]:
             samus.isJump = True
