@@ -63,7 +63,11 @@ class client:
         if self.flag == False:
             self.request.close()
             print("Terminado")
-def main():
+
+c1 = client(port, host)
+c1.hostListener(message)
+
+""" def main():
 
     c1 = client(port, host)
     c1.hostListener(message)
@@ -71,4 +75,4 @@ def main():
 if __name__ == "__main__":
     main()
 print("Client closed....")
-    
+  """   

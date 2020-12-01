@@ -7,6 +7,7 @@ public class BinarySearchTree {
     private int maxDepth = 0;
     private SinglyLinkedList<Integer> keysList = new SinglyLinkedList<>();
     private String shape = "Diamond";
+    private int points = 300;
  
 
     public boolean isEmpty() {
@@ -137,5 +138,8 @@ public class BinarySearchTree {
         return shape;
     }
 
+    public int getPoints() {
+        return points;
+    }
 
 }

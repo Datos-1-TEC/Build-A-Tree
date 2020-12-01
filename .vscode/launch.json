@@ -5,13 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "CodeLens (Launch) - gameServer",
+            "request": "launch",
+            "mainClass": "cr.ac.tec.JavaServer.gameServer",
+            "projectName": "Build-A-Tree"
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
             "env": {
-                "PYTHONPATH": "${workspaceFolder}",
+                "PYTHONPATH": "${workspaceFolder}"
             },
             "cwd": "${workspaceFolder}"
         }

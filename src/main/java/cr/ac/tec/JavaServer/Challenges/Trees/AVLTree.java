@@ -5,6 +5,7 @@ import java.util.Random;
 public class AVLTree {
     private NodeT root;
     private SinglyLinkedList<Integer> list = new SinglyLinkedList<>();
+    private int points = 500;
 
     // A utility function to get the height of the tree
     int height(NodeT N) {
@@ -180,6 +181,10 @@ public class AVLTree {
 
     public NodeT getRoot() {
         return root;
+    }
+
+    public int getPoints() {
+        return points;
     }
 }
 

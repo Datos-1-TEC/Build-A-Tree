@@ -19,8 +19,10 @@ class Node {
 }
 
 public class SplayTree {
+
     private Node root;
     private SinglyLinkedList<Integer> list = new SinglyLinkedList<>();
+    private int points = 700;
 
 
     public SplayTree() {
@@ -362,6 +364,10 @@ public class SplayTree {
 
     public SinglyLinkedList<Integer> getList() {
         return list;
+    }
+
+    public int getPoints() {
+        return points;
     }
 
 }
