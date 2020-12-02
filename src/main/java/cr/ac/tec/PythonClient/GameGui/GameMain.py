@@ -116,13 +116,13 @@ class Game:
                 self.running = False
             
             if event.type == pg.KEYDOWN:
-                if event.key == pg.K_SPACE:
+                if event.key == pg.K_UP:
                     self.player.jump()
                 elif event.key == pg.K_w:
                     self.player2.jump()
                 
             if event.type == pg.KEYUP:
-                if event.key == pg.K_SPACE:
+                if event.key == pg.K_UP:
                     self.player.jump_cut()
                 elif event.key == pg.K_w:
                     self.player2.jump_cut()
