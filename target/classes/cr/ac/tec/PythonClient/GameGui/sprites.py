@@ -21,10 +21,9 @@ class Spritesheet:
         image.blit(self.loaded_image,(0,0))
         return image
         
-
+        
 
 #Sprites para el jugador
-
 class Player(pg.sprite.Sprite):
     def __init__(self,game,playerID):
         pg.sprite.Sprite.__init__(self)
@@ -209,10 +208,13 @@ class Player(pg.sprite.Sprite):
                     self.samus_current_frame = (self.samus_current_frame + 1) % len(self.samus_standing_frame)
                     self.image = self.samus_standing_frame[self.samus_current_frame]
 
+class Projectile(pg.sprite.Sprite):
+    def __init__(self,x, y, radius, color):
+        self.x = x 
+        self.y = y 
+        self.radius = radius
+        self.color = color 
         
-
-
-
 class Platform(pg.sprite.Sprite):
     def __init__(self,game,x,y):
         #parametros de la clase 
@@ -228,3 +230,8 @@ class Platform(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x 
         self.rect.y = y
+
+
+
+    
+

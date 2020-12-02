@@ -21,6 +21,7 @@ class Spritesheet:
         image.blit(self.loaded_image,(0,0))
         return image
         
+        
 
 #Sprites para el jugador
 class Player(pg.sprite.Sprite):
