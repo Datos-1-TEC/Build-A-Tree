@@ -4,6 +4,7 @@ WIDTH = 1200
 HEIGHT = 600
 FPS = 60 
 FONT_NAME = 'arial'
+BACKGROUND = "resources/bg.jpg"
 
 #Propiedades del jugador 
 PLAYER_ACC = 0.5 
@@ -11,7 +12,7 @@ PLAYER_FRICTION = -0.12
 PLAYER_JUMP = 20
 
 #Plataformas iniciales 
-PLATFORM_LIST = [(350, 250, 400, 40),(650,450, 200,20),(200,550,150,20)]
+PLATFORM_LIST = [(350, 250),(650,450),(200,550)]
 
 
 #COLORS 

@@ -3,6 +3,7 @@ from typing import Text
 import pygame as pg
 import random
 import pygame
+from pygame.constants import K_w
 from sprites import *
 from settings import *
 
@@ -16,16 +17,23 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = True
         self.font_name = pg.font.match_font(FONT_NAME)
+        self.load_data()
+
+    def load_data(self):
+        self.spritesheet = Spritesheet("resources/megamanstand.png")
 
     def new(self):
         # inicia un nuevo juego 
         self.player_lives = 10
+        self.player2_lives = 10
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
-        self.player = Player(self)
+        self.player = Player(self,1)
+        self.player2 = Player(self,2)
+        self.all_sprites.add(self.player2)
         self.all_sprites.add(self.player)
         for plat in PLATFORM_LIST:
-            p = Platform(*plat)
+            p = Platform(self,*plat)
             self.all_sprites.add(p)
             self.platforms.add(p)
         self.run()
@@ -46,8 +54,15 @@ class Game:
         if self.player.vel.y > 0:
             hits = pg.sprite.spritecollide(self.player,self.platforms,False)
             if hits:
-                self.player.pos.y = hits[0].rect.top
-                self.player.vel.y = 0
+                lowest = hits[0]
+                for hit in hits:
+                    if hit.rect.bottom > lowest.rect.bottom:
+                        lowest = hit 
+                
+                if self.player.pos.y < lowest.rect.centery:
+                    self.player.pos.y = lowest.rect.top
+                    self.player.vel.y = 0
+                    self.player.jumping = False
 
         if self.player.rect.top >= 590:
             self.player.pos.y += abs(self.player.vel.y)
@@ -63,6 +78,33 @@ class Game:
                     sprite.kill()
             self.playing = False
 
+        if self.player2.vel.y > 0:
+            hits2 = pg.sprite.spritecollide(self.player2,self.platforms,False)
+            if hits2:
+                lowest2 = hits2[0]
+                for hit in hits2:
+                    if hit.rect.bottom > lowest2.rect.bottom:
+                        lowest2 = hit
+                
+                if self.player2.pos.y < lowest2.rect.centery:
+                    self.player2.pos.y = lowest2.rect.top
+                    self.player2.vel.y = 0
+                    self.player2.samus_jumping = False
+
+        if self.player2.rect.top >= 590:
+            self.player2.pos.y += abs(self.player.vel.y)
+            self.player2_lives -= 1
+            print(self.player2_lives)
+
+         #si el jugador se cae de una plataforma 
+        # añadir las vidas del jugador y descontar una vida cuando se cae de una plataforma
+        if self.player2.rect.bottom > HEIGHT:
+            for sprite in self.all_sprites:
+                sprite.rect.y -= max(self.player2.vel.y,10)
+                if sprite.rect.bottom < 0:
+                    sprite.kill()
+            self.playing = False
+        
 
     def events(self):
         # Game Loop - eventos de pygame 
@@ -76,12 +118,21 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE:
                     self.player.jump()
-
+                elif event.key == pg.K_w:
+                    self.player2.jump()
+                
+            if event.type == pg.KEYUP:
+                if event.key == pg.K_SPACE:
+                    self.player.jump_cut()
+                elif event.key == pg.K_w:
+                    self.player2.jump_cut()
 
     def draw(self):
         # Game Loop - dibuja en la ventana 
-        self.screen.fill(BLACK)
+        self.bg = pg.image.load("resources/bg.jpg")
+        self.screen.blit(self.bg,(0,0))
         self.all_sprites.draw(self.screen)
+        self.screen.blit(self.player.image, self.player.rect)
         #self.draw_text(str(self.player_lives),22,WHITE,WIDTH/2,15)
         # después de dibujar o mostrar elementos en pantalla, actualiza la ventana
         pg.display.flip()
@@ -100,13 +151,13 @@ class Game:
         self.screen.fill(LIGHTBLUE)
         self.draw_text("GAME OVER",48, WHITE, WIDTH/2, HEIGHT/4)
         self.draw_text("Score: ", 22,WHITE,WIDTH/2,HEIGHT/2)
-        self.draw_text("Press a key to exit", 22,WHITE,WIDTH/2,HEIGHT*3/4)
+        self.draw_text("Press a key to continue", 22,WHITE,WIDTH/2,HEIGHT*3/4)
         pg.display.flip()
         self.wait_for_key()
 
 
         self.wait_for_key()
-        pass
+        #pass
 
     def wait_for_key(self):
         waiting = True
@@ -119,11 +170,7 @@ class Game:
                 if event.type == pg.KEYUP:
                     waiting = False
 
-
-
-
-
-
+                    
     def draw_text(self,text,size,color,x,y):
         font = pg.font.Font(self.font_name,size)
         text_surface = font.render(text,True,color)
