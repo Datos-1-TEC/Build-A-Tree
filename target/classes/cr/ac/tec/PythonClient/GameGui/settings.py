@@ -3,16 +3,11 @@ TITLE = "Build a Tree"
 WIDTH = 1200
 HEIGHT = 600
 FPS = 60 
-FONT_NAME = 'arial'
-BACKGROUND = "resources/bg.jpg"
 
 #Propiedades del jugador 
 PLAYER_ACC = 0.5 
 PLAYER_FRICTION = -0.12 
-PLAYER_JUMP = 20
-
-#Plataformas iniciales 
-PLATFORM_LIST = [(350, 250),(650,450),(200,550)]
+PLAYER_GRAVITY = 0.5
 
 
 #COLORS 
@@ -22,4 +17,3 @@ RED = (255,0,0)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
 YELLOW = (255,255,0)
-LIGHTBLUE = (0,155,155)

@@ -1,12 +1,10 @@
 import pygame
 import time
 
-
 displayWidth = 950
 displayHeight = 700
 width = 85
 height = 60
-
 
 pygame.init()
 
@@ -27,14 +25,11 @@ displayFlag = True
 isJump = False
 x = 250
 y = 250
-a = 30
-b = 15
 vel = 10
 jumpCount = 10
 walkCount = 0
 left = False
 right = False
-
 clock = pygame.time.Clock()
 
 class player(object):
@@ -57,7 +52,6 @@ class player(object):
     def draw(self, window):
         if self.walkCount + 1 >= 12:
             self.walkCount = 0
-
         if not(self.standing):
             if self.left:
                 if self.name == "megaman":
@@ -72,8 +66,7 @@ class player(object):
                     self.walkCount += 1
                 else:
                     window.blit(walkRight2[self.walkCount//3], (self.x, self.y))
-                    self.walkCount += 1
-                
+                    self.walkCount += 1      
         else:
             if self.right:
                 if self.name == "megaman":
@@ -93,8 +86,6 @@ class player(object):
         print('Hit')
         pass
 
-
-
 class projectile(object):
     def __init__(self, x, y, radius, color, facing):
         self.x = x 
@@ -108,7 +99,7 @@ class projectile(object):
         pygame.draw.circle(window, self.color, (self.x, self.y), self.radius)
 
 
-megaman = player(350, 430, 65, 60, "megaman")
+megaman = player(300, 410, 65, 60, "megaman")
 samus = player(300, 430, 65, 60, "samus")
 bullets = []
 shootLoop = 0
@@ -120,15 +111,13 @@ def redrawGameWindow():
     samus.draw(window)
     for bullet in bullets:
         bullet.draw(window)
-
     pygame.display.update()
-
 
 pygame.display.set_caption("Build a Tree")
 def main():
-    global displayFlag, isJump, x, y, vel, jumpCount, clock, walkCount,left, right, megaman, bullets, samus, shootLoop, a, b
-        
+    global displayFlag, isJump, x, y, vel, jumpCount, clock, walkCount,left, right, megaman, bullets, samus, shootLoop, player
     
+
     #window.blit(player, (100, 100))
     while displayFlag:
         clock.tick(12)
@@ -137,7 +126,6 @@ def main():
             shootLoop += 1
         if shootLoop > 3:
             shootLoop = 0
-
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -156,7 +144,6 @@ def main():
                     samus.hit()
                     bullets.pop(bullets.index(bullet))
             """
-
             if bullet.x < 950 and bullet.x > 0:
                 bullet.x += bullet.vel 
             else:
@@ -170,8 +157,7 @@ def main():
             else:
                 facing = 1
             if len(bullets) < 10:
-                bullets.append(projectile(round(megaman.x + megaman.width//2), round(megaman.y + megaman.height//2), 6, (0,0,0), facing))
-
+                bullets.append(projectile(round(megaman.x + megaman.width //2), round(megaman.y + megaman.height//2), 6, (0,0,0), facing))
             shootLoop = 1
 
         if keys[pygame.K_s] and shootLoop == 0:
@@ -181,7 +167,6 @@ def main():
                 facing = 1
             if len(bullets) < 10:
                 bullets.append(projectile(round(samus.x + samus.width //2), round(samus.y + samus.height//2), 6, (0,0,0), facing))
-
             shootLoop = 1
 
         if keys[pygame.K_LEFT] and megaman.x > megaman.vel:
@@ -246,17 +231,6 @@ def main():
             else:
                 samus.isJump = False
                 samus.jumpCount = 10 
-
         redrawGameWindow()
 
-    
-
 main()
-    
-
-
-
-
-
-
-

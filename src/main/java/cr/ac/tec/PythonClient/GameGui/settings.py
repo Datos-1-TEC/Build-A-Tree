@@ -14,6 +14,9 @@ PLAYER_JUMP = 20
 #Plataformas iniciales 
 PLATFORM_LIST = [(350, 250),(650,450),(200,550)]
 
+#propiedades de juego 
+BOOST_POWER = 60
+POW_SPAWN_PCT = 7 
 
 #COLORS 
 WHITE = (255,255,255)
