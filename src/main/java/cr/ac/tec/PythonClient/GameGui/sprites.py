@@ -29,6 +29,8 @@ class Player(pg.sprite.Sprite):
         self.playerID = playerID
         self.game = game
         self.load_images()
+        self.left = False
+        self.right = False
         if self.playerID == 1:
             self.image = self.game.spritesheet.get_image("resources/megamanstand.png")
             self.walking = False #para mostrar la animación cuando camina 
@@ -127,16 +129,22 @@ class Player(pg.sprite.Sprite):
         if self.playerID == 1:
 
             if keys[pg.K_LEFT]:
-                self.acc.x = -PLAYER_ACC
-                #print("Izquierda " + str(self.acc.x))
+                self.acc.x = -PLAYER_ACC #print("Izquierda " + str(self.acc.x))               
+                self.left = True
+                self.right = False
             if keys[pg.K_RIGHT]:
-                self.acc.x = PLAYER_ACC
-                #print("Derecha: " + str(self.acc.x))
+                self.acc.x = PLAYER_ACC #print("Derecha: " + str(self.acc.x))
+                self.left = False
+                self.right = True
         else:
             if keys[pg.K_a]:
                 self.acc.x = -PLAYER_ACC
+                self.left = True
+                self.right = False
             if keys[pg.K_d]:
                 self.acc.x = PLAYER_ACC
+                self.left = False
+                self.right = True
 
         # se aplica fricción al personaje 
         self.acc.x += self.vel.x * PLAYER_FRICTION
@@ -265,7 +273,7 @@ class PowerUp(pg.sprite.Sprite):
 
 
 class Projectiles(pg.sprite.Sprite):
-    def __init__(self,game,player):
+    def __init__(self,game,player, facing):
         self.groups = game.all_sprites, game.projectiles
         pg.sprite.Sprite.__init__(self,self.groups)
         self.player = player 
@@ -275,7 +283,8 @@ class Projectiles(pg.sprite.Sprite):
         self.image = self.image_up
         self.rect = self.image.get_rect()
         self.rect.centerx = self.player.pos.x 
-        self.vx = randrange(1,4)
+        self.facing = facing
+        self.vx = 10 * facing
         if self.rect.centerx > WIDTH:
             self.vx *= -1
         self.rect.y = self.player.pos.y + 10 

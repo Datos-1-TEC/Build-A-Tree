@@ -1,7 +1,8 @@
 
+
 from settings import *
 import pygame as pg
-from random import choice
+from random import choice, randrange
 vec = pg.math.Vector2
 
 
@@ -19,15 +20,17 @@ class Spritesheet:
         image.blit(self.loaded_image,(0,0))
         return image
         
-        
 
 #Sprites para el jugador
 class Player(pg.sprite.Sprite):
     def __init__(self,game,playerID):
-        pg.sprite.Sprite.__init__(self)
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self,self.groups)
         self.playerID = playerID
         self.game = game
         self.load_images()
+        self.left = False
+        self.right = False
         if self.playerID == 1:
             self.image = self.game.spritesheet.get_image("resources/megamanstand.png")
             self.walking = False #para mostrar la animación cuando camina 
@@ -126,14 +129,22 @@ class Player(pg.sprite.Sprite):
         if self.playerID == 1:
 
             if keys[pg.K_LEFT]:
-                self.acc.x = -PLAYER_ACC
+                self.acc.x = -PLAYER_ACC #print("Izquierda " + str(self.acc.x))               
+                self.left = True
+                self.right = False
             if keys[pg.K_RIGHT]:
-                self.acc.x = PLAYER_ACC
+                self.acc.x = PLAYER_ACC #print("Derecha: " + str(self.acc.x))
+                self.left = False
+                self.right = True
         else:
             if keys[pg.K_a]:
                 self.acc.x = -PLAYER_ACC
+                self.left = True
+                self.right = False
             if keys[pg.K_d]:
                 self.acc.x = PLAYER_ACC
+                self.left = False
+                self.right = True
 
         # se aplica fricción al personaje 
         self.acc.x += self.vel.x * PLAYER_FRICTION
@@ -207,18 +218,27 @@ class Player(pg.sprite.Sprite):
                     self.image = self.samus_standing_frame[self.samus_current_frame]
 
 class Projectile(pg.sprite.Sprite):
-    def __init__(self,x, y, radius, color):
-        self.x = x 
-        self.y = y 
-        self.radius = radius
+    def __init__(self, color, player,game):
         self.color = color 
+        self.owner = player
+        self.game = game 
+        self.x = self.owner.pos.x + 40 
+        self.y = self.owner.pos.y 
+        self.vel = 8 * self.owner.acc.x + 1
+
+    def update(self):
+        pg.draw.circle(self.game.screen,self.color,(int(self.x),int(self.y)),10)
+        
+        
+
         
 class Platform(pg.sprite.Sprite):
     def __init__(self,game,x,y):
+        self.groups = game.all_sprites, game.platforms
         #parametros de la clase 
         # x = posicion en x 
         # y = posicion en y 
-        pg.sprite.Sprite.__init__(self)
+        pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
         images = [self.game.spritesheet.get_image("resources/platform_4.png"),
                     self.game.spritesheet.get_image("resources/platform_2.png"),
@@ -228,10 +248,84 @@ class Platform(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x 
         self.rect.y = y
+        if randrange(100) < POW_SPAWN_PCT:
+            PowerUp(self.game,self)
+
+
+class PowerUp(pg.sprite.Sprite):
+    
+    def __init__(self,game,platform):
+        self.groups = game.all_sprites, game.powerups
+        pg.sprite.Sprite.__init__(self,self.groups)
+        self.game = game 
+        self.platform = platform
+        self.type = choice(['boost'])
+        self.image = self.game.spritesheet.get_image("resources/star_1.png")
+        #self.image.set_colorkey(BLACK)
+        self.rect = self.image.get_rect()
+        self.rect.centerx =  self.platform.rect.centerx
+        self.rect.bottom = self.platform.rect.top - 5
+
+    def update(self):
+        self.rect.bottom = self.platform.rect.top - 5
+        if not self.game.platforms.has(self.platform):
+            self.kill()
+
+
+class Projectiles(pg.sprite.Sprite):
+    def __init__(self,game,player, facing):
+        self.groups = game.all_sprites, game.projectiles
+        pg.sprite.Sprite.__init__(self,self.groups)
+        self.player = player 
+        self.game = game
+        self.image_up = self.game.spritesheet.get_image("resources/shine1.png")
+        self.image_down = self.game.spritesheet.get_image("resources/shine2.png")
+        self.image = self.image_up
+        self.rect = self.image.get_rect()
+        self.rect.centerx = self.player.pos.x 
+        self.facing = facing
+        self.vx = 10 * facing
+        if self.rect.centerx > WIDTH:
+            self.vx *= -1
+        self.rect.y = self.player.pos.y + 10 
+        self.vy = 0
+        self.dy = 0.5
+        self.update()
+
+    def update(self):
+        self.rect.x += self.vx
+        self.vy +=  self.dy 
+        if self.vy > 3 or self.vy < -3:
+            self.dy *= -1 
+        center = self.rect.center 
+        if self.dy < 0:
+            self.image = self.image_up
+        else:
+            self.image = self.image_down
+        self.rect = self.image.get_rect()
+        self.rect.center = center
+        self.rect.y += self.vy 
+        if self.rect.left > WIDTH + 100 or self.rect.right < -100:
+            self.kill()
 
 
 
 
+
+
+        
+
+
+            
+
+
+
+
+
+
+
+
+        
 
 
 

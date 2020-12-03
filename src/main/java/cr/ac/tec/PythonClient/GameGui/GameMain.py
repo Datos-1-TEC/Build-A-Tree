@@ -56,6 +56,7 @@ class Game:
         #revisa si el jugador colisiona con una plataforma, solo si esta cayendo
         if self.player.vel.y > 0:
             hits = pg.sprite.spritecollide(self.player,self.platforms,False)
+            shots = pg.sprite.spritecollide(self.player2, self.projectiles, True)
             if hits:
                 lowest = hits[0]
                 for hit in hits:
@@ -67,6 +68,12 @@ class Game:
                         self.player.pos.y = lowest.rect.top + 1
                         self.player.vel.y = 0
                         self.player.jumping = False
+
+            if shots:
+                for shot in shots:
+                    self.player2.pos.x += 10
+                    shot.kill()
+
 
         if self.player.rect.top >= 590:
             self.player.pos.y += abs(self.player.vel.y)
@@ -121,18 +128,30 @@ class Game:
                 self.running = False
             
             if event.type == pg.KEYDOWN:
-                if event.key == pg.K_SPACE:
+                if event.key == pg.K_UP:
                     self.player.jump()
                 elif event.key == pg.K_w:
                     self.player2.jump()
                 elif event.key == pg.K_DOWN:
-                    Projectiles(self,self.player)
+                    if self.player.left:
+                        facing = -1
+                    elif self.player.right:
+                        facing = 1
+                    
+                    Projectiles(self,self.player, facing)
 
             if event.type == pg.KEYUP:
-                if event.key == pg.K_SPACE:
+                if event.key == pg.K_UP:
                     self.player.jump_cut()
                 elif event.key == pg.K_w:
                     self.player2.jump_cut()
+                elif event.key == pg.K_s:
+                    if self.player2.left:
+                        facing2 = -1
+                    elif self.player2.right:
+                        facing2 = 1
+                    
+                    Projectiles(self,self.player2, facing2)
 
             
 
