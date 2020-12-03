@@ -7,6 +7,7 @@ from pygame.constants import K_w
 from sprites import *
 from settings import *
 
+
 class Game:
     def __init__(self):
         # inicializa la ventana 
@@ -28,14 +29,16 @@ class Game:
         self.player2_lives = 10
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
+        self.powerups = pg.sprite.Group()
+        self.projectiles = pg.sprite.Group()
         self.player = Player(self,1)
         self.player2 = Player(self,2)
-        self.all_sprites.add(self.player2)
-        self.all_sprites.add(self.player)
+        #self.all_sprites.add(self.player2)
+        #self.all_sprites.add(self.player)
         for plat in PLATFORM_LIST:
-            p = Platform(self,*plat)
-            self.all_sprites.add(p)
-            self.platforms.add(p)
+            Platform(self,*plat)
+            #self.all_sprites.add(p)
+            #self.platforms.add(p)
         self.run()
 
     def run(self):
@@ -59,10 +62,11 @@ class Game:
                     if hit.rect.bottom > lowest.rect.bottom:
                         lowest = hit 
                 
-                if self.player.pos.y < lowest.rect.centery:
-                    self.player.pos.y = lowest.rect.top
-                    self.player.vel.y = 0
-                    self.player.jumping = False
+                if self.player.pos.x < lowest.rect.right + 10 and self.player.pos.x > lowest.rect.left - 10:
+                    if self.player.pos.y < lowest.rect.centery:
+                        self.player.pos.y = lowest.rect.top + 1
+                        self.player.vel.y = 0
+                        self.player.jumping = False
 
         if self.player.rect.top >= 590:
             self.player.pos.y += abs(self.player.vel.y)
@@ -78,6 +82,7 @@ class Game:
                     sprite.kill()
             self.playing = False
 
+
         if self.player2.vel.y > 0:
             hits2 = pg.sprite.spritecollide(self.player2,self.platforms,False)
             if hits2:
@@ -87,7 +92,7 @@ class Game:
                         lowest2 = hit
                 
                 if self.player2.pos.y < lowest2.rect.centery:
-                    self.player2.pos.y = lowest2.rect.top
+                    self.player2.pos.y = lowest2.rect.top + 1
                     self.player2.vel.y = 0
                     self.player2.samus_jumping = False
 
@@ -116,16 +121,20 @@ class Game:
                 self.running = False
             
             if event.type == pg.KEYDOWN:
-                if event.key == pg.K_UP:
+                if event.key == pg.K_SPACE:
                     self.player.jump()
                 elif event.key == pg.K_w:
                     self.player2.jump()
-                
+                elif event.key == pg.K_DOWN:
+                    Projectiles(self,self.player)
+
             if event.type == pg.KEYUP:
-                if event.key == pg.K_UP:
+                if event.key == pg.K_SPACE:
                     self.player.jump_cut()
                 elif event.key == pg.K_w:
                     self.player2.jump_cut()
+
+            
 
     def draw(self):
         # Game Loop - dibuja en la ventana 
@@ -140,8 +149,7 @@ class Game:
     def show_start_screen(self):
         # ventana de inicio 
         self.screen.fill(LIGHTBLUE)
-        self.draw_text("Game Over",48, WHITE, WIDTH/2, HEIGHT/4)
-
+        self.draw_text("Game Over",48, BLACK, WIDTH/2, HEIGHT/4)
         pass
 
     def show_go_screen(self):
@@ -177,8 +185,6 @@ class Game:
         text_rect = text_surface.get_rect()
         text_rect.midtop = (x,y)
         self.screen.blit(text_surface,text_rect)
-
-
 
 
 g = Game()
