@@ -23,7 +23,7 @@ class Spritesheet:
 
 #Sprites para el jugador
 class Player(pg.sprite.Sprite):
-    def __init__(self,game,playerID):
+    def __init__(self,game,playerID,name):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self,self.groups)
         self.playerID = playerID
@@ -31,6 +31,7 @@ class Player(pg.sprite.Sprite):
         self.load_images()
         self.left = False
         self.right = False
+        self.name = name
         if self.playerID == 1:
             self.image = self.game.spritesheet.get_image("resources/megamanstand.png")
             self.walking = False #para mostrar la animación cuando camina 
@@ -217,33 +218,21 @@ class Player(pg.sprite.Sprite):
                     self.samus_current_frame = (self.samus_current_frame + 1) % len(self.samus_standing_frame)
                     self.image = self.samus_standing_frame[self.samus_current_frame]
 
-class Projectile(pg.sprite.Sprite):
-    def __init__(self, color, player,game):
-        self.color = color 
-        self.owner = player
-        self.game = game 
-        self.x = self.owner.pos.x + 40 
-        self.y = self.owner.pos.y 
-        self.vel = 8 * self.owner.acc.x + 1
-
-    def update(self):
-        pg.draw.circle(self.game.screen,self.color,(int(self.x),int(self.y)),10)
-        
         
 
         
 class Platform(pg.sprite.Sprite):
-    def __init__(self,game,x,y):
+    def __init__(self,game,x,y,platform_index):
         self.groups = game.all_sprites, game.platforms
         #parametros de la clase 
         # x = posicion en x 
         # y = posicion en y 
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game
-        images = [self.game.spritesheet.get_image("resources/platform_4.png"),
+        images = [self.game.spritesheet.get_image("resources/platform_6.png"),
                     self.game.spritesheet.get_image("resources/platform_2.png"),
                     self.game.spritesheet.get_image("resources/platform_5.png")]
-        self.image = choice(images)
+        self.image = images[platform_index]
         #self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         self.rect.x = x 
@@ -284,12 +273,12 @@ class Projectiles(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.centerx = self.player.pos.x 
         self.facing = facing
-        self.vx = 10 * facing
+        self.vx = 10 * self.facing
         if self.rect.centerx > WIDTH:
             self.vx *= -1
-        self.rect.y = self.player.pos.y + 10 
+        self.rect.y = self.player.pos.y - 50 
         self.vy = 0
-        self.dy = 0.5
+        self.dy = 0.01
         self.update()
 
     def update(self):

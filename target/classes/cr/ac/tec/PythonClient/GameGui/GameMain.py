@@ -31,14 +31,14 @@ class Game:
         self.platforms = pg.sprite.Group()
         self.powerups = pg.sprite.Group()
         self.projectiles = pg.sprite.Group()
-        self.player = Player(self,1)
-        self.player2 = Player(self,2)
+        self.player = Player(self,1, "megaman")
+        self.player2 = Player(self,2, "samus")
         #self.all_sprites.add(self.player2)
         #self.all_sprites.add(self.player)
-        for plat in PLATFORM_LIST:
-            Platform(self,*plat)
-            #self.all_sprites.add(p)
-            #self.platforms.add(p)
+        Platform(self,*PLATFORM_LIST[0],0)
+        Platform(self,*PLATFORM_LIST[1],1)
+        Platform(self,*PLATFORM_LIST[2],1)
+        Platform(self,*PLATFORM_LIST[3],2)
         self.run()
 
     def run(self):
@@ -56,7 +56,7 @@ class Game:
         #revisa si el jugador colisiona con una plataforma, solo si esta cayendo
         if self.player.vel.y > 0:
             hits = pg.sprite.spritecollide(self.player,self.platforms,False)
-            shots = pg.sprite.spritecollide(self.player2, self.projectiles, True)
+            #shots = pg.sprite.spritecollide(self.player2, self.projectiles, True)
             if hits:
                 lowest = hits[0]
                 for hit in hits:
@@ -69,10 +69,16 @@ class Game:
                         self.player.vel.y = 0
                         self.player.jumping = False
 
+            """
             if shots:
                 for shot in shots:
-                    self.player2.pos.x += 10
-                    shot.kill()
+                    if self.player.pos.x < self.player2.pos.x: #En caso que el jugador 1 esté a la izquierda del jugador 2
+                        self.player2.pos.x += 10  #Hitbox en caso de disparo
+                        shot.kill()
+                    elif self.player.pos.x >= self.player2.pos.x: #En caso que el jugador 1 esté a la derecha del jugador 2
+                        self.player2.pos.x -= 10  #Hitbox en caso de disparo
+                        shot.kill()
+            """
 
 
         if self.player.rect.top >= 590:

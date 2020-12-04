@@ -23,7 +23,7 @@ class Spritesheet:
 
 #Sprites para el jugador
 class Player(pg.sprite.Sprite):
-    def __init__(self,game,playerID):
+    def __init__(self,game,playerID,name):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self,self.groups)
         self.playerID = playerID
@@ -31,6 +31,7 @@ class Player(pg.sprite.Sprite):
         self.load_images()
         self.left = False
         self.right = False
+        self.name = name
         if self.playerID == 1:
             self.image = self.game.spritesheet.get_image("resources/megamanstand.png")
             self.walking = False #para mostrar la animación cuando camina 
