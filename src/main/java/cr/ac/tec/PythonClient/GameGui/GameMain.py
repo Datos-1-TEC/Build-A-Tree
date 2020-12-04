@@ -71,8 +71,12 @@ class Game:
 
             if shots:
                 for shot in shots:
-                    self.player2.pos.x += 10
-                    shot.kill()
+                    if self.player.pos.x < self.player2.pos.x: #En caso que el jugador 1 esté a la izquierda del jugador 2
+                        self.player2.pos.x += 10  #Hitbox en caso de disparo
+                        shot.kill()
+                    elif self.player.pos.x >= self.player2.pos.x: #En caso que el jugador 1 esté a la derecha del jugador 2
+                        self.player2.pos.x -= 10  #Hitbox en caso de disparo
+                        shot.kill()
 
 
         if self.player.rect.top >= 590:

@@ -52,73 +52,60 @@ class player(object):
         self.standing = True
         self.name = name
         self.hitbox = (self.x + 17, self.y + 11, 32, 52)
-        self.lives = 3
-        self.visible = True
 
 
     def draw(self, window):
-        if self.visible:
-            if self.walkCount + 1 >= 12:
-                self.walkCount = 0
+        if self.walkCount + 1 >= 12:
+            self.walkCount = 0
 
-            if not(self.standing):
-                if self.left:
-                    if self.name == "megaman":
-                        window.blit(walkLeft[self.walkCount//3], (self.x, self.y))
-                        self.walkCount += 1
-                    else:
-                        window.blit(walkLeft2[self.walkCount//3], (self.x, self.y))
-                        self.walkCount += 1                                    
-                elif self.right:
-                    if self.name == "megaman":
-                        window.blit(walkRight[self.walkCount//3], (self.x, self.y))
-                        self.walkCount += 1
-                    else:
-                        window.blit(walkRight2[self.walkCount//3], (self.x, self.y))
-                        self.walkCount += 1
-                    
-            else:
-                if self.right:
-                    if self.name == "megaman":
-                        window.blit(walkRight[0], (self.x, self.y))
-                    else:
-                        window.blit(walkRight2[0], (self.x, self.y))               
+        if not(self.standing):
+            if self.left:
+                if self.name == "megaman":
+                    window.blit(walkLeft[self.walkCount//3], (self.x, self.y))
+                    self.walkCount += 1
                 else:
-                    if self.name == "megaman":
-                        window.blit(walkLeft[0], (self.x, self.y))
-                    else:
-                        window.blit(walkLeft2[0], (self.x, self.y))
-
-            pygame.draw.rect(window, (255, 0, 0), (self.hitbox[0], self.hitbox[1] - 20, 30, 10)) #(coordenada x, coordenada y, largo de barra, ancho de barra)
-            pygame.draw.rect(window, (0, 128, 0), (self.hitbox[0], self.hitbox[1] - 20, 30 - (10 * (3 - self.lives)), 10)) #(coordenada x, coordenada y, largo de barra, ancho de barra)     
-            self.hitbox = (self.x + 17, self.y + 11, 32, 52)
-            pygame.draw.rect(window, (255, 0, 0), (self.hitbox), 2)
+                    window.blit(walkLeft2[self.walkCount//3], (self.x, self.y))
+                    self.walkCount += 1                                    
+            elif self.right:
+                if self.name == "megaman":
+                    window.blit(walkRight[self.walkCount//3], (self.x, self.y))
+                    self.walkCount += 1
+                else:
+                    window.blit(walkRight2[self.walkCount//3], (self.x, self.y))
+                    self.walkCount += 1
+                
+        else:
+            if self.right:
+                if self.name == "megaman":
+                    window.blit(walkRight[0], (self.x, self.y))
+                else:
+                    window.blit(walkRight2[0], (self.x, self.y))               
+            else:
+                if self.name == "megaman":
+                    window.blit(walkLeft[0], (self.x, self.y))
+                else:
+                    window.blit(walkLeft2[0], (self.x, self.y))
+                
+        self.hitbox = (self.x + 17, self.y + 11, 32, 52)
+        pygame.draw.rect(window, (255, 0, 0), (self.hitbox), 2)
 
     def hit(self):
-        if self.lives > 1:
-            self.lives -= 1
-        else:
-            self.visible = False
         print('Hit')
-        
+        pass
 
 
 
 class projectile(object):
-    def __init__(self, x, y, radius, color, facing, owner):
+    def __init__(self, x, y, radius, color, facing):
         self.x = x 
         self.y = y
         self.radius = radius
         self.color = color
         self.facing = facing #se encarga de direccionar la bala dependiendo de a donde se estaba moviendo
         self.vel = 30 * facing
-        self.owner = owner
 
     def draw(self, window):
         pygame.draw.circle(window, self.color, (self.x, self.y), self.radius)
-
-
-
 
 
 megaman = player(350, 430, 65, 60, "megaman")
@@ -139,7 +126,7 @@ def redrawGameWindow():
 
 pygame.display.set_caption("Build a Tree")
 def main():
-    global displayFlag, isJump, x, y, vel, jumpCount, clock, walkCount,left, right, megaman, bullets, samus, shootLoop, a, b, projectile
+    global displayFlag, isJump, x, y, vel, jumpCount, clock, walkCount,left, right, megaman, bullets, samus, shootLoop, a, b
         
     
     #window.blit(player, (100, 100))
@@ -159,18 +146,17 @@ def main():
                 displayFlag = False
 
         for bullet in bullets:
-            if bullet.owner == "samus":
-                if bullet.y - bullet.radius < megaman.hitbox[1] + megaman.hitbox[3] and bullet.y + bullet.radius > megaman.hitbox[1]:
-                    if bullet.x + bullet.radius > megaman.hitbox[0] and bullet.x - bullet.radius < megaman.hitbox[0] + megaman.hitbox[2]:
-                        megaman.hit()
-                        bullets.pop(bullets.index(bullet))
-            if bullet.owner == "megaman":
-                if bullet.y - bullet.radius < samus.hitbox[1] + samus.hitbox[3] and bullet.y + bullet.radius > samus.hitbox[1]:
-                    if bullet.x + bullet.radius > samus.hitbox[0] and bullet.x - bullet.radius < samus.hitbox[0] + samus.hitbox[2]:
-                        samus.hit()
-                        bullets.pop(bullets.index(bullet))
-            
-            
+            if bullet.y - bullet.radius < megaman.hitbox[1] + megaman.hitbox[3] and bullet.y + bullet.radius > megaman.hitbox[1]:
+                if bullet.x + bullet.radius > megaman.hitbox[0] and bullet.x - bullet.radius < megaman.hitbox[0] + megaman.hitbox[2]:
+                    megaman.hit()
+                    bullets.pop(bullets.index(bullet))
+            """
+            if bullet.y - bullet.radius < samus.hitbox[1] + samus.hitbox[3] and bullet.y + bullet.radius > samus.hitbox[1]:
+                if bullet.x + bullet.radius > samus.hitbox[0] and bullet.x - bullet.radius < samus.hitbox[0] + samus.hitbox[2]:
+                    samus.hit()
+                    bullets.pop(bullets.index(bullet))
+            """
+
             if bullet.x < 950 and bullet.x > 0:
                 bullet.x += bullet.vel 
             else:
@@ -178,95 +164,88 @@ def main():
 
         keys = pygame.key.get_pressed()
 
-        #******megaman controles********
-        if megaman.visible == True:
-            if keys[pygame.K_DOWN] and shootLoop == 0:
-                if megaman.left:
-                    facing = -1
-
-                elif megaman.right:
-                    facing = 1
-
-                if len(bullets) < 10:
-                    bullets.append(projectile(round(megaman.x + megaman.width//2), round(megaman.y + megaman.height//2), 6, (200,0,0), facing, "megaman"))
-
-                shootLoop = 1
-
-            if keys[pygame.K_LEFT] and megaman.x > megaman.vel:
-                megaman.x -= megaman.vel
-                megaman.left = True
-                megaman.right = False
-                megaman.standing = False
-            
-            elif keys[pygame.K_RIGHT] and megaman.x < 900 - megaman.width - megaman.vel:
-                megaman.x += megaman.vel
-                megaman.right = True
-                megaman.left = False
-                megaman.standing = False
-
+        if keys[pygame.K_DOWN] and shootLoop == 0:
+            if megaman.left:
+                facing = -1
             else:
-                megaman.standing = True
-                megaman.walkCount = 0
+                facing = 1
+            if len(bullets) < 10:
+                bullets.append(projectile(round(megaman.x + megaman.width//2), round(megaman.y + megaman.height//2), 6, (0,0,0), facing))
 
-            if not(megaman.isJump) and keys[pygame.K_UP]:
-                megaman.isJump = True
-                megaman.right = False
-                megaman.left = False
-                megaman.walkCount = 0
-            elif megaman.isJump:
-                if megaman.jumpCount >= -10:
-                    negative = 1
-                    if megaman.jumpCount < 0:
-                        negative = -1
-                    megaman.y -= (megaman.jumpCount ** 2) * 0.5 * negative
-                    megaman.jumpCount -= 1
-                else:
-                    megaman.isJump = False
-                    megaman.jumpCount = 10
+            shootLoop = 1
 
-        #******Samus******
-        if samus.visible == True:
-            if keys[pygame.K_s] and shootLoop == 0:
-                if samus.left:
-                    facing = -1
-                elif samus.right:
-                    facing = 1
-
-                if len(bullets) < 10:
-                    bullets.append(projectile(round(samus.x + samus.width //2), round(samus.y + samus.height//2), 6, (0,0,128), facing, "samus"))
-
-                shootLoop = 1
-            
-            if keys[pygame.K_a] and samus.x > samus.vel:
-                samus.x -= samus.vel
-                samus.left = True
-                samus.right = False
-                samus.standing = False
-
-            elif keys[pygame.K_d] and samus.x < 900 - samus.width - samus.vel:
-                samus.x += samus.vel
-                samus.right = True
-                samus.left = False
-                samus.standing = False
+        if keys[pygame.K_s] and shootLoop == 0:
+            if samus.left:
+                facing = -1
             else:
-                samus.standing = True
-                samus.walkCount = 0
+                facing = 1
+            if len(bullets) < 10:
+                bullets.append(projectile(round(samus.x + samus.width //2), round(samus.y + samus.height//2), 6, (0,0,0), facing))
 
-            if not(samus.isJump) and keys[pygame.K_w]:
-                samus.isJump = True
-                samus.right = False
-                samus.left = False
-                samus.walkCount = 0
-            elif samus.isJump:
-                if samus.jumpCount >= -10:
-                    negative = 1
-                    if samus.jumpCount < 0:
-                        negative = -1
-                    samus.y -= (samus.jumpCount ** 2) * 0.5 * negative
-                    samus.jumpCount -= 1
-                else:
-                    samus.isJump = False
-                    samus.jumpCount = 10 
+            shootLoop = 1
+
+        if keys[pygame.K_LEFT] and megaman.x > megaman.vel:
+            megaman.x -= megaman.vel
+            megaman.left = True
+            megaman.right = False
+            megaman.standing = False
+        
+        elif keys[pygame.K_RIGHT] and megaman.x < 900 - megaman.width - megaman.vel:
+            megaman.x += megaman.vel
+            megaman.right = True
+            megaman.left = False
+            megaman.standing = False
+
+        else:
+            megaman.standing = True
+            megaman.walkCount = 0
+
+        if keys[pygame.K_a] and samus.x > samus.vel:
+            samus.x -= samus.vel
+            samus.left = True
+            samus.right = False
+            samus.standing = False
+
+        elif keys[pygame.K_d] and samus.x < 900 - samus.width - samus.vel:
+            samus.x += samus.vel
+            samus.right = True
+            samus.left = False
+            samus.standing = False
+        else:
+            samus.standing = True
+            samus.walkCount = 0
+
+        if not(megaman.isJump) and keys[pygame.K_UP]:
+            megaman.isJump = True
+            megaman.right = False
+            megaman.left = False
+            megaman.walkCount = 0
+        elif megaman.isJump:
+            if megaman.jumpCount >= -10:
+                negative = 1
+                if megaman.jumpCount < 0:
+                    negative = -1
+                megaman.y -= (megaman.jumpCount ** 2) * 0.5 * negative
+                megaman.jumpCount -= 1
+            else:
+                megaman.isJump = False
+                megaman.jumpCount = 10
+
+        if not(samus.isJump) and keys[pygame.K_w]:
+            samus.isJump = True
+            samus.right = False
+            samus.left = False
+            samus.walkCount = 0
+        elif samus.isJump:
+            if samus.jumpCount >= -10:
+                negative = 1
+                if samus.jumpCount < 0:
+                    negative = -1
+                samus.y -= (samus.jumpCount ** 2) * 0.5 * negative
+                samus.jumpCount -= 1
+            else:
+                samus.isJump = False
+                samus.jumpCount = 10 
 
         redrawGameWindow()
 
