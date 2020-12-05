@@ -31,6 +31,8 @@ class Player(pg.sprite.Sprite):
         self.load_images()
         self.left = False
         self.right = False
+        self.activated = False
+        self.lives = 3
         if self.playerID == 1:
             self.image = self.game.spritesheet.get_image("resources/megamanstand.png")
             self.walking = False #para mostrar la animación cuando camina 
@@ -245,12 +247,13 @@ class PowerUp(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game 
         self.platform = platform
-        self.type = choice(['boost'])
+        self.type = choice(['shoot', 'shield', 'airjump', 'extrapoints', 'push', 'faster', 'tempplatform'])
         self.image = self.game.spritesheet.get_image("resources/star_1.png")
         #self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         self.rect.centerx =  self.platform.rect.centerx
         self.rect.bottom = self.platform.rect.top - 5
+        
 
     def update(self):
         self.rect.bottom = self.platform.rect.top - 5

@@ -25,8 +25,6 @@ class Game:
 
     def new(self):
         # inicia un nuevo juego 
-        self.player_lives = 10
-        self.player2_lives = 10
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.powerups = pg.sprite.Group()
@@ -34,6 +32,7 @@ class Game:
         self.projectiles_samus = pg.sprite.Group()
         self.player = Player(self,1)
         self.player2 = Player(self,2)
+        self.draw_text("Vidas: " + str(self.player.lives), 10, (0,0,0), 10, 10)
         #self.all_sprites.add(self.player2)
         #self.all_sprites.add(self.player)
         Platform(self,*PLATFORM_LIST[0],0)
@@ -71,21 +70,32 @@ class Game:
                         self.player.jumping = False
 
             if shots:
+                self.player2.activated = True #Futura condición para el power up 'shield'
                 for shot in shots:
                     if self.player.pos.x < self.player2.pos.x: #En caso que el jugador 1 esté a la  izquierda del jugador 2
-                        self.player2.pos.x += 10  #Hitbox en caso de disparo
-                        shot.kill()
+                        if self.player2.activated:
+                            self.player2.pos.x += 0  #Hitbox en caso de disparo
+                            shot.kill()
+                        else:
+                            self.player2.pos.x += 10  #Hitbox en caso de disparo
+                            shot.kill()
                     elif self.player.pos.x >= self.player2.pos.x: #En caso que el jugador 1 esté a la derecha del jugador 2
-                        self.player2.pos.x -= 10  #Hitbox en caso de disparo
-                        shot.kill()
+                        if self.player2.activated:
+                            self.player2.pos.x -= 0  #Hitbox en caso de disparo
+                            shot.kill()
+                        else:
+                            self.player2.pos.x -= 10  #Hitbox en caso de disparo
+                            shot.kill()
+                
 
            
 
-
+        """
         if self.player.rect.top >= 590:
             self.player.pos.y += abs(self.player.vel.y)
             self.player_lives -= 1
             print(self.player_lives)
+        """
 
         #si el jugador se cae de una plataforma 
         # añadir las vidas del jugador y descontar una vida cuando se cae de una plataforma
@@ -93,7 +103,8 @@ class Game:
             for sprite in self.all_sprites:
                 sprite.rect.y -= max(self.player.vel.y,10)
                 if sprite.rect.bottom < 0:
-                    sprite.kill()
+                    self.player.lives -= 1
+                    sprite.kill()                    
             self.playing = False
 
 
@@ -113,13 +124,22 @@ class Game:
 
 
             if shots2:
-                for shot in shots2:
-                    if self.player2.pos.x < self.player.pos.x: #En caso que el jugador 2 esté a la  izquierda del jugador 1
-                        self.player.pos.x += 10  #Hitbox en caso de disparo
-                        shot.kill()
-                    elif self.player2.pos.x >= self.player.pos.x: #En caso que el jugador 2 esté a la derecha del jugador 1
-                        self.player.pos.x -= 10  #Hitbox en caso de disparo
-                        shot.kill()
+                self.player.activated = True #Futura condición para el power up 'shield'
+                for shot in shots2: 
+                    if self.player2.pos.x < self.player.pos.x: #En caso que el jugador 1 esté a la  izquierda del jugador 2
+                        if self.player.activated:
+                            self.player.pos.x += 0  #Hitbox en caso de disparo
+                            shot.kill()
+                        else:
+                            self.player.pos.x += 10  #Hitbox en caso de disparo
+                            shot.kill()
+                    elif self.player2.pos.x >= self.player.pos.x: #En caso que el jugador 1 esté a la derecha del jugador 2
+                        if self.player.activated:
+                            self.player.pos.x -= 0  #Hitbox en caso de disparo
+                            shot.kill()
+                        else:
+                            self.player.pos.x -= 10  #Hitbox en caso de disparo
+                            shot.kill()
 
         if self.player2.rect.top >= 590:
             self.player2.pos.y += abs(self.player.vel.y)
@@ -132,6 +152,7 @@ class Game:
             for sprite in self.all_sprites:
                 sprite.rect.y -= max(self.player2.vel.y,10)
                 if sprite.rect.bottom < 0:
+                    self.player2.lives -= 1
                     sprite.kill()
             self.playing = False
         
@@ -163,6 +184,11 @@ class Game:
                     self.player.jump_cut()
                 elif event.key == pg.K_w:
                     self.player2.jump_cut()
+                elif event.key == pg.K_p: #Prueba para power up "shoot", se debe cambiar
+                    if self.player.left == True:
+                        self.player.vel.x -= 10 
+                    else:
+                        self.player.vel.x += 10 
                 elif event.key == pg.K_s:
                     if self.player2.left:
                         facing2 = -1
@@ -170,6 +196,7 @@ class Game:
                         facing2 = 1
                     
                     Projectiles(self,self.player2, facing2)
+
 
             
 
@@ -179,7 +206,7 @@ class Game:
         self.screen.blit(self.bg,(0,0))
         self.all_sprites.draw(self.screen)
         self.screen.blit(self.player.image, self.player.rect)
-        #self.draw_text(str(self.player_lives),22,WHITE,WIDTH/2,15)
+        self.draw_text("Vidas: " + str(self.player.lives), 10, (0,0,0), 10, 20)
         # después de dibujar o mostrar elementos en pantalla, actualiza la ventana
         pg.display.flip()
 
@@ -228,6 +255,6 @@ g = Game()
 g.show_start_screen()
 while g.running:
     g.new()
-    g.show_go_screen()
+    #g.show_go_screen()
 
 pg.quit()
