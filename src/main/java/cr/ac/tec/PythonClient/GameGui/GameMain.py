@@ -101,11 +101,13 @@ class Game:
         # añadir las vidas del jugador y descontar una vida cuando se cae de una plataforma
         if self.player.rect.bottom > HEIGHT:
             for sprite in self.all_sprites:
-                sprite.rect.y -= max(self.player.vel.y,10)
+                #sprite.rect.y -= max(self.player.vel.y,10)
                 if sprite.rect.bottom < 0:
                     self.player.lives -= 1
-                    sprite.kill()                    
-            self.playing = False
+                    self.player.pos = vec(WIDTH / 2, HEIGHT / 2)   
+                    self.player.vel = vec(0,0)
+                    self.player.acc = vec(0,0)                
+            #self.playing = False
 
 
         if self.player2.vel.y > 0:
