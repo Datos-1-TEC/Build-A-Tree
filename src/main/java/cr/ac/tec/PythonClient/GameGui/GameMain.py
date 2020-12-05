@@ -30,9 +30,10 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.powerups = pg.sprite.Group()
-        self.projectiles = pg.sprite.Group()
-        self.player = Player(self,1, "megaman")
-        self.player2 = Player(self,2, "samus")
+        self.projectiles_megaman = pg.sprite.Group()
+        self.projectiles_samus = pg.sprite.Group()
+        self.player = Player(self,1)
+        self.player2 = Player(self,2)
         #self.all_sprites.add(self.player2)
         #self.all_sprites.add(self.player)
         Platform(self,*PLATFORM_LIST[0],0)
@@ -56,7 +57,7 @@ class Game:
         #revisa si el jugador colisiona con una plataforma, solo si esta cayendo
         if self.player.vel.y > 0:
             hits = pg.sprite.spritecollide(self.player,self.platforms,False)
-            #shots = pg.sprite.spritecollide(self.player2, self.projectiles, True)
+            shots = pg.sprite.spritecollide(self.player2, self.projectiles_megaman, True)
             if hits:
                 lowest = hits[0]
                 for hit in hits:
@@ -69,16 +70,16 @@ class Game:
                         self.player.vel.y = 0
                         self.player.jumping = False
 
-            """
             if shots:
                 for shot in shots:
-                    if self.player.pos.x < self.player2.pos.x: #En caso que el jugador 1 esté a la izquierda del jugador 2
+                    if self.player.pos.x < self.player2.pos.x: #En caso que el jugador 1 esté a la  izquierda del jugador 2
                         self.player2.pos.x += 10  #Hitbox en caso de disparo
                         shot.kill()
                     elif self.player.pos.x >= self.player2.pos.x: #En caso que el jugador 1 esté a la derecha del jugador 2
                         self.player2.pos.x -= 10  #Hitbox en caso de disparo
                         shot.kill()
-            """
+
+           
 
 
         if self.player.rect.top >= 590:
@@ -98,6 +99,7 @@ class Game:
 
         if self.player2.vel.y > 0:
             hits2 = pg.sprite.spritecollide(self.player2,self.platforms,False)
+            shots2 = pg.sprite.spritecollide(self.player,self.projectiles_samus,True)
             if hits2:
                 lowest2 = hits2[0]
                 for hit in hits2:
@@ -108,6 +110,16 @@ class Game:
                     self.player2.pos.y = lowest2.rect.top + 1
                     self.player2.vel.y = 0
                     self.player2.samus_jumping = False
+
+
+            if shots2:
+                for shot in shots2:
+                    if self.player2.pos.x < self.player.pos.x: #En caso que el jugador 2 esté a la  izquierda del jugador 1
+                        self.player.pos.x += 10  #Hitbox en caso de disparo
+                        shot.kill()
+                    elif self.player2.pos.x >= self.player.pos.x: #En caso que el jugador 2 esté a la derecha del jugador 1
+                        self.player.pos.x -= 10  #Hitbox en caso de disparo
+                        shot.kill()
 
         if self.player2.rect.top >= 590:
             self.player2.pos.y += abs(self.player.vel.y)
