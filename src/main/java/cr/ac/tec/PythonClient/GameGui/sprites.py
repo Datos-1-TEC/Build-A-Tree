@@ -23,7 +23,7 @@ class Spritesheet:
 
 #Sprites para el jugador
 class Player(pg.sprite.Sprite):
-    def __init__(self,game,playerID,name):
+    def __init__(self,game,playerID):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self,self.groups)
         self.playerID = playerID
@@ -31,7 +31,8 @@ class Player(pg.sprite.Sprite):
         self.load_images()
         self.left = False
         self.right = False
-        self.name = name
+        self.activated = False
+        self.lives = 3
         if self.playerID == 1:
             self.image = self.game.spritesheet.get_image("resources/megamanstand.png")
             self.walking = False #para mostrar la animación cuando camina 
@@ -218,9 +219,7 @@ class Player(pg.sprite.Sprite):
                     self.samus_current_frame = (self.samus_current_frame + 1) % len(self.samus_standing_frame)
                     self.image = self.samus_standing_frame[self.samus_current_frame]
 
-        
-
-        
+ 
 class Platform(pg.sprite.Sprite):
     def __init__(self,game,x,y,platform_index):
         self.groups = game.all_sprites, game.platforms
@@ -248,12 +247,13 @@ class PowerUp(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game 
         self.platform = platform
-        self.type = choice(['boost'])
+        self.type = choice(['shoot', 'shield', 'airjump', 'extrapoints', 'push', 'faster', 'tempplatform'])
         self.image = self.game.spritesheet.get_image("resources/star_1.png")
         #self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         self.rect.centerx =  self.platform.rect.centerx
         self.rect.bottom = self.platform.rect.top - 5
+        
 
     def update(self):
         self.rect.bottom = self.platform.rect.top - 5
@@ -263,12 +263,17 @@ class PowerUp(pg.sprite.Sprite):
 
 class Projectiles(pg.sprite.Sprite):
     def __init__(self,game,player, facing):
-        self.groups = game.all_sprites, game.projectiles
-        pg.sprite.Sprite.__init__(self,self.groups)
         self.player = player 
         self.game = game
-        self.image_up = self.game.spritesheet.get_image("resources/shine1.png")
-        self.image_down = self.game.spritesheet.get_image("resources/shine2.png")
+        if player.playerID == 1:
+            self.groups = game.all_sprites, game.projectiles_megaman
+            self.image_up = self.game.spritesheet.get_image("resources/shine1.png")
+            self.image_down = self.game.spritesheet.get_image("resources/shine2.png")
+        else:
+            self.groups = game.all_sprites, game.projectiles_samus
+            self.image_up = self.game.spritesheet.get_image("resources/tesla_ball1.png")
+            self.image_down = self.game.spritesheet.get_image("resources/tesla_ball2.png")
+        pg.sprite.Sprite.__init__(self,self.groups)
         self.image = self.image_up
         self.rect = self.image.get_rect()
         self.rect.centerx = self.player.pos.x 
@@ -293,31 +298,7 @@ class Projectiles(pg.sprite.Sprite):
             self.image = self.image_down
         self.rect = self.image.get_rect()
         self.rect.center = center
-        self.rect.y += self.vy 
+        self.rect.y += self.vy
         if self.rect.left > WIDTH + 100 or self.rect.right < -100:
             self.kill()
-
-
-
-
-
-
-        
-
-
-            
-
-
-
-
-
-
-
-
-        
-
-
-
-
-    
 
