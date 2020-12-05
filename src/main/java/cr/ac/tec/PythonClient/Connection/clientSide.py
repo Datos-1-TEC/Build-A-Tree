@@ -1,78 +1,74 @@
 import sys
 import socket as sk
 import json
+import threading
 host = "127.0.0.1"
 port = 6666
 flag = True
 format = "utf8"
-file = 'JsonResources/Player.json'
 bts = 4096
-data = {
-    "Player": {
-        "ID": 2,
-        "miNodo": 45,
-        "posicion": "x, y"
-    }
-}
 
-with open('JsonResources/Player2.json', 'w') as write_file:
-    json.dump(data, write_file)
-message = json.dumps(data)
+firstMessage = "Connected"
 
-class client:
-    def __init__(self, port, host):
-
+class clientSide ():
+    def __init__(self):
+        #threading.Thread.__init__(self)
         self.port = port
         self.flag = True
         self.host = host
         self.request = sk.socket()
         self.request.connect((self.host, self.port))
+        self.sendMessage(firstMessage)
+        print("Connected")
+        self.received = self.request.recv(bts)
+        self.decoded = ""
         
-        print("Conectado")
+        while (self.flag):
+            try:
+                self.decoded = self.received.decode(format)
+                self.processReceived(self.decoded)
+            except IOError as e:
+                print(e)
+        
+    
 
-    def hostListener(self, message):
-        self.flag = True
+    def sendMessage(self, message):
         self.message = message
-        count = 0
-        while self.flag:
-            if count == 0:
-                toServer = self.message
-                print("Enviar:", toServer)
-                out = toServer.encode(format)
-                print("Salida antes de enviar:", out.decode(format))
-                sending = self.request.send(out)
-                print("Se han enviado: {} bytes al servidor.".format(sending))
-                fromServer = self.request.recv(bts)
-                decoded = fromServer.decode(format)
-                print("Servidor retorna:", decoded)
-                count += 1
+        print("Enviar:", self.message)
+        self.out = self.message.encode(format)
+        print("Salida antes de enviar:", self.out.decode(format))
+        self.sending = self.request.send(self.out)
+        print("Se han enviado: {} bytes al servidor.".format(self.sending))
 
-            else:
-                toServer = input("Texto para enviar: ")
-                print("Enviar:", toServer)
-                out = toServer.encode(format)
-                print("Salida antes de enviar:", out.decode(format))
-                sending = self.request.send(out)
-                print("Se han enviado: {} bytes al servidor.".format(sending))
-                if toServer == "exit":
-                    self.flag = False
-                    break
-                fromServer = self.request.recv(bts)
-                decoded = fromServer.decode(format)
-                print("Servidor retorna:", decoded)
-        if self.flag == False:
+    def processReceived(self, message):
+        self.message = message
+        
+        if self.message == "Temporizador iniciado":
+            self.sendMessage("challenges")
+            self.message = self.received.decode(format)
+            print(self.message)
+
+        elif self.message == "challenges":
+            self.message = self.received.decode(format)
+            print(self.message)
+
+
+        elif self.message == "exit":
+            self.sendMessage("exit")
+            self.flag = False
             self.request.close()
             print("Terminado")
-
-c1 = client(port, host)
-c1.hostListener(message)
-
-""" def main():
-
-    c1 = client(port, host)
-    c1.hostListener(message)
+        
+        
+def main():
+    c1 = clientSide()
 
 if __name__ == "__main__":
     main()
 print("Client closed....")
-  """   
+
+        
+
+
+
+

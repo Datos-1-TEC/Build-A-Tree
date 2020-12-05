@@ -6,78 +6,69 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cr.ac.tec.JavaServer.Challenges.ChallengeGenerator;
 import cr.ac.tec.JavaServer.Challenges.parseTokens;
+import cr.ac.tec.JavaServer.ServerFeatures.GameTimer;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class gameServer {
     private String jsonChallenges = "";
     private static int port = 6666;
     private String recibido = "", enviado = "";
-
     private OutputStreamWriter  out;
     private InputStreamReader in; 
     private Boolean isOpen = true;
+    private char[] charsMessage = new char[4096];
+    private ServerSocket server;
 
     public void listen(){
 
-        try {
-            ServerSocket server = new ServerSocket(port);
-            System.out.println("Esperando cliente");
-            Socket client = server.accept();
-            this.out = new OutputStreamWriter(client.getOutputStream(), "UTF8");
-            this.in = new InputStreamReader(client.getInputStream(), "UTF8");
-
-            char[] charsMessage = new char[4096];
-
-            while (isOpen) {
-                System.out.println("Esperando mensaje del cliente en python");
-                this.in.read(charsMessage);
-                
-                for (char c : charsMessage) {
-                    this.recibido += c;
-                    if (c == 00) {
-                        break;
-                    }
+        Thread thread = new Thread(() -> {
+            try {
+                server = new ServerSocket(port);
+                System.out.println("Esperando cliente");
+                Socket client = server.accept();
+                this.out = new OutputStreamWriter(client.getOutputStream(), "UTF8");
+                this.in = new InputStreamReader(client.getInputStream(), "UTF8");
+                while (isOpen) {
+                    //System.out.println("Esperando mensaje del cliente en python");
+                    this.in.read(this.charsMessage);     
+                    processMessage(fromChartoString());
                 }
-
-                if (recibido.contains("posicion")){
-                    this.enviado = "Jugador recibido";
-                    sendMessage(this.enviado);
-                    System.out.println("Cliente dice: " + this.recibido);
-                    System.out.println("Enviar a cliente: >>>" + this.enviado);
-                    this.recibido = ""; this.enviado = "";
-                }
-                if (recibido.contains("challenges")){
-                    this.enviado = generateTokens();
-                    sendMessage(this.enviado);
-                    System.out.println("Cliente dice: " + this.recibido);
-                    System.out.println("Enviar a cliente: >>>" + this.enviado);
-                    this.recibido = ""; this.enviado = "";
-                }
-                else if(this.recibido.contains("exit")){
-                    server.close();
-                    isOpen = false;
-                    this.recibido = "";
-                    
-                }          
-
-                charsMessage = new char[4096];
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
+        thread.start();
 
     }
 
+    private String fromChartoString() {
+        for (char c : charsMessage) {
+            this.recibido += c;
+            if (c == 00) {
+                break;
+            }
+        }
+        return this.recibido;
+    }
+
     private void sendMessage(String enviado) throws IOException {
-        this.enviado = enviado;
-        out.write(this.enviado.toCharArray());
-        out.flush();
+        try {
+            this.enviado = enviado;
+            out.write(this.enviado.toCharArray());
+            out.flush(); 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
     }
     /**
      * En este método se genera el JSON con los tokens de un reto BST, AVL, BTREE o SPLAY
@@ -111,28 +102,89 @@ public class gameServer {
             objectMapper.writeValue(new File("JsonResources/Challenges.json"), nodoChallenges);
 
         } catch (Exception e) {
-            //TODO: handle exception
+        
             e.printStackTrace();
         }  
         return this.jsonChallenges;    
     }
 
-    public void processMessage(String message){
-
+    public void processMessage(String recibido) throws IOException {
+        Timer myTimer = new Timer();
+        this.recibido = recibido;
+        
+        
+        if (this.recibido.contains("Connected")){
+            myTimer.scheduleAtFixedRate(new TimerTask(){
+                int currentTime = 0;
+                public void run(){
+                    currentTime++;
+                    System.out.println("Current seconds: " + currentTime);
+                    if (currentTime < 10){
+                        enviado = "Temporizador iniciado";
+                        try {
+                            sendMessage(enviado);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        //System.out.println("Cliente dice: " + recibido);
+                        System.out.println("Enviar a cliente: " + enviado);
+                        //recibido = "";  
+                        enviado = "";
+                    }
+                    else if(currentTime == 10) {
+                        try {
+                            enviado = "challenges";
+                            sendMessage(enviado);
+                            enviado = "";
+                            enviado = generateTokens();
+                            sendMessage(enviado);
+                            System.out.println("Enviar a cliente: " + enviado);
+                            enviado = "";
+                            //cancel();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        
+                    }
+                    else {
+                        try {
+                            sendMessage("exit");
+                            cancel();
+                        } catch (IOException e) {
+                           
+                            e.printStackTrace();
+                        }
+                    }
+                }}, 1000, 1000);    
+        }
+        if (this.recibido.contains("challenges")){
+           
+            try {
+                enviado = "challenges";
+                sendMessage(enviado);
+                enviado = "";
+                enviado = generateTokens();
+                sendMessage(enviado);
+                System.out.println("Enviar a cliente: " + enviado);
+                enviado = "";
+                //cancel();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //System.out.println("Enviar a cliente: >>>" + this.enviado);
+            this.recibido = ""; this.enviado = "";
+        }
+        else if(this.recibido.contains("exit")){
+            isOpen = false;
+            this.recibido = "";
+            server.close();
+            
+        }          
+        this.charsMessage = new char[4096];
+        
     }
-
     public static void main(String[] args) throws IOException {
         gameServer server = new gameServer();
         server.listen();
-
     }
-    /*
-    if (recibido.contains("challenges")){
-                    this.enviado = generateTokens();
-                    sendMessage(this.enviado);
-                    System.out.println("Cliente dice: " + recibido);
-                    System.out.println("Enviar a cliente: >>>" + this.enviado);
-                    recibido = ""; this.enviado = "";
-                }
-    */
 }
