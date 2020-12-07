@@ -28,12 +28,10 @@ def parsedDict(dict , object_hook):
     token = json.loads(dict, object_hook=object_hook)
     return token
 
-token = Token(12, "Triangle")
+""" token = Token(12, "Triangle")
 
-dict = {"Challenges":{"MainTokens":{},"FillerTokens":{}}}
-print(dict[1])
 
 myToken = parsedDict(tokenToJson(token), jsonToToken)
 print(myToken.val)
-print(myToken.shape)
+print(myToken.shape) """
 

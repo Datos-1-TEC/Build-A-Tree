@@ -1,7 +1,7 @@
 import sys
 import socket as sk
 import json
-import threading
+from threading import*
 host = "127.0.0.1"
 port = 6666
 flag = True
@@ -10,28 +10,25 @@ bts = 4096
 
 firstMessage = "Connected"
 
-class clientSide ():
+class clientSide (Thread):
     def __init__(self):
-        #threading.Thread.__init__(self)
+        
         self.port = port
         self.flag = True
         self.host = host
         self.request = sk.socket()
         self.request.connect((self.host, self.port))
         self.sendMessage(firstMessage)
-        print("Connected")
-        self.received = self.request.recv(bts)
         self.decoded = ""
-        
+        Thread.__init__(self)
+
         while (self.flag):
             try:
-                self.decoded = self.received.decode(format)
+                self.decoded = self.request.recv(bts).decode(format)
                 self.processReceived(self.decoded)
             except IOError as e:
                 print(e)
         
-    
-
     def sendMessage(self, message):
         self.message = message
         print("Enviar:", self.message)
@@ -44,24 +41,23 @@ class clientSide ():
         self.message = message
         
         if self.message == "Temporizador iniciado":
-            self.sendMessage("challenges")
-            self.message = self.received.decode(format)
             print(self.message)
 
-        elif self.message == "challenges":
-            self.message = self.received.decode(format)
+        elif self.message[0] == "challenges":
             print(self.message)
-
 
         elif self.message == "exit":
             self.sendMessage("exit")
             self.flag = False
             self.request.close()
             print("Terminado")
+        else:
+            print(self.message)
         
         
 def main():
     c1 = clientSide()
+    c1.start()
 
 if __name__ == "__main__":
     main()

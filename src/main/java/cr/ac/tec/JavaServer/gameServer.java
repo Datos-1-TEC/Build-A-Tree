@@ -11,11 +11,10 @@ import java.util.TimerTask;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import cr.ac.tec.JavaServer.Challenges.ChallengeGenerator;
 import cr.ac.tec.JavaServer.Challenges.parseTokens;
-import cr.ac.tec.JavaServer.ServerFeatures.GameTimer;
-
+import cr.ac.tec.JavaServer.Player.Player;
+import cr.ac.tec.JavaServer.TokensPrototype.Token;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class gameServer {
@@ -25,8 +24,10 @@ public class gameServer {
     private OutputStreamWriter  out;
     private InputStreamReader in; 
     private Boolean isOpen = true;
-    private char[] charsMessage = new char[4096];
     private ServerSocket server;
+    private String currentChallenge;
+    private Socket client;
+    private char[] buffer = new char[4096];
 
     public void listen(){
 
@@ -34,13 +35,11 @@ public class gameServer {
             try {
                 server = new ServerSocket(port);
                 System.out.println("Esperando cliente");
-                Socket client = server.accept();
-                this.out = new OutputStreamWriter(client.getOutputStream(), "UTF8");
-                this.in = new InputStreamReader(client.getInputStream(), "UTF8");
+                client = server.accept();
+                System.out.println("Conectado");
                 while (isOpen) {
                     //System.out.println("Esperando mensaje del cliente en python");
-                    this.in.read(this.charsMessage);     
-                    processMessage(fromChartoString());
+                    processMessage(client);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -50,17 +49,9 @@ public class gameServer {
 
     }
 
-    private String fromChartoString() {
-        for (char c : charsMessage) {
-            this.recibido += c;
-            if (c == 00) {
-                break;
-            }
-        }
-        return this.recibido;
-    }
 
-    private void sendMessage(String enviado) throws IOException {
+    private void sendMessage(String enviado, Socket client) throws IOException {
+        this.out = new OutputStreamWriter(client.getOutputStream(), "UTF8");
         try {
             this.enviado = enviado;
             out.write(this.enviado.toCharArray());
@@ -70,7 +61,98 @@ public class gameServer {
         }
         
     }
-    /**
+ 
+    public void processMessage(Socket client) throws IOException {
+        this.in = new InputStreamReader(client.getInputStream(), "UTF8");
+        this.recibido = readInput(this.in);
+        System.out.println("String leido");
+        
+        if (this.recibido.contains("Connected")){
+            Player player1 = new Player(1, 3, 0);
+            Player player2 = new Player(2, 3, 0);
+
+            //Hilo para llevar el cronómetro de cada cuanto se manda un reto y cuando se acaba la partida
+            //Thread startingThread = new Thread(); 
+            gameTimer();
+           
+        }
+        /*
+        En esta parte se verifica que el token que llega pertenece al del reto actual
+        formato esperado del JSON con el token:
+        {
+            ID jugador "1|2": { 
+                "Token":{
+                    "value": integer
+                    "Shape": a shape
+                }
+            }
+        }
+
+        */
+        else if (recibido.contains("Token")){
+           System.out.println("token recibido");
+        }
+        else if(recibido.contains("exit")){
+            this.isOpen = false;
+            recibido = "";
+            server.close();
+        }     
+        this.buffer = new char[4096];             
+    }
+
+    public void checkToken(Player player, Token token){
+        //condiciones para agregar el valor del token al árbol del jugador correspondiente y reenviarlo 
+        //al cliente para que lo muestre en interfaz. Si el token no pertenece el reto actual
+        //se borra el progreso del reto actual para ese jugador y se mandan los valores para el árbol
+        // de nuevo
+    }
+
+    public String readInput(InputStreamReader inputStream) throws IOException {
+        inputStream.read(buffer);
+        String message = "";
+        for (char c:buffer){
+            message += c;
+            if (c == 0){
+                break;
+            }
+        }
+        
+        return message;   
+    }
+    public void gameTimer(){
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask(){
+
+            private int currentTime = 0;
+            @Override
+            public void run() {
+                this.currentTime ++;
+                String enviado = generateTokens();
+                try {
+                    sendMessage(enviado, client);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (this.currentTime == 40){
+                    try {
+                        sendMessage("exit", client);
+                        this.cancel();
+                        timer.cancel();
+                    } catch (IOException e) {
+                        
+                        e.printStackTrace();
+                    }
+                }
+            }
+            
+        }, 5000, 1000);
+    }
+    public String readBytesString (byte[] msgBytes){
+        
+        return currentChallenge;
+        
+    }
+   /**
      * En este método se genera el JSON con los tokens de un reto BST, AVL, BTREE o SPLAY
      * de manera que en MainTokens se encuentran los objetos del reto y el FillerTokens están otros tokens generados que 
      *  se muestran en la GUI 
@@ -83,7 +165,7 @@ public class gameServer {
         ChallengeGenerator myChallenge = new ChallengeGenerator();
         parseTokens parseTokens = new parseTokens();
         myChallenge.challengeSelector();
-        String currentChallenge = myChallenge.getChallengeShape();
+        this.currentChallenge = myChallenge.getChallengeShape();
         try {
             parseTokens.tokensWriter(myChallenge.getBstTokensList(), currentChallenge);
             parseTokens.tokensWriter(myChallenge.getAvlTokensList(), currentChallenge);
@@ -107,84 +189,9 @@ public class gameServer {
         }  
         return this.jsonChallenges;    
     }
-
-    public void processMessage(String recibido) throws IOException {
-        Timer myTimer = new Timer();
-        this.recibido = recibido;
-        
-        
-        if (this.recibido.contains("Connected")){
-            myTimer.scheduleAtFixedRate(new TimerTask(){
-                int currentTime = 0;
-                public void run(){
-                    currentTime++;
-                    System.out.println("Current seconds: " + currentTime);
-                    if (currentTime < 10){
-                        enviado = "Temporizador iniciado";
-                        try {
-                            sendMessage(enviado);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        //System.out.println("Cliente dice: " + recibido);
-                        System.out.println("Enviar a cliente: " + enviado);
-                        //recibido = "";  
-                        enviado = "";
-                    }
-                    else if(currentTime == 10) {
-                        try {
-                            enviado = "challenges";
-                            sendMessage(enviado);
-                            enviado = "";
-                            enviado = generateTokens();
-                            sendMessage(enviado);
-                            System.out.println("Enviar a cliente: " + enviado);
-                            enviado = "";
-                            //cancel();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        
-                    }
-                    else {
-                        try {
-                            sendMessage("exit");
-                            cancel();
-                        } catch (IOException e) {
-                           
-                            e.printStackTrace();
-                        }
-                    }
-                }}, 1000, 1000);    
-        }
-        if (this.recibido.contains("challenges")){
-           
-            try {
-                enviado = "challenges";
-                sendMessage(enviado);
-                enviado = "";
-                enviado = generateTokens();
-                sendMessage(enviado);
-                System.out.println("Enviar a cliente: " + enviado);
-                enviado = "";
-                //cancel();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //System.out.println("Enviar a cliente: >>>" + this.enviado);
-            this.recibido = ""; this.enviado = "";
-        }
-        else if(this.recibido.contains("exit")){
-            isOpen = false;
-            this.recibido = "";
-            server.close();
-            
-        }          
-        this.charsMessage = new char[4096];
-        
-    }
     public static void main(String[] args) throws IOException {
         gameServer server = new gameServer();
         server.listen();
     }
+
 }
