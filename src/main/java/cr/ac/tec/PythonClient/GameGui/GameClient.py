@@ -3,6 +3,7 @@ import socket as sk
 import json
 from threading import*
 from json import JSONEncoder
+from Player import*
 host = "127.0.0.1"
 port = 6666
 flag = True
@@ -41,25 +42,27 @@ class clientSide (Thread):
     def processReceived(self, message):
         self.message = message
         
-        if self.message == "Temporizador iniciado":
-            message_dict = json.loads(self.message)
-            print(message_dict["Challenges"])
-            with open('JsonResources/CurrentChallenge.json', 'w') as write_file:
-                json.dump(message, write_file) 
-            
+        try:
+            if "Challenges" in self.message:  
+                message_dict = json.loads(self.message)          
+                with open('JsonResources/CurrentChallenge.json', 'w') as json_file:
+                    json.dump(message, json_file) 
 
-        elif self.message == "challenges":
-            print(self.message)
+                print(json.dumps(message_dict))
+                
+            elif self.message == "challenges":
+                print(self.message)
 
-        elif self.message == "exit":
-            self.sendMessage("exit")
-            self.flag = False
-            self.request.close()
-            print("Terminado")
-        else:
-            print(self.message)
-        
-        
+            elif self.message == "exit":
+                self.sendMessage("exit")
+                self.flag = False
+                self.request.close()
+                print("Terminado")
+            else:
+                print(self.message)    
+        except IOError as e:
+            print(e)
+              
 def main():
     c1 = clientSide()
     c1.start()

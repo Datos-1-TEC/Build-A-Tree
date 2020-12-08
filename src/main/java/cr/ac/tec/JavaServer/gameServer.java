@@ -28,6 +28,8 @@ public class gameServer {
     private String currentChallenge;
     private Socket client;
     private char[] buffer = new char[4096];
+    Player player1;
+    Player player2;
 
     public void listen(){
 
@@ -68,9 +70,7 @@ public class gameServer {
         System.out.println("String leido");
         
         if (this.recibido.contains("Connected")){
-            Player player1 = new Player(1, 3, 0);
-            Player player2 = new Player(2, 3, 0);
-
+            
             //Hilo para llevar el cronómetro de cada cuanto se manda un reto y cuando se acaba la partida
             //Thread startingThread = new Thread(); 
             gameTimer();
