@@ -7,6 +7,7 @@ from pygame.constants import K_w
 from sprites import *
 from settings import *
 vec = pg.math.Vector2
+bgs = ['resources/bg.jpg', 'resources/background2.jpg']
 
 
 class Game:
@@ -215,13 +216,14 @@ class Game:
 
     def draw(self):
         # Game Loop - dibuja en la ventana 
-        self.bg = pg.image.load("resources/bg.jpg")
+        self.bg = pg.image.load(bgs[0])
         self.screen.blit(self.bg,(0,0))
         self.all_sprites.draw(self.screen)
         self.screen.blit(self.player.image, self.player.rect)
-        self.draw_text("Vidas Megaman: " + str(self.player.lives), 20, (0,0,0), 80, 20)
-        self.draw_text("Vidas Samus: " + str(self.player2.lives), 20, (0,0,0), 1100, 20)
+        self.draw_text("Megaman lives: " + str(self.player.lives), 20, (0,0,0), 80, 20)
+        self.draw_text("Samus lives: " + str(self.player2.lives), 20, (0,0,0), 1100, 20)
         self.draw_text("Samus score: " + str(self.player2.score), 20, (0,0,0), 1100, 50)
+        self.draw_text("Megaman score: " + str(self.player.score), 20, (0,0,0), 80, 50)
         # después de dibujar o mostrar elementos en pantalla, actualiza la ventana
         pg.display.flip()
 
