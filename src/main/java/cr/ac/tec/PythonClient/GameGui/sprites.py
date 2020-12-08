@@ -242,8 +242,7 @@ class Platform(pg.sprite.Sprite):
             PowerUp(self.game,self)
 
 
-class PowerUp(pg.sprite.Sprite):
-    
+class PowerUp(pg.sprite.Sprite):    
     def __init__(self,game,platform):
         self.groups = game.all_sprites, game.powerups
         pg.sprite.Sprite.__init__(self,self.groups)

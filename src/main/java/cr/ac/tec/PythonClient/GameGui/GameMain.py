@@ -7,6 +7,7 @@ from pygame.constants import K_w
 from sprites import *
 from settings import *
 vec = pg.math.Vector2
+bgs = ['resources/bg.jpg', 'resources/background2.jpg']
 
 
 class Game:
@@ -215,7 +216,7 @@ class Game:
 
     def draw(self):
         # Game Loop - dibuja en la ventana 
-        self.bg = pg.image.load("resources/bg.jpg")
+        self.bg = pg.image.load(bgs[0])
         self.screen.blit(self.bg,(0,0))
         self.all_sprites.draw(self.screen)
         self.screen.blit(self.player.image, self.player.rect)
