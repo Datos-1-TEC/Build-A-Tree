@@ -248,7 +248,7 @@ class PowerUp(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game 
         self.platform = platform
-        self.type = choice(['shoot', 'shield', 'airjump', 'extrapoints', 'push', 'faster', 'tempplatform'])
+        self.type = choice(['shoot', 'shield', 'airjump', 'extrapoints', 'push', 'faster', 'tempplatform', 'bgchange'])
         self.image = self.game.spritesheet.get_image("resources/star_1.png")
         #self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
