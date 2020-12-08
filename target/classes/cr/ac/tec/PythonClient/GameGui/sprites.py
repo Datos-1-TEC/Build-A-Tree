@@ -33,6 +33,7 @@ class Player(pg.sprite.Sprite):
         self.right = False
         self.activated = False
         self.lives = 3
+        self.score = 0
         if self.playerID == 1:
             self.image = self.game.spritesheet.get_image("resources/megamanstand.png")
             self.walking = False #para mostrar la animación cuando camina 

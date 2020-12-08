@@ -6,6 +6,7 @@ import pygame
 from pygame.constants import K_w
 from sprites import *
 from settings import *
+vec = pg.math.Vector2
 
 
 class Game:
@@ -96,33 +97,21 @@ class Game:
             self.player_lives -= 1
             print(self.player_lives)
         """
-        """
 
-        #si el jugador se cae de una plataforma 
-        # mostrar las vidas del jugador y descontar una vida cuando se cae de una plataforma
-        if self.player.rect.bottom > HEIGHT:
-            for sprite in self.all_sprites:
-                #sprite.rect.y -= max(self.player.vel.y,10)
-                if sprite.rect.bottom < 0:
-                    self.player.lives -= 1
-                    self.player.pos = vec(WIDTH / 2, HEIGHT / 2)   
-                    self.player.vel = vec(0,0)
-                    self.player.acc = vec(0,0)                
-            #self.running = True
-        """
 
         if self.player.rect.bottom > HEIGHT:
-            for sprite in self.all_sprites:
-                sprite.rect.y -= max(self.player.vel.y,10)
-                if sprite.rect.bottom < 0 and self.player.lives > 0:
-                    self.player.lives -= 1
-                    self.player.pos = vec(600, 300)   
-                    self.player.vel = vec(0,0)
-                    self.player.acc = vec(0,0)
-                    sprite.kill()
-                elif self.player.lives <= 0:
-                    self.show_go_screen()
-                    self.playing = False
+
+            #for sprite in self.all_sprites:
+            #sprite.rect.y -= max(self.player.vel.y,10)            
+            if self.player.lives != 1:    
+                self.player.lives -= 1
+                self.player.pos = vec(600, 300)   
+                self.player.vel = vec(0,0)
+                self.player.acc = vec(0,0)                                                
+            else:
+                self.max_go_screen()
+                self.playing = False
+            
 
 
         if self.player2.vel.y > 0:
@@ -167,12 +156,16 @@ class Game:
          #si el jugador se cae de una plataforma 
         # añadir las vidas del jugador y descontar una vida cuando se cae de una plataforma
         if self.player2.rect.bottom > HEIGHT:
-            for sprite in self.all_sprites:
-                sprite.rect.y -= max(self.player2.vel.y,10)
-                if sprite.rect.bottom < 0:
-                    self.player2.lives -= 1
-                    sprite.kill()
-            self.playing = False
+            #for sprite in self.all_sprites:
+            #sprite.rect.y -= max(self.player.vel.y,10)            
+            if self.player2.lives != 1:    
+                self.player2.lives -= 1
+                self.player2.pos = vec(600, 300)   
+                self.player2.vel = vec(0,0)
+                self.player2.acc = vec(0,0)                                                
+            else:
+                self.show_go_screen()
+                self.playing = False
         
 
     def events(self):
@@ -225,6 +218,8 @@ class Game:
         self.all_sprites.draw(self.screen)
         self.screen.blit(self.player.image, self.player.rect)
         self.draw_text("Vidas Megaman: " + str(self.player.lives), 20, (0,0,0), 80, 20)
+        self.draw_text("Vidas Samus: " + str(self.player2.lives), 20, (0,0,0), 1100, 20)
+        self.draw_text("Samus score: " + str(self.player2.score), 20, (0,0,0), 1100, 50)
         # después de dibujar o mostrar elementos en pantalla, actualiza la ventana
         pg.display.flip()
 
@@ -239,8 +234,9 @@ class Game:
         if not self.running:
             return 
         self.screen.fill(LIGHTBLUE)
-        self.draw_text("GAME OVER",48, WHITE, WIDTH/2, HEIGHT/4)
-        self.draw_text("Score: ", 22,WHITE,WIDTH/2,HEIGHT/2)
+        self.draw_text("GAME OVER      Megaman wins!",48, WHITE, WIDTH/2, HEIGHT/8)
+        self.draw_text("Samus Score: " + str(self.player2.score), 22,WHITE,WIDTH/2,HEIGHT/2)
+        self.draw_text("Megaman Score: " + str(self.player.score), 22,WHITE,WIDTH/2,HEIGHT/3)
         self.draw_text("Press a key to continue", 22,WHITE,WIDTH/2,HEIGHT*3/4)
         pg.display.flip()
         self.wait_for_key()
@@ -254,13 +250,14 @@ class Game:
         if not self.running:
             return 
         self.screen.fill(LIGHTBLUE)
-        self.draw_text("GAME OVER",48, WHITE, WIDTH/2, HEIGHT/4)
-        self.draw_text("Score: ", 22,WHITE,WIDTH/2,HEIGHT/2)
+        self.draw_text("GAME OVER      Samus wins!",48, WHITE, WIDTH/2, HEIGHT/8)
+        self.draw_text("Samus Score: " + str(self.player2.score), 22,WHITE,WIDTH/2,HEIGHT/2)
+        self.draw_text("Megaman Score: " + str(self.player.score), 22,WHITE,WIDTH/2,HEIGHT/3)
         self.draw_text("Press a key to continue", 22,WHITE,WIDTH/2,HEIGHT*3/4)
         pg.display.flip()
         self.wait_for_key()
 
-
+        
         self.wait_for_key()
         #pass
 
