@@ -42,7 +42,10 @@ class Game:
         Platform(self,*PLATFORM_LIST[0],0)
         Platform(self,*PLATFORM_LIST[1],1)
         Platform(self,*PLATFORM_LIST[2],1)
-        Platform(self,*PLATFORM_LIST[3],2)
+        Platform(self,*PLATFORM_LIST[3],1)
+        Platform(self,*PLATFORM_LIST[5],1)
+        Platform(self,*PLATFORM_LIST[6],2)
+        Platform(self,*PLATFORM_LIST[7],2)
         self.run()
 
     def run(self):
@@ -185,6 +188,8 @@ class Game:
                     self.player.jump()
                 elif event.key == pg.K_w:
                     self.player2.jump()
+                elif event.key == pg.K_v:
+                    Platform(self,*PLATFORM_LIST[4],2)
                 elif event.key == pg.K_DOWN:
                     if self.player.left:
                         facing = -1
