@@ -12,7 +12,7 @@ PLAYER_FRICTION = -0.12
 PLAYER_JUMP = 20
 
 #Plataformas iniciales 
-PLATFORM_LIST = [(330, 500),(110,300),(900,300),(520,170)]
+PLATFORM_LIST = [(330, 500),(110,300),(900,300),(570,170),(500,300),(350,170),(250,400),(750,400)]
 
 #propiedades de juego 
 BOOST_POWER = 60
