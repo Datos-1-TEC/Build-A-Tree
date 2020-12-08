@@ -43,7 +43,7 @@ class clientSide (Thread):
         if self.message == "Temporizador iniciado":
             print(self.message)
 
-        elif self.message[0] == "challenges":
+        elif self.message == "challenges":
             print(self.message)
 
         elif self.message == "exit":

@@ -133,7 +133,7 @@ public class gameServer {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (this.currentTime == 40){
+                if (this.currentTime == 2){
                     try {
                         sendMessage("exit", client);
                         this.cancel();
@@ -145,7 +145,7 @@ public class gameServer {
                 }
             }
             
-        }, 5000, 1000);
+        }, 1000, 5000);
     }
     public String readBytesString (byte[] msgBytes){
         

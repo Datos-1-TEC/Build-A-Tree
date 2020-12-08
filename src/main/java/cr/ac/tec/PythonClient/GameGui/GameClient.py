@@ -2,6 +2,7 @@ import sys
 import socket as sk
 import json
 from threading import*
+from json import JSONEncoder
 host = "127.0.0.1"
 port = 6666
 flag = True
@@ -41,7 +42,11 @@ class clientSide (Thread):
         self.message = message
         
         if self.message == "Temporizador iniciado":
-            print(self.message)
+            message_dict = json.loads(self.message)
+            print(message_dict["Challenges"])
+            with open('JsonResources/CurrentChallenge.json', 'w') as write_file:
+                json.dump(message, write_file) 
+            
 
         elif self.message == "challenges":
             print(self.message)
@@ -62,9 +67,3 @@ def main():
 if __name__ == "__main__":
     main()
 print("Client closed....")
-
-        
-
-
-
-
