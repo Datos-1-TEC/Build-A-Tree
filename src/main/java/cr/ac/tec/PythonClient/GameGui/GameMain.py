@@ -59,6 +59,10 @@ class Game:
         self.tokens = pg.sprite.Group()
         self.playerslist = pg.sprite.Group()
         self.powerupslist = [] 
+        self.powerup_shield = pg.sprite.Group()
+        self.powerup_shoot = pg.sprite.Group()
+        self.powerup_push = pg.sprite.Group()
+        self.powerup_airjump = pg.sprite.Group()
         self.player = Player(self,1)
         self.player2 = Player(self,2)
         self.token = Token(self,2,"Diamond")
@@ -90,7 +94,10 @@ class Game:
         if self.player.vel.y > 0:
             hits = pg.sprite.spritecollide(self.player,self.platforms,False)
             shots = pg.sprite.spritecollide(self.player2, self.projectiles_megaman, True)
-            push = pg.sprite.spritecollide(self.player, self.playerslist, False)
+            pwrpshots = pg.sprite.spritecollide(self.player, self.powerup_shoot, True)
+            shield = pg.sprite.spritecollide(self.player2, self.powerup_shield, True)
+            push = pg.sprite.spritecollide(self.player, self.powerup_push, True)
+
             if hits:
                 lowest = hits[0]
                 for hit in hits:
@@ -103,34 +110,32 @@ class Game:
                         self.player.vel.y = 0
                         self.player.jumping = False
 
-            if shots:
-                for powerup in self.powerupslist:
-                    if self.isColliding(powerup.rect.centerx, powerup.rect.bottom, self.player2.pos.x, self.player2.pos.y):
-                        powerup.kill()
-                        self.player2.activated = True #Futura condición para el power up 'shield'
-                        for shot in shots:
-                            if self.player.pos.x < self.player2.pos.x: #En caso que el jugador 1 este a la  izquierda del jugador 2
-                                if self.player2.activated:
-                                    self.player2.pos.x += 0  #Hitbox en caso de disparo
-                                    shot.kill()
-                                else:
-                                    self.player2.pos.x += 10  #Hitbox en caso de disparo
-                                    shot.kill()
-                            elif self.player.pos.x >= self.player2.pos.x: #En caso que el jugador 1 este a la derecha del jugador 2
-                                if self.player2.activated:
-                                    self.player2.pos.x -= 0  #Hitbox en caso de disparo
-                                    shot.kill()
-                                else:
-                                    self.player2.pos.x -= 10  #Hitbox en caso de disparo
-                                    shot.kill()
-            """
+            if shots:                
+                self.player2.activated = True #Futura condición para el power up 'shield'
+                for shot in shots:
+                    if self.player.pos.x < self.player2.pos.x: #En caso que el jugador 1 este a la  izquierda del jugador 2
+                        if shield:
+                            self.player2.pos.x += 0  #Hitbox en caso de disparo
+                            shot.kill()
+                        elif pwrpshots:
+                            self.player2.pos.x += 10  #Hitbox en caso de disparo
+                            shot.kill()
+                    elif self.player.pos.x >= self.player2.pos.x: #En caso que el jugador 1 este a la derecha del jugador 2
+                        if shield:
+                            self.player2.pos.x -= 0  #Hitbox en caso de disparo
+                            shot.kill()
+                        elif pwrpshots:
+                            self.player2.pos.x -= 10  #Hitbox en caso de disparo
+                            shot.kill()
+            
             #push
-            if self.isColliding(self.player.pos.x, self.player.pos.y, self.player2.pos.x, self.player2.pos.y):
-                if self.player.pos.x < self.player2.pos.x:
-                    self.player2.pos.x += 8
-                elif self.player.pos.x >= self.player2.pos.x:
-                    self.player2.pos.x -= 8
-            """
+            if push:
+                if self.isColliding(self.player.pos.x, self.player.pos.y, self.player2.pos.x, self.player2.pos.y):
+                    if self.player.pos.x < self.player2.pos.x:
+                        self.player2.pos.x += 8
+                    elif self.player.pos.x >= self.player2.pos.x:
+                        self.player2.pos.x -= 8
+            
             
 
 
@@ -153,6 +158,9 @@ class Game:
         if self.player2.vel.y > 0:
             hits2 = pg.sprite.spritecollide(self.player2,self.platforms,False)
             shots2 = pg.sprite.spritecollide(self.player,self.projectiles_samus,True)
+            pwrpshots2 = pg.sprite.spritecollide(self.player2, self.powerup_shoot, True)
+            shield2 = pg.sprite.spritecollide(self.player, self.powerup_shield, True)
+            push2 = pg.sprite.spritecollide(self.player, self.powerup_push, True)
             if hits2:
                 lowest2 = hits2[0]
                 for hit in hits2:
@@ -169,27 +177,28 @@ class Game:
                 self.player.activated = True #Futura condición para el power up 'shield'
                 for shot in shots2: 
                     if self.player2.pos.x < self.player.pos.x: #En caso que el jugador 1 esté a la  izquierda del jugador 2
-                        if self.player.activated:
+                        if shield2:
                             self.player.pos.x += 0  #Hitbox en caso de disparo
                             shot.kill()
-                        else:
+                        elif pwrpshots2:
                             self.player.pos.x += 10  #Hitbox en caso de disparo
                             shot.kill()
                     elif self.player2.pos.x >= self.player.pos.x: #En caso que el jugador 1 esté a la derecha del jugador 2
-                        if self.player.activated:
+                        if shield2:
                             self.player.pos.x -= 0  #Hitbox en caso de disparo
                             shot.kill()
-                        else:
+                        elif pwrpshots2:
                             self.player.pos.x -= 10  #Hitbox en caso de disparo
                             shot.kill()
-            """
+            
             #push
-            if self.isColliding(self.player2.pos.x, self.player2.pos.y, self.player.pos.x, self.player.pos.y):
-                if self.player2.pos.x < self.player.pos.x:
-                    self.player.pos.x += 8
-                elif self.player2.pos.x >= self.player.pos.x:
-                    self.player.pos.x -= 8
-            """
+            if push2:
+                if self.isColliding(self.player2.pos.x, self.player2.pos.y, self.player.pos.x, self.player.pos.y):
+                    if self.player2.pos.x < self.player.pos.x:
+                        self.player.pos.x += 8
+                    elif self.player2.pos.x >= self.player.pos.x:
+                        self.player.pos.x -= 8
+            
 
 
         #si el jugador se cae de una plataforma 
@@ -209,6 +218,8 @@ class Game:
 
     def events(self):
         # Game Loop - eventos de pygame 
+        airjump = pg.sprite.spritecollide(self.player,self.powerup_airjump,False)
+        airjump2 = pg.sprite.spritecollide(self.player2,self.powerup_airjump,False)
         for event in pg.event.get():
             # revisa si la ventana ha sido cerrada 
             if event.type == pg.QUIT:
@@ -218,9 +229,9 @@ class Game:
             
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_UP:
-                    self.player.jump()
+                    self.player.jump(20)
                 elif event.key == pg.K_w:
-                    self.player2.jump()
+                    self.player2.jump(20)
                 elif event.key == pg.K_v: #crea plataforma random
                     Platform(self,*PLATFORM_LIST[4],2)
                 elif event.key == pg.K_DOWN:

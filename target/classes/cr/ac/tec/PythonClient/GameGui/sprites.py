@@ -110,7 +110,7 @@ class Player(pg.sprite.Sprite):
                 if self.vel.y < -3:
                     self.vel.y = -3
 
-    def jump(self):
+    def jump(self, PLAYER_JUMP):
         #salta unicamente si esta tocando una plataforma 
         self.rect.x += 2
         hits = pg.sprite.spritecollide(self,self.game.platforms,False)
@@ -244,12 +244,24 @@ class Platform(pg.sprite.Sprite):
 
 class PowerUp(pg.sprite.Sprite):    
     def __init__(self,game,platform):
-        self.groups = game.all_sprites, game.powerups
+        #self.groups = game.all_sprites, game.powerups
+        self.type = choice(['shoot', 'shield', 'airjump', 'push']) #'extrapoints',, 'faster', 'tempplatform'
+        if self.type == 'shield':
+            self.groups = game.all_sprites, game.powerup_shield
+        elif self.type == 'shoot':
+            self.groups = game.all_sprites, game.powerup_shoot
+        elif self.type == 'push':
+            self.groups = game.all_sprites, game.powerup_push
+        elif self.type == 'airjump':
+            self.groups = game.all_sprites, game.powerup_airjump
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game 
         self.game.powerupslist.append(self)
         self.platform = platform
-        self.type = choice(['shoot', 'shield', 'airjump', 'extrapoints', 'push', 'faster', 'tempplatform'])
+           
+        #self.type = choice(['airjump'])
+        #self.type = choice(['push'])
+        #self.type = choice(['shoot'])
         self.image = self.game.spritesheet.get_image("resources/star_1.png")
         #self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
