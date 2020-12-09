@@ -16,6 +16,7 @@ import cr.ac.tec.JavaServer.Challenges.parseTokens;
 import cr.ac.tec.JavaServer.Player.Player;
 import cr.ac.tec.JavaServer.TokensPrototype.Token;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
 public class gameServer {
     private String jsonChallenges = "";
@@ -51,7 +52,6 @@ public class gameServer {
 
     }
 
-
     private void sendMessage(String enviado, Socket client) throws IOException {
         this.out = new OutputStreamWriter(client.getOutputStream(), "UTF8");
         try {
@@ -60,8 +60,7 @@ public class gameServer {
             out.flush(); 
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        
+        }      
     }
  
     public void processMessage(Socket client) throws IOException {
@@ -91,12 +90,10 @@ public class gameServer {
 
         */
         else if (this.recibido.contains("Token")){
-           System.out.println("token recibido");
            if (this.recibido.contains("ID1")){
-                JsonNode node = Json.parse(this.recibido);
-                System.out.println(node.get("ID1").get("Token").get("shape"));
-                System.out.println(node.get("ID1").get("Token").get("value"));
-                System.out.println(node.get("ID1").get("Token").get("points"));
+                System.out.println("token recibido");
+                JsonNode tokenNode = Json.parse(this.recibido);
+                checkToken(this.player1, tokenNode);
 
            }
 
@@ -109,11 +106,56 @@ public class gameServer {
         this.buffer = new char[4096];             
     }
 
-    public void checkToken(Player player, Token token){
+    public void checkToken(Player player, JsonNode tokenNode){
+        String tokenShape = tokenNode.get("ID1").get("Token").get("shape").asText();
+        System.out.println("La forma del token recibido es: " + tokenShape);
+        System.out.println("La forma del actual es: " + this.currentChallenge);
+        
         //condiciones para agregar el valor del token al árbol del jugador correspondiente y reenviarlo 
         //al cliente para que lo muestre en interfaz. Si el token no pertenece el reto actual
         //se borra el progreso del reto actual para ese jugador y se mandan los valores para el árbol
         // de nuevo
+        if (tokenShape.equals(currentChallenge)){
+            addTokenToTree(player, tokenNode, tokenShape);
+        }
+    }
+    /**
+     * En este método se agrega el valor del token que manda el cliente al árbol correspondiente y se le suman los puntos del token al jugador
+     * 
+     * @param player
+     * @param tokenNode
+     * @param tokenShape
+     */
+    public void addTokenToTree(Player player, JsonNode tokenNode, String tokenShape){
+        int tokenValue = tokenNode.get("ID1").get("Token").get("value").asInt();
+        int tokenPoints = tokenNode.get("ID1").get("Token").get("points").asInt();
+        System.out.println("El valor del token recibido es: " + tokenValue);
+    
+        if (tokenShape.contains("Diamond")){
+            player.getMyBST().insert(tokenValue);
+            player.getMyBST().getKeysList().print();;
+            player.setScore(tokenPoints);
+            System.out.println("La forma es: " + tokenShape);
+            System.out.println("Los puntos del jugador son: " + player.getScore());
+        }
+        else if (tokenShape.contains("Rectangle")){
+            player.getMyBTree().insert(tokenValue);
+            player.setScore(tokenPoints);  
+            System.out.println("La forma es: " + tokenShape);
+            System.out.println("Los puntos del jugador son: " + player.getScore());
+        }
+        else if (tokenShape.contains("Circle")){
+            player.getMyAVL().insert(player.getMyAVL().getRoot(), tokenValue);
+            player.setScore(tokenPoints);
+            System.out.println("La forma es: " + tokenShape);
+            System.out.println("Los puntos del jugador son: " + player.getScore());
+        }
+        else{
+            player.getMySplay().insert(tokenValue);
+            player.setScore(tokenPoints);
+            System.out.println("La forma es: " + tokenShape);
+            System.out.println("Los puntos del jugador son: " + player.getScore());
+        }
     }
 
     public String readInput(InputStreamReader inputStream) throws IOException {

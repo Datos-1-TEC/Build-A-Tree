@@ -10,10 +10,10 @@ public class Player {
     private int ID;
     private int lives = 3;
     //Agregar atributo Reto actual
-    private BinarySearchTree myBST;
-    private AVLTree myAVL;
-    private SplayTree mySplay;
-    private BTree myBTree; 
+    private BinarySearchTree myBST = new BinarySearchTree();
+    private AVLTree myAVL = new AVLTree();
+    private SplayTree mySplay = new SplayTree();
+    private BTree myBTree = new BTree(); 
     private int score;
     public Player(int ID, int lives, int score) {
             this.ID = ID;
@@ -47,7 +47,7 @@ public class Player {
     }
 
     public void setScore(int score) {
-        this.score = score;
+        this.score += score;
     }
 
     public BinarySearchTree getMyBST() {

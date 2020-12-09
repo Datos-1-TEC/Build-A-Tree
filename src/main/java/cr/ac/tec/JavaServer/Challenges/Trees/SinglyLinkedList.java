@@ -1,6 +1,5 @@
 package cr.ac.tec.JavaServer.Challenges.Trees;
 
-import javax.sound.midi.Track;
 
 public class SinglyLinkedList<T> {
     private NodeL<T> first, tail;
@@ -13,6 +12,18 @@ public class SinglyLinkedList<T> {
     public boolean isEmpty() {
         return this.first == null;
     }
+
+    public boolean hasValue(T searchValue){
+        NodeL<T> current = new NodeL<>();
+        current = this.first;
+        while (current != null){
+            if (current.getValue() == searchValue) {
+                return true;
+            }
+            current = current.getNext();
+        }
+        return false;
+    }    
     /**
      * Adds an element at first position
      *

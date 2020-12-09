@@ -55,8 +55,10 @@ class clientSide (Thread):
                 with open('JsonResources/CurrentChallenge.json', 'w') as json_file:
                     json.dump(message, json_file) 
                 print(json.dumps(message_dict))
+                self.mainTokens = []
+                self.fillerTokens = []
                 self.readChallenge(self.mainTokens, self.fillerTokens)
-                tokenToSend = self.fillerTokens[0]
+                tokenToSend = self.mainTokens[0]
                 self.sendToken(tokenToSend, self.player1.getID())
 
             elif self.message == "exit":
