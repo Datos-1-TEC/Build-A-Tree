@@ -24,7 +24,7 @@ class Game:
         
         @method update(self): En este metodo se crean los hitbox para los dos jugadores(toma en cuenta los power ups).
         
-        @method events(self): En este metodo se establecen las acciones de cada boton
+        @method events(self): En este metodo se establecen las acciones de cada boton.
         
         @method isColliding(self, player2x, player2y, playerx, playery): Es una funcion donde se crea un hitbox alternativo para cuando los dos jugadores agarren el power up 'push' y asi se puedan empujar en caso que choquen.
 
@@ -58,6 +58,7 @@ class Game:
         self.projectiles_samus = pg.sprite.Group()
         self.tokens = pg.sprite.Group()
         self.playerslist = pg.sprite.Group()
+        self.powerupslist = [] 
         self.player = Player(self,1)
         self.player2 = Player(self,2)
         self.token = Token(self,2,"Diamond")
@@ -103,22 +104,25 @@ class Game:
                         self.player.jumping = False
 
             if shots:
-                self.player2.activated = True #Futura condición para el power up 'shield'
-                for shot in shots:
-                    if self.player.pos.x < self.player2.pos.x: #En caso que el jugador 1 esté a la  izquierda del jugador 2
-                        if self.player2.activated:
-                            self.player2.pos.x += 0  #Hitbox en caso de disparo
-                            shot.kill()
-                        else:
-                            self.player2.pos.x += 10  #Hitbox en caso de disparo
-                            shot.kill()
-                    elif self.player.pos.x >= self.player2.pos.x: #En caso que el jugador 1 esté a la derecha del jugador 2
-                        if self.player2.activated:
-                            self.player2.pos.x -= 0  #Hitbox en caso de disparo
-                            shot.kill()
-                        else:
-                            self.player2.pos.x -= 10  #Hitbox en caso de disparo
-                            shot.kill()
+                for powerup in self.powerupslist:
+                    if self.isColliding(powerup.rect.centerx, powerup.rect.bottom, self.player2.pos.x, self.player2.pos.y):
+                        powerup.kill()
+                        self.player2.activated = True #Futura condición para el power up 'shield'
+                        for shot in shots:
+                            if self.player.pos.x < self.player2.pos.x: #En caso que el jugador 1 este a la  izquierda del jugador 2
+                                if self.player2.activated:
+                                    self.player2.pos.x += 0  #Hitbox en caso de disparo
+                                    shot.kill()
+                                else:
+                                    self.player2.pos.x += 10  #Hitbox en caso de disparo
+                                    shot.kill()
+                            elif self.player.pos.x >= self.player2.pos.x: #En caso que el jugador 1 este a la derecha del jugador 2
+                                if self.player2.activated:
+                                    self.player2.pos.x -= 0  #Hitbox en caso de disparo
+                                    shot.kill()
+                                else:
+                                    self.player2.pos.x -= 10  #Hitbox en caso de disparo
+                                    shot.kill()
             """
             #push
             if self.isColliding(self.player.pos.x, self.player.pos.y, self.player2.pos.x, self.player2.pos.y):
@@ -250,7 +254,7 @@ class Game:
         if distance < 20:
             return True
         else:
-            return False           
+            return False         
 
     def draw(self):
         #Game Loop - dibuja en la ventana 

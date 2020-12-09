@@ -247,6 +247,7 @@ class PowerUp(pg.sprite.Sprite):
         self.groups = game.all_sprites, game.powerups
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game = game 
+        self.game.powerupslist.append(self)
         self.platform = platform
         self.type = choice(['shoot', 'shield', 'airjump', 'extrapoints', 'push', 'faster', 'tempplatform'])
         self.image = self.game.spritesheet.get_image("resources/star_1.png")
