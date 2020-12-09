@@ -70,7 +70,8 @@ public class gameServer {
         System.out.println("String leido");
         
         if (this.recibido.contains("Connected")){
-            
+            player1 = new Player(1, 3, 0);
+            player1 = new Player(2, 3, 0);
             //Hilo para llevar el cronómetro de cada cuanto se manda un reto y cuando se acaba la partida
             //Thread startingThread = new Thread(); 
             gameTimer();
@@ -89,8 +90,16 @@ public class gameServer {
         }
 
         */
-        else if (recibido.contains("Token")){
+        else if (this.recibido.contains("Token")){
            System.out.println("token recibido");
+           if (this.recibido.contains("ID1")){
+                JsonNode node = Json.parse(this.recibido);
+                System.out.println(node.get("ID1").get("Token").get("shape"));
+                System.out.println(node.get("ID1").get("Token").get("value"));
+                System.out.println(node.get("ID1").get("Token").get("points"));
+
+           }
+
         }
         else if(recibido.contains("exit")){
             this.isOpen = false;
@@ -119,6 +128,7 @@ public class gameServer {
         
         return message;   
     }
+
     public void gameTimer(){
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask(){
@@ -147,11 +157,7 @@ public class gameServer {
             
         }, 1000, 5000);
     }
-    public String readBytesString (byte[] msgBytes){
-        
-        return currentChallenge;
-        
-    }
+
    /**
      * En este método se genera el JSON con los tokens de un reto BST, AVL, BTREE o SPLAY
      * de manera que en MainTokens se encuentran los objetos del reto y el FillerTokens están otros tokens generados que 

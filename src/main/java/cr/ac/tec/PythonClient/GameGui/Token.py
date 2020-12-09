@@ -3,15 +3,14 @@ sys.path.append("..")
 import json
 from collections import namedtuple
 from json import JSONEncoder
-from Player import*
 from types import SimpleNamespace
 
 class Token():
-    def __init__(self, val, shape):
+    def __init__(self, val, shape, points):
         super().__init__()
         self.val = val
         self.shape = shape
-        self.points = 0
+        self.points = points
 
     def getVal(self):
         return self.val
@@ -22,8 +21,10 @@ class Token():
     def getPoints(self):
         return self.points  
 
-    def setPoints(self, points):
-        self.points = points
+    def getPoints(self):
+        return self.points
+ 
+
 
 
 

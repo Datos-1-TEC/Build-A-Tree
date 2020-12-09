@@ -44,6 +44,8 @@ class clientSide (Thread):
         print("Salida antes de enviar:", self.out.decode(format))
         self.sending = self.request.send(self.out)
         print("Se han enviado: {} bytes al servidor.".format(self.sending))
+    
+    #Método para procesar los mensajes que mande el server
 
     def processReceived(self, message):
         self.message = message
@@ -54,9 +56,8 @@ class clientSide (Thread):
                     json.dump(message, json_file) 
                 print(json.dumps(message_dict))
                 self.readChallenge(self.mainTokens, self.fillerTokens)
-                
-            elif self.message == "challenges":
-                print(self.message)
+                tokenToSend = self.fillerTokens[0]
+                self.sendToken(tokenToSend, self.player1.getID())
 
             elif self.message == "exit":
                 self.sendMessage("exit")
@@ -82,16 +83,18 @@ class clientSide (Thread):
     # mensaje formato json para mandarlo al server
     def sendToken(self, Token, playerID):
         data = {
-            str(playerID):{
+            "ID" + str(playerID):{
                 "Token": {
                     "shape": Token.getShape(),
-                    "value": Token.getVal()
+                    "value": Token.getVal(),
+                    "points": Token.getPoints()
                 }
             }
         }
         with open('JsonResources/CurrentToken.json', 'w') as write_file:
             json.dump(data, write_file)
         message = json.dumps(data)
+        self.sendMessage(message)
         print(message)
         return message
     #Método que toma un diccionario con info de token para parsearlo a objeto de Python
@@ -114,45 +117,30 @@ class clientSide (Thread):
             token_dict = mainTokens_dict.get(key)
             token_string = json.dumps(token_dict)
             token_object = json.loads(token_string, object_hook=self.jsonToToken)
-            myFinalToken = Token(token_object.value, token_object.shape)
+            myFinalToken = Token(token_object.value, token_object.shape, token_object.points)
             mainTokens.append(myFinalToken)
         #Agregando filler tokens
         for key in fillerTokens_dict:
             token_dict = fillerTokens_dict.get(key)
             token_string = json.dumps(token_dict)
             token_object = json.loads(token_string, object_hook=self.jsonToToken)
-            myFinalToken = Token(token_object.value, token_object.shape)
+            myFinalToken = Token(token_object.value, token_object.shape, token_object.points)
             fillerTokens.append(myFinalToken) 
         for token in range(len(fillerTokens)):
-            print(fillerTokens[token].getShape())
+            print(fillerTokens[token].getPoints())
         
         self.setMainTokens(mainTokens)
         self.setFillerTokens(fillerTokens)
-
-def tokenToJson(token):
-    string = json.dumps(token.__dict__)
-    print("El token es: ")
-    print(string)
-    return string
-
-
-def parsedDict(dict , object_hook):
-    token = json.loads(dict, object_hook=object_hook)
-    return token
     
-
-
-
-
-    
-
+    def parsePlayer(self):
+        pass
 
 def main():
     player1 = Player(1)
     player2 = Player(2)
+      
     c1 = clientSide(player1, player2)
     c1.start()
-    
 
 if __name__ == "__main__":
     main()

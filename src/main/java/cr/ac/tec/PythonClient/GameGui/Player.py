@@ -1,10 +1,9 @@
 
 class Player(object):
-    def __init__(self, ID, currentToken = None, score = 0, treeList = []):
+    def __init__(self, ID, score = 0, treeList = []):
         super().__init__()
         self.ID = ID
         self.lives = 3
-        self.currentToken = currentToken
         self.score = score
         self.treeList = treeList
     
@@ -25,9 +24,6 @@ class Player(object):
 
     def setLives(self, lives):
         self.lives = lives
-
-    def setCurrentToken(self, currentToken):
-        self.currentToken = currentToken
 
     def setScore(self, score):
         self.score = score

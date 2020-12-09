@@ -3,6 +3,7 @@ package cr.ac.tec.JavaServer.TokensPrototype;
 public class Rectangle implements Token {
     private String shape = "Rectangle";
     private int value;
+    private int points = 40;
 
     public Rectangle() {
         System.out.println("Rectangle token created");
@@ -36,6 +37,11 @@ public class Rectangle implements Token {
     @Override
     public void setValue(int value) {
         this.value = value;
+    }
+
+    @Override
+    public Integer getPoints() {
+        return this.points;
     }
     
 }

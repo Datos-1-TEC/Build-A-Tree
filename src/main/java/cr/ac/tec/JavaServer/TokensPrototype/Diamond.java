@@ -3,6 +3,7 @@ package cr.ac.tec.JavaServer.TokensPrototype;
 public class Diamond implements Token{
     private String shape = "Diamond";
     private int value;
+    private int points = 15;
 
     public Diamond(){
         System.out.println("Diamond token created");
@@ -37,6 +38,11 @@ public class Diamond implements Token{
     @Override
     public void setValue(int value) {
         this.value = value;
+    }
+
+    @Override
+    public Integer getPoints() {
+        return this.points;
     }
     
 }

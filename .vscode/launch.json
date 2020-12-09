@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - JsonTest",
+            "request": "launch",
+            "mainClass": "cr.ac.tec.JavaServer.JsonTest",
+            "projectName": "Build-A-Tree"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - GameTimer",
             "request": "launch",
             "mainClass": "cr.ac.tec.JavaServer.ServerFeatures.GameTimer",
