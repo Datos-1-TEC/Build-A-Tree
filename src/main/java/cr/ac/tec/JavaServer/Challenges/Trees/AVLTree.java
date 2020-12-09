@@ -64,7 +64,7 @@ public class AVLTree {
         return height(N.left) - height(N.right);
     }
 
-    NodeT insert(NodeT node, int key) {
+    public NodeT insert(NodeT node, int key) {
 
         /* 1.  Perform the normal BST insertion */
         if (node == null)

@@ -90,7 +90,7 @@ public class BTree {
     }
 
     // Inserting a value
-    public void insert(final int key) {
+    public void insert(int key) {
         Node r = root;
         if (r.n == 2 * T - 1) {
             Node s = new Node();
