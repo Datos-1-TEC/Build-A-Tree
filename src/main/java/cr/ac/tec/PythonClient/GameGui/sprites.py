@@ -25,7 +25,7 @@ class Spritesheet:
 #Sprites para el jugador
 class Player(pg.sprite.Sprite):
     def __init__(self,game,playerID):
-        self.groups = game.all_sprites
+        self.groups = game.all_sprites, game.playerslist
         pg.sprite.Sprite.__init__(self,self.groups)
         self.playerID = playerID
         self.game = game

@@ -3,6 +3,7 @@ from typing import Text
 import pygame as pg
 import random
 import pygame
+from math import *
 from pygame.constants import K_w
 from sprites import *
 from settings import *
@@ -10,7 +11,12 @@ vec = pg.math.Vector2
 bgs = ['resources/bg.jpg', 'resources/background2.jpg']
 
 
+
 class Game:
+    """********************************************************************************
+                Instituto Tecnologico de Costa Rica
+                        Ing. en computadores
+    ********************************************************************************"""
     def __init__(self):
         # inicializa la ventana 
         pg.init()
@@ -33,6 +39,7 @@ class Game:
         self.projectiles_megaman = pg.sprite.Group()
         self.projectiles_samus = pg.sprite.Group()
         self.tokens = pg.sprite.Group()
+        self.playerslist = pg.sprite.Group()
         self.player = Player(self,1)
         self.player2 = Player(self,2)
         self.token = Token(self,2,"Diamond")
@@ -64,6 +71,7 @@ class Game:
         if self.player.vel.y > 0:
             hits = pg.sprite.spritecollide(self.player,self.platforms,False)
             shots = pg.sprite.spritecollide(self.player2, self.projectiles_megaman, True)
+            push = pg.sprite.spritecollide(self.player, self.playerslist, False)
             if hits:
                 lowest = hits[0]
                 for hit in hits:
@@ -93,7 +101,15 @@ class Game:
                         else:
                             self.player2.pos.x -= 10  #Hitbox en caso de disparo
                             shot.kill()
-                
+            """
+            #push
+            if self.isColliding(self.player.pos.x, self.player.pos.y, self.player2.pos.x, self.player2.pos.y):
+                if self.player.pos.x < self.player2.pos.x:
+                    self.player2.pos.x += 8
+                elif self.player.pos.x >= self.player2.pos.x:
+                    self.player2.pos.x -= 8
+            """
+            
 
            
 
@@ -152,6 +168,17 @@ class Game:
                         else:
                             self.player.pos.x -= 10  #Hitbox en caso de disparo
                             shot.kill()
+            """
+            #push
+            if self.isColliding(self.player2.pos.x, self.player2.pos.y, self.player.pos.x, self.player.pos.y):
+                if self.player2.pos.x < self.player.pos.x:
+                    self.player.pos.x += 8
+                elif self.player2.pos.x >= self.player.pos.x:
+                    self.player.pos.x -= 8
+            """
+
+
+            
         """
         if self.player2.rect.top >= 590:
             self.player2.pos.y += abs(self.player.vel.y)
@@ -215,6 +242,13 @@ class Game:
                         facing2 = 1
                     
                     Projectiles(self,self.player2, facing2)
+
+    def isColliding(self, player2x, player2y, playerx, playery):
+        distance = sqrt((pow(player2x-playerx,2))+(pow(player2y-playery,2)))
+        if distance < 20:
+            return True
+        else:
+            return False
 
 
             
