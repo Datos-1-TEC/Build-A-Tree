@@ -14,8 +14,26 @@ bgs = ['resources/bg.jpg', 'resources/background2.jpg']
 
 class Game:
     """********************************************************************************
-                Instituto Tecnologico de Costa Rica
-                        Ing. en computadores
+                        Instituto Tecnologico de Costa Rica
+                                Ing. en computadores
+        @method __init__(self): Se encarga de iniciar la ventana del juego y cargar los datos pertenecientes a este.
+        
+        @method new(self): Se encarga de cargar los sprites de los componentes importantes del juego(proyectiles, jugadores, plataformas, entre otros) y se llama al metodo run().
+        
+        @method run(self): Llama a otros metodos que se encargan de la parte funcional del juego.
+        
+        @method update(self): En este metodo se crean los hitbox para los dos jugadores(toma en cuenta los power ups).
+        
+        @method events(self): En este metodo se establecen las acciones de cada boton
+        
+        @method isColliding(self, player2x, player2y, playerx, playery): Es una funcion donde se crea un hitbox alternativo para cuando los dos jugadores agarren el power up 'push' y asi se puedan empujar en caso que choquen.
+
+        @method draw(self): Muestra en pantalla la imagen de fondo, puntajes y cantidad de vidas de ambos jugadores.
+
+        @method show_go_screen(self): Una vez que se hayan agotado las vidas del jugador 2(samus), se muestra en pantalla los puntajes finales y que el jugador 1(megaman) gano. Tambien si presiona una tecla, se inicia una nueva partida.
+
+        @method max_go_screen(self): Una vez que se hayan agotado las vidas del jugador 1(megaman), se muestra en pantalla los puntajes finales y que el jugador 2(samus) gano. Tambien si presiona una tecla, se inicia una nueva partida.
+
     ********************************************************************************"""
     def __init__(self):
         # inicializa la ventana 
@@ -43,7 +61,7 @@ class Game:
         self.player = Player(self,1)
         self.player2 = Player(self,2)
         self.token = Token(self,2,"Diamond")
-        self.draw_text("Vidas: " + str(self.player.lives), 10, (0,0,0), 40, 20)
+        #self.draw_text("Vidas: " + str(self.player.lives), 10, (0,0,0), 40, 20)
         #self.all_sprites.add(self.player2)
         #self.all_sprites.add(self.player)
         Platform(self,*PLATFORM_LIST[0],0)
@@ -111,14 +129,6 @@ class Game:
             """
             
 
-           
-
-        """
-        if self.player.rect.top >= 590:
-            self.player.pos.y += abs(self.player.vel.y)
-            self.player_lives -= 1
-            print(self.player_lives)
-        """
 
 
         if self.player.rect.bottom > HEIGHT:
@@ -178,15 +188,7 @@ class Game:
             """
 
 
-            
-        """
-        if self.player2.rect.top >= 590:
-            self.player2.pos.y += abs(self.player.vel.y)
-            self.player2_lives -= 1
-            print(self.player2_lives)
-        """
-
-         #si el jugador se cae de una plataforma 
+        #si el jugador se cae de una plataforma 
         # añadir las vidas del jugador y descontar una vida cuando se cae de una plataforma
         if self.player2.rect.bottom > HEIGHT:
             #for sprite in self.all_sprites:
@@ -215,7 +217,7 @@ class Game:
                     self.player.jump()
                 elif event.key == pg.K_w:
                     self.player2.jump()
-                elif event.key == pg.K_v:
+                elif event.key == pg.K_v: #crea plataforma random
                     Platform(self,*PLATFORM_LIST[4],2)
                 elif event.key == pg.K_DOWN:
                     if self.player.left:
@@ -248,13 +250,10 @@ class Game:
         if distance < 20:
             return True
         else:
-            return False
-
-
-            
+            return False           
 
     def draw(self):
-        # Game Loop - dibuja en la ventana 
+        #Game Loop - dibuja en la ventana 
         self.bg = pg.image.load(bgs[0])
         self.screen.blit(self.bg,(0,0))
         self.all_sprites.draw(self.screen)
@@ -263,7 +262,7 @@ class Game:
         self.draw_text("Samus lives: " + str(self.player2.lives), 20, (0,0,0), 1100, 20)
         self.draw_text("Samus score: " + str(self.player2.score), 20, (0,0,0), 1100, 50)
         self.draw_text("Megaman score: " + str(self.player.score), 20, (0,0,0), 80, 50)
-        # después de dibujar o mostrar elementos en pantalla, actualiza la ventana
+        # despues de dibujar o mostrar elementos en pantalla, actualiza la ventana
         pg.display.flip()
 
     def show_start_screen(self):
