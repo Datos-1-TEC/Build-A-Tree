@@ -245,24 +245,27 @@ class Platform(pg.sprite.Sprite):
 class PowerUp(pg.sprite.Sprite):    
     def __init__(self,game,platform):
         #self.groups = game.all_sprites, game.powerups
+        self.game = game 
         self.type = choice(['shoot', 'shield', 'airjump', 'push']) #'extrapoints',, 'faster', 'tempplatform'
         if self.type == 'shield':
-            self.groups = game.all_sprites, game.powerup_shield
+            self.image = self.game.spritesheet.get_image("resources/star_1.png")
+            self.groups = self.game.all_sprites, self.game.powerup_shield
         elif self.type == 'shoot':
-            self.groups = game.all_sprites, game.powerup_shoot
+            self.image = self.game.spritesheet.get_image("resources/star_8.png")
+            self.groups = self.game.all_sprites, self.game.powerup_shoot
         elif self.type == 'push':
-            self.groups = game.all_sprites, game.powerup_push
+            self.image = self.game.spritesheet.get_image("resources/star_2.png")
+            self.groups = self.game.all_sprites, self.game.powerup_push
         elif self.type == 'airjump':
-            self.groups = game.all_sprites, game.powerup_airjump
+            self.image = self.game.spritesheet.get_image("resources/star_6.png")
+            self.groups = self.game.all_sprites, self.game.powerup_airjump
         pg.sprite.Sprite.__init__(self,self.groups)
-        self.game = game 
         self.game.powerupslist.append(self)
         self.platform = platform
            
         #self.type = choice(['airjump'])
         #self.type = choice(['push'])
         #self.type = choice(['shoot'])
-        self.image = self.game.spritesheet.get_image("resources/star_1.png")
         #self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         self.rect.centerx =  self.platform.rect.centerx
