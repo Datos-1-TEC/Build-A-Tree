@@ -160,7 +160,7 @@ class Game:
             shots2 = pg.sprite.spritecollide(self.player,self.projectiles_samus,True)
             pwrpshots2 = pg.sprite.spritecollide(self.player2, self.powerup_shoot, True)
             shield2 = pg.sprite.spritecollide(self.player, self.powerup_shield, True)
-            push2 = pg.sprite.spritecollide(self.player, self.powerup_push, True)
+            push2 = pg.sprite.spritecollide(self.player2, self.powerup_push, True)
             if hits2:
                 lowest2 = hits2[0]
                 for hit in hits2:
@@ -217,37 +217,21 @@ class Game:
 
     def events(self):
         # Game Loop - eventos de pygame 
-        airjump = pg.sprite.spritecollide(self.player,self.powerup_airjump,False)
-        airjump2 = pg.sprite.spritecollide(self.player2,self.powerup_airjump,False)
         for event in pg.event.get():
             # revisa si la ventana ha sido cerrada 
+            airjump = pg.sprite.spritecollide(self.player,self.powerup_airjump,True)
+            airjump2 = pg.sprite.spritecollide(self.player2,self.powerup_airjump,True)
             if event.type == pg.QUIT:
                 if self.playing:
                     self.playing = False
                 self.running = False
-            
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_UP:
-                    self.player.jump(20)
-                elif event.key == pg.K_w:
-                    self.player2.jump(20)
-                elif event.key == pg.K_v: #crea plataforma random
-                    Platform(self,*PLATFORM_LIST[4],2)
-                elif event.key == pg.K_DOWN:
-                    if self.player.left:
-                        facing = -1
-                    elif self.player.right:
-                        facing = 1
-                    
-                    Projectiles(self,self.player, facing)
-
-            
+                                                     
 
             if event.type == pg.KEYUP:
                 if event.key == pg.K_UP:
-                    self.player.jump_cut()
+                    self.player.jump(15)
                 elif event.key == pg.K_w:
-                    self.player2.jump_cut()
+                    self.player2.jump(15)
                 elif event.key == pg.K_p: #Prueba para power up "shoot", se debe cambiar
                     if self.player.left == True:
                         self.player.vel.x -= 10 
@@ -260,6 +244,32 @@ class Game:
                         facing2 = 1
                     
                     Projectiles(self,self.player2, facing2)
+
+                elif event.key == pg.K_DOWN:
+                    if self.player.left:
+                        facing = -1
+                    elif self.player.right:
+                        facing = 1
+                    
+                    Projectiles(self,self.player, facing)
+
+            
+            if airjump:
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_UP:
+                        self.player.jump(20)
+
+
+            if airjump2:
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_w:
+                        self.player2.jump(20)
+                """        
+                elif event.key == pg.K_v: #crea plataforma random
+                    Platform(self,*PLATFORM_LIST[4],2)
+                """
+                
+            
 
     def isColliding(self, player2x, player2y, playerx, playery):
         distance = sqrt((pow(player2x-playerx,2))+(pow(player2y-playery,2)))

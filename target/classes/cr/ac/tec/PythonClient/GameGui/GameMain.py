@@ -11,7 +11,6 @@ vec = pg.math.Vector2
 bgs = ['resources/bg.jpg', 'resources/background2.jpg']
 
 
-
 class Game:
     """********************************************************************************
                         Instituto Tecnologico de Costa Rica
@@ -65,7 +64,7 @@ class Game:
         self.powerup_airjump = pg.sprite.Group()
         self.player = Player(self,1)
         self.player2 = Player(self,2)
-        self.token = Token(self,2,"Diamond")
+        #self.token = Token(self,2,"Diamond")
         #self.draw_text("Vidas: " + str(self.player.lives), 10, (0,0,0), 40, 20)
         #self.all_sprites.add(self.player2)
         #self.all_sprites.add(self.player)
@@ -127,6 +126,10 @@ class Game:
                         elif pwrpshots:
                             self.player2.pos.x -= 10  #Hitbox en caso de disparo
                             shot.kill()
+
+                shape = random.choice(["diamond","triangle","circle","square"])
+                rand_num = random.randrange(1,100)
+                self.token = Token(self,rand_num,shape)
             
             #push
             if push:
@@ -137,9 +140,6 @@ class Game:
                         self.player2.pos.x -= 8
             
             
-
-
-
         if self.player.rect.bottom > HEIGHT:
 
             #for sprite in self.all_sprites:
@@ -200,7 +200,6 @@ class Game:
                         self.player.pos.x -= 8
             
 
-
         #si el jugador se cae de una plataforma 
         # añadir las vidas del jugador y descontar una vida cuando se cae de una plataforma
         if self.player2.rect.bottom > HEIGHT:
@@ -241,6 +240,8 @@ class Game:
                         facing = 1
                     
                     Projectiles(self,self.player, facing)
+
+            
 
             if event.type == pg.KEYUP:
                 if event.key == pg.K_UP:
