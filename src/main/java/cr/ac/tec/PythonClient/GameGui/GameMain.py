@@ -56,7 +56,7 @@ class Game:
         self.powerups = pg.sprite.Group()
         self.projectiles_megaman = pg.sprite.Group()
         self.projectiles_samus = pg.sprite.Group()
-        self.tokens = pg.sprite.Group()
+        self.tokens_example = pg.sprite.Group()
         self.playerslist = pg.sprite.Group()
         self.powerupslist = [] 
         self.powerup_shield = pg.sprite.Group()
@@ -65,7 +65,7 @@ class Game:
         self.powerup_airjump = pg.sprite.Group()
         self.player = Player(self,1)
         self.player2 = Player(self,2)
-        self.token = Token(self,2,"Diamond")
+        #self.token = Token(self,2,"Diamond")
         #self.draw_text("Vidas: " + str(self.player.lives), 10, (0,0,0), 40, 20)
         #self.all_sprites.add(self.player2)
         #self.all_sprites.add(self.player)
@@ -127,6 +127,10 @@ class Game:
                         elif pwrpshots:
                             self.player2.pos.x -= 10  #Hitbox en caso de disparo
                             shot.kill()
+
+                shape = random.choice(["diamond","triangle","circle","square"])
+                rand_num = random.randrange(1,100)
+                self.token = TokenExample(self,rand_num,shape)
             
             #push
             if push:
@@ -241,6 +245,8 @@ class Game:
                         facing = 1
                     
                     Projectiles(self,self.player, facing)
+
+            
 
             if event.type == pg.KEYUP:
                 if event.key == pg.K_UP:

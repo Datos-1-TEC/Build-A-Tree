@@ -2,7 +2,7 @@
 
 from settings import *
 import pygame as pg
-from random import choice, randrange
+from random import choice, randrange, randint
 vec = pg.math.Vector2
 vec2 = pg.math.Vector2
 
@@ -297,6 +297,56 @@ class Token(pg.sprite.Sprite):
         self.pos += self.vel + 0.5 * self.acc
 
         self.rect.center = self.pos
+
+
+class TokenExample(pg.sprite.Sprite):
+    def __init__(self,game,value,shape):
+        self.value = value
+        self.shape = shape 
+        self.color = (randint(10,255),randint(10,255),randint(10,255))
+        self._layer = self.value
+        self.game = game 
+        self.groups = game.all_sprites, game.tokens_example
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.area = self.game.screen.get_rect()
+        #self.image = self.game.spritesheet.get_token_image("resources/diamond.png")
+        if self.shape == "diamond":
+            self.image = pg.image.load("resources/diamond.png")
+        elif self.shape == "circle":
+            self.image = pg.image.load("resources/circle.png")
+        elif self.shape == "square":
+            self.image = pg.image.load("resources/square.png")
+        else:
+            self.image = pg.image.load("resources/triangle.png")
+
+        #self.image.fill(self.color)
+        self.image.blit(self.write(str(self.value)),(self.image.get_width()/3,self.image.get_height()/2))
+        #self.image.blit(self.write(str(self.blocknumber)),(20,20))
+        self.image = self.image.convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.centery = self.game.screen.get_height()
+        self.rect.centerx = 100 * self.value + 50 
+        self.pos = vec2(randrange(50,1200),0)
+        self.vel = vec2(0,0)
+        self.acc = vec2(0,0)
+        self.update()
+
+    def write(self,msg):
+        self.myfont = pg.font.SysFont("None",32)
+        self.mytext = self.myfont.render(msg,True,(0,0,0))
+        self.mytext = self.mytext.convert_alpha()
+        return self.mytext
+
+    def update(self):
+        self.acc = vec(0,1)
+        self.acc += self.vel * PLAYER_FRICTION
+        self.vel += self.acc 
+        self.pos += self.vel + 0.5 * self.acc
+        self.rect.center = self.pos
+
+
+
+
 
 
 
