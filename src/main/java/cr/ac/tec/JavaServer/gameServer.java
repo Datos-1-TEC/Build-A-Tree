@@ -13,6 +13,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cr.ac.tec.JavaServer.Challenges.ChallengeGenerator;
 import cr.ac.tec.JavaServer.Challenges.parseTokens;
+import cr.ac.tec.JavaServer.Challenges.Trees.AVLTree;
+import cr.ac.tec.JavaServer.Challenges.Trees.BTree;
+import cr.ac.tec.JavaServer.Challenges.Trees.BinarySearchTree;
+import cr.ac.tec.JavaServer.Challenges.Trees.SplayTree;
 import cr.ac.tec.JavaServer.Player.Player;
 import cr.ac.tec.JavaServer.TokensPrototype.Token;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -67,10 +71,11 @@ public class gameServer {
         this.in = new InputStreamReader(client.getInputStream(), "UTF8");
         this.recibido = readInput(this.in);
         System.out.println("String leido");
-        
+
         if (this.recibido.contains("Connected")){
+
             player1 = new Player(1, 3, 0);
-            player1 = new Player(2, 3, 0);
+            player2 = new Player(2, 3, 0);
             //Hilo para llevar el cronómetro de cada cuanto se manda un reto y cuando se acaba la partida
             //Thread startingThread = new Thread(); 
             gameTimer();
@@ -94,7 +99,10 @@ public class gameServer {
                 System.out.println("token recibido");
                 JsonNode tokenNode = Json.parse(this.recibido);
                 checkToken(this.player1, tokenNode);
-
+           }
+           else if (this.recibido.contains("ID2")){
+                JsonNode tokenNode = Json.parse(this.recibido);
+                checkToken(this.player2, tokenNode);
            }
 
         }
@@ -106,7 +114,7 @@ public class gameServer {
         this.buffer = new char[4096];             
     }
 
-    public void checkToken(Player player, JsonNode tokenNode){
+    public void checkToken(Player player, JsonNode tokenNode) throws IOException {
         String tokenShape = tokenNode.get("ID1").get("Token").get("shape").asText();
         System.out.println("La forma del token recibido es: " + tokenShape);
         System.out.println("La forma del actual es: " + this.currentChallenge);
@@ -117,14 +125,28 @@ public class gameServer {
         // de nuevo
         if (tokenShape.equals(currentChallenge)){
             addTokenToTree(player, tokenNode, tokenShape);
+            int id = player.getID();
+            int score = player.getScore();
+            String message = "player" + String.valueOf(id) + ":" + String.valueOf(score);
+            sendMessage(message, this.client);
+            
+        }
+        else{
+            setNewTree(player, this.currentChallenge);
+            player.setScore(0);
+            int id = player.getID();
+            int score = player.getScore();
+            String message = "player" + String.valueOf(id) + ":" + String.valueOf(score);
+            sendMessage(message, this.client);
+            
         }
     }
     /**
-     * En este método se agrega el valor del token que manda el cliente al árbol correspondiente y se le suman los puntos del token al jugador
-     * 
-     * @param player
-     * @param tokenNode
-     * @param tokenShape
+     * En este método se agrega el valor del token que manda el cliente al árbol correspondiente y se le suman los 
+     * puntos del token al jugador 
+     * @param player Jugador al que se le agregarán los nodos para el árbol del reto y los puntos del token
+     * @param tokenNode JsonNode que contiene los datos del token recién mandado por el cliente
+     * @param tokenShape Forma del token recibido
      */
     public void addTokenToTree(Player player, JsonNode tokenNode, String tokenShape){
         int tokenValue = tokenNode.get("ID1").get("Token").get("value").asInt();
@@ -171,7 +193,7 @@ public class gameServer {
         return message;   
     }
 
-    public void gameTimer(){
+    public void gameTimer() throws IOException {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask(){
 
@@ -180,12 +202,14 @@ public class gameServer {
             public void run() {
                 this.currentTime ++;
                 String enviado = generateTokens();
+
                 try {
+                    
                     sendMessage(enviado, client);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (this.currentTime == 2){
+                if (this.currentTime > 2){
                     try {
                         sendMessage("exit", client);
                         this.cancel();
@@ -197,9 +221,29 @@ public class gameServer {
                 }
             }
             
-        }, 1000, 5000);
+        }, 1000, 3000);
+        sendMessage("True", this.client);
     }
 
+    public void setNewTree(Player player, String currentChallenge){
+        if (currentChallenge.contains("Diamond")){
+            BinarySearchTree myBST = new BinarySearchTree();
+            player.setMyBST(myBST);
+        }
+        else if (currentChallenge.contains("Rectangle")){
+            BTree myBTree = new BTree();
+            player.setMyBTree(myBTree);            
+        }
+        else if (currentChallenge.contains("Circle")){
+            AVLTree myAVL = new AVLTree();
+            player.setMyAVL(myAVL);
+        }
+        else{
+            SplayTree mySplay = new SplayTree();
+            player.setMySplay(mySplay);
+        }
+
+    }
    /**
      * En este método se genera el JSON con los tokens de un reto BST, AVL, BTREE o SPLAY
      * de manera que en MainTokens se encuentran los objetos del reto y el FillerTokens están otros tokens generados que 

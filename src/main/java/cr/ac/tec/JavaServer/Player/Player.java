@@ -18,9 +18,9 @@ public class Player {
     public Player(int ID, int lives, int score) {
             this.ID = ID;
             this.lives = lives;
-            this.score = score;
-            
+            this.score = score;    
         }
+        
     public Player(int iD,int lives){
         this.ID = iD;
         this.lives = lives;
@@ -29,11 +29,6 @@ public class Player {
     public int getID() {
         return ID;
     }
-
-    public void setID(int iD) {
-        ID = iD;
-    }
-
     public int getLives() {
         return lives;
     }
@@ -47,7 +42,8 @@ public class Player {
     }
 
     public void setScore(int score) {
-        this.score += score;
+        if (score == 0) this.score = 0;
+        else this.score += score;
     }
 
     public BinarySearchTree getMyBST() {
