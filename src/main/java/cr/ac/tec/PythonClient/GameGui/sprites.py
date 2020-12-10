@@ -246,7 +246,7 @@ class PowerUp(pg.sprite.Sprite):
     def __init__(self,game,platform):
         #self.groups = game.all_sprites, game.powerups
         self.game = game 
-        self.type = choice(['shoot', 'shield', 'airjump', 'push']) #'extrapoints',, 'faster', 'tempplatform'
+        self.type = choice(['shoot', 'shield', 'airjump', 'push','temp_platform']) #'extrapoints',, 'faster', 'tempplatform'
         if self.type == 'shield':
             self.image = self.game.spritesheet.get_image("resources/star_1.png")
             self.groups = self.game.all_sprites, self.game.powerup_shield
@@ -259,6 +259,9 @@ class PowerUp(pg.sprite.Sprite):
         elif self.type == 'airjump':
             self.image = self.game.spritesheet.get_image("resources/star_6.png")
             self.groups = self.game.all_sprites, self.game.powerup_airjump
+        elif self.type == 'temp_platform':
+            self.image = self.game.spritesheet.get_image("resources/star_7.png")
+            self.groups = self.game.all_sprites, self.game.powerup_temp_platform
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game.powerupslist.append(self)
         self.platform = platform
