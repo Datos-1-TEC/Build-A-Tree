@@ -24,9 +24,10 @@ class clientSide (Thread):
         self.sendMessage(firstMessage)
         self.decoded = ""
         self.player1 = player1 # Jugador uno creado en la GUI
-        self.player12 = player2 # Jugador dos creado en la GUI
+        self.player2 = player2 # Jugador dos creado en la GUI
         self.mainTokens = [] #Lista de tokens principales del reto
         self.fillerTokens = [] #Lista de tokens de relleno
+        self.onGame = False
 
         Thread.__init__(self)
 
@@ -66,11 +67,34 @@ class clientSide (Thread):
                 self.flag = False
                 self.request.close()
                 print("Terminado")
+            elif self.message == "True":
+                self.setOnGame(True)
+                print("Iniciar temporizador")
+
+            elif "player1" in self.message:
+                splitted_Info =  self.message.split(":")
+                print("La info del puntaje es")
+                print(splitted_Info)
+                currentScore = int(splitted_Info[1])
+                self.player1.setScore(currentScore)
+                print("El puntaje actual es: ")
+                print(self.player1.getScore())
+
+            elif "player2" in self.message:
+                splitted_Info =  self.message.split(":")
+                print("La info del puntaje es")
+                print(splitted_Info)
+                currentScore = int(splitted_Info[1])
+                self.player2.setScore(currentScore)
+                print("El puntaje actual es: ")
+                print(self.player2.getScore())
+                
             else:
                 print(self.message)    
         except IOError as e:
             print(e)
-    
+    def getOnGame(self):
+        return self.getOnGame
     def getMainTokens(self):
         return self.mainTokens
     def getFillerTokens(self):
@@ -80,6 +104,8 @@ class clientSide (Thread):
         self.mainTokens = mainTokens
     def setFillerTokens(self, fillerTokens):
         self.fillerTokens = fillerTokens
+    def setOnGame(self, boolean):
+        self.onGame = boolean
 
     #Método que recibe un token y una id de jugador y que retorna un 
     # mensaje formato json para mandarlo al server
