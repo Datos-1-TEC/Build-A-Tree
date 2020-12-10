@@ -11,7 +11,6 @@ vec = pg.math.Vector2
 bgs = ['resources/bg.jpg', 'resources/background2.jpg']
 
 
-
 class Game:
     """********************************************************************************
                         Instituto Tecnologico de Costa Rica
@@ -56,7 +55,7 @@ class Game:
         self.powerups = pg.sprite.Group()
         self.projectiles_megaman = pg.sprite.Group()
         self.projectiles_samus = pg.sprite.Group()
-        self.tokens_example = pg.sprite.Group()
+        self.tokens = pg.sprite.Group()
         self.playerslist = pg.sprite.Group()
         self.powerupslist = [] 
         self.powerup_shield = pg.sprite.Group()
@@ -130,7 +129,7 @@ class Game:
 
                 shape = random.choice(["diamond","triangle","circle","square"])
                 rand_num = random.randrange(1,100)
-                self.token = TokenExample(self,rand_num,shape)
+                self.token = Token(self,rand_num,shape)
             
             #push
             if push:
@@ -141,9 +140,6 @@ class Game:
                         self.player2.pos.x -= 8
             
             
-
-
-
         if self.player.rect.bottom > HEIGHT:
 
             #for sprite in self.all_sprites:
@@ -203,7 +199,6 @@ class Game:
                     elif self.player2.pos.x >= self.player.pos.x:
                         self.player.pos.x -= 8
             
-
 
         #si el jugador se cae de una plataforma 
         # añadir las vidas del jugador y descontar una vida cuando se cae de una plataforma

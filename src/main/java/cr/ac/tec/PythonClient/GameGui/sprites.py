@@ -274,39 +274,15 @@ class PowerUp(pg.sprite.Sprite):
         if not self.game.platforms.has(self.platform):
             self.kill()
 
+
 class Token(pg.sprite.Sprite):
-    def __init__(self,game,value,shape):
-        self.groups = game.all_sprites, game.tokens
-        pg.sprite.Sprite.__init__(self,self.groups)
-        self.game = game 
-        self.value = value 
-        self.shape = shape 
-        self.image = pg.Surface((30,30))
-        self.image.fill(YELLOW)
-        self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH/2,HEIGHT/2)
-        self.pos = vec2(WIDTH/2,HEIGHT/2)
-        self.vel = vec(0,0)
-        self.acc = vec(0,0)
-        self.update()
-
-    def update(self):
-        self.acc = vec(0,1)
-        self.acc += self.vel * PLAYER_FRICTION
-        self.vel += self.acc 
-        self.pos += self.vel + 0.5 * self.acc
-
-        self.rect.center = self.pos
-
-
-class TokenExample(pg.sprite.Sprite):
     def __init__(self,game,value,shape):
         self.value = value
         self.shape = shape 
         self.color = (randint(10,255),randint(10,255),randint(10,255))
         self._layer = self.value
         self.game = game 
-        self.groups = game.all_sprites, game.tokens_example
+        self.groups = game.all_sprites, game.tokens
         pg.sprite.Sprite.__init__(self, self.groups)
         self.area = self.game.screen.get_rect()
         #self.image = self.game.spritesheet.get_token_image("resources/diamond.png")
@@ -343,11 +319,6 @@ class TokenExample(pg.sprite.Sprite):
         self.vel += self.acc 
         self.pos += self.vel + 0.5 * self.acc
         self.rect.center = self.pos
-
-
-
-
-
 
 
 class Projectiles(pg.sprite.Sprite):
