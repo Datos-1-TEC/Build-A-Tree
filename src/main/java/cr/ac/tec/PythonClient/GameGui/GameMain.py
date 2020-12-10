@@ -63,6 +63,7 @@ class Game:
         self.powerup_push = pg.sprite.Group()
         self.powerup_airjump = pg.sprite.Group()
         self.powerup_temp_platform = pg.sprite.Group()
+        self.powerup_faster = pg.sprite.Group()
         self.player = Player(self,1)
         self.player2 = Player(self,2)
         #self.token = Token(self,2,"Diamond")
@@ -222,6 +223,8 @@ class Game:
             # revisa si la ventana ha sido cerrada 
             airjump = pg.sprite.spritecollide(self.player,self.powerup_airjump,True)
             airjump2 = pg.sprite.spritecollide(self.player2,self.powerup_airjump,True)
+            faster = pg.sprite.spritecollide(self.player, self.powerup_faster, True)
+            faster2 = pg.sprite.spritecollide(self.player2, self.powerup_faster, True)
             if event.type == pg.QUIT:
                 if self.playing:
                     self.playing = False
@@ -233,11 +236,6 @@ class Game:
                     self.player.jump(15)
                 elif event.key == pg.K_w:
                     self.player2.jump(15)
-                elif event.key == pg.K_p: #Prueba para power up "shoot", se debe cambiar
-                    if self.player.left == True:
-                        self.player.vel.x -= 10 
-                    else:
-                        self.player.vel.x += 10 
                 elif event.key == pg.K_s:
                     if self.player2.left:
                         facing2 = -1
@@ -265,6 +263,22 @@ class Game:
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_w:
                         self.player2.jump(20)
+
+            if faster:
+                if event.type == pg.KEYUP:
+                    if event.key == pg.K_RIGHT: 
+                        self.player.vel.x += 15 
+                    elif event.key == pg.K_LEFT:
+                        self.player.vel.x -= 15 
+
+            if faster2:
+                if event.type == pg.KEYUP:
+                    if event.key == pg.K_d: 
+                        self.player2.vel.x += 15 
+                    elif event.key == pg.K_a:
+                        self.player2.vel.x -= 15 
+                
+                
                 """        
                 elif event.key == pg.K_v: #crea plataforma random
                     Platform(self,*PLATFORM_LIST[4],2)
