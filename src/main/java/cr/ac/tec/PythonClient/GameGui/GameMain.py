@@ -64,6 +64,7 @@ class Game:
         self.powerup_airjump = pg.sprite.Group()
         self.powerup_temp_platform = pg.sprite.Group()
         self.powerup_faster = pg.sprite.Group()
+        self.powerup_extrapoints = pg.sprite.Group()
         self.player = Player(self,1)
         self.player2 = Player(self,2)
         #self.token = Token(self,2,"Diamond")

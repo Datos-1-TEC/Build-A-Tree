@@ -265,6 +265,9 @@ class PowerUp(pg.sprite.Sprite):
         elif self.type == 'faster':
             self.image = self.game.spritesheet.get_image("resources/star_4.png")
             self.groups = self.game.all_sprites, self.game.powerup_faster
+        elif self.type == 'extrapoints':
+            self.image = self.game.spritesheet.get_image("resources/star_5.png")
+            self.groups = self.game.all_sprites, self.game.powerup_extrapoints
         pg.sprite.Sprite.__init__(self,self.groups)
         self.game.powerupslist.append(self)
         self.platform = platform
