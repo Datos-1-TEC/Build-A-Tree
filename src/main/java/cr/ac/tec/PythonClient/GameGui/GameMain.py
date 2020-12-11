@@ -16,28 +16,7 @@ my_timer = 5
 
 
 class Game:
-    """********************************************************************************
-                        Instituto Tecnologico de Costa Rica
-                                Ing. en computadores
-        @method __init__(self): Se encarga de iniciar la ventana del juego y cargar los datos pertenecientes a este.
-        
-        @method new(self): Se encarga de cargar los sprites de los componentes importantes del juego(proyectiles, jugadores, plataformas, entre otros) y se llama al metodo run().
-        
-        @method run(self): Llama a otros metodos que se encargan de la parte funcional del juego.
-        
-        @method update(self): En este metodo se crean los hitbox para los dos jugadores(toma en cuenta los power ups).
-        
-        @method events(self): En este metodo se establecen las acciones de cada boton.
-        
-        @method isColliding(self, player2x, player2y, playerx, playery): Es una funcion donde se crea un hitbox alternativo para cuando los dos jugadores agarren el power up 'push' y asi se puedan empujar en caso que choquen.
-
-        @method draw(self): Muestra en pantalla la imagen de fondo, puntajes y cantidad de vidas de ambos jugadores.
-
-        @method show_go_screen(self): Una vez que se hayan agotado las vidas del jugador 2(samus), se muestra en pantalla los puntajes finales y que el jugador 1(megaman) gano. Tambien si presiona una tecla, se inicia una nueva partida.
-
-        @method max_go_screen(self): Una vez que se hayan agotado las vidas del jugador 1(megaman), se muestra en pantalla los puntajes finales y que el jugador 2(samus) gano. Tambien si presiona una tecla, se inicia una nueva partida.
-
-    ********************************************************************************"""
+    #Se encarga de iniciar la ventana del juego y cargar los datos pertenecientes a este.
     def __init__(self):
         # inicializa la ventana 
         pg.init()
@@ -53,6 +32,9 @@ class Game:
     def load_data(self):
         self.spritesheet = Spritesheet("resources/megamanstand.png")
 
+
+    #Se encarga de cargar los sprites de los componentes importantes del juego(proyectiles,
+    #jugadores, plataformas, entre otros) y se llama al metodo run().
     def new(self):
         # inicia un nuevo juego 
         self.all_sprites = pg.sprite.Group()
@@ -86,6 +68,7 @@ class Game:
         Platform(self,*PLATFORM_LIST[7],2,"first")
         self.run()
 
+    #Llama a otros metodos que se encargan de la parte funcional del juego.
     def run(self):
         # Game Loop para la partida 
         self.playing = True
@@ -94,7 +77,8 @@ class Game:
             self.events()
             self.update()
             self.draw()
-
+    
+    #En este metodo se crean los hitbox para los dos jugadores(toma en cuenta los power ups).
     def update(self):
         # actualiza los sprites 
         self.all_sprites.update()
@@ -234,7 +218,7 @@ class Game:
                 self.show_go_screen()
                 self.playing = False
         
-
+    #En este metodo se establecen las acciones de cada boton.
     def events(self):
         # Game Loop - eventos de pygame 
         for event in pg.event.get():
@@ -305,7 +289,8 @@ class Game:
             
                 
             
-
+    #Es una funcion donde se crea un hitbox alternativo para cuando los dos jugadores agarren el power up 'push' 
+    #y asi se puedan empujar en caso que choquen.
     def isColliding(self, player2x, player2y, playerx, playery):
         distance = sqrt((pow(player2x-playerx,2))+(pow(player2y-playery,2)))
         if distance < 20:
@@ -313,6 +298,7 @@ class Game:
         else:
             return False         
 
+    #Muestra en pantalla la imagen de fondo, puntajes y cantidad de vidas de ambos jugadores.
     def draw(self):
         #Game Loop - dibuja en la ventana 
         self.bg = pg.image.load(bgs[0])
@@ -332,6 +318,9 @@ class Game:
         self.draw_text("Game Over",48, BLACK, WIDTH/2, HEIGHT/4)
         pass
 
+    #Una vez que se hayan agotado las vidas del jugador 2(samus), 
+    #se muestra en pantalla los puntajes finales y que el jugador 1(megaman) gano. 
+    #Tambien si presiona una tecla, se inicia una nueva partida.
     def show_go_screen(self):
         # game over 
         if not self.running:
@@ -347,7 +336,10 @@ class Game:
 
         self.wait_for_key()
         #pass
-
+    
+    #Una vez que se hayan agotado las vidas del jugador 1(megaman),  
+    #se muestra en pantalla los puntajes finales y que el jugador 2(samus) gano.
+    #Tambien si presiona una tecla, se inicia una nueva partida.
     def max_go_screen(self):
         # game over 
         if not self.running:
