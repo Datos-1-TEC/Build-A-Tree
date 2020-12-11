@@ -4,11 +4,15 @@ import pygame as pg
 import random
 import pygame
 from math import *
+from time import *
+import threading
 from pygame.constants import K_w
 from sprites import *
 from settings import *
 vec = pg.math.Vector2
 bgs = ['resources/bg.jpg', 'resources/background2.jpg']
+my_timer = 5
+
 
 
 class Game:
@@ -43,6 +47,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = True
         self.font_name = pg.font.match_font(FONT_NAME)
+        self.my_timer = 5
         self.load_data()
 
     def load_data(self):
@@ -100,6 +105,7 @@ class Game:
             pwrpshots = pg.sprite.spritecollide(self.player, self.powerup_shoot, True)
             shield = pg.sprite.spritecollide(self.player2, self.powerup_shield, True)
             push = pg.sprite.spritecollide(self.player, self.powerup_push, True)
+            temp_platform = pg.sprite.spritecollide(self.player, self.powerup_temp_platform,True)
 
             if hits:
                 lowest = hits[0]
@@ -142,8 +148,15 @@ class Game:
                         self.player2.pos.x += 8
                     elif self.player.pos.x >= self.player2.pos.x:
                         self.player2.pos.x -= 8
-            
-            
+
+            if temp_platform:
+                Platform(self,*PLATFORM_LIST[4],1,"second")
+                countdown_thread = threading.Thread(target = self.countdown)
+                countdown_thread.start()
+                while self.my_timer > 0:
+                    print("COUNTER WORKS...")
+                    #sleep(1)
+ 
         if self.player.rect.bottom > HEIGHT:
 
             #for sprite in self.all_sprites:
@@ -202,6 +215,9 @@ class Game:
                         self.player.pos.x += 8
                     elif self.player2.pos.x >= self.player.pos.x:
                         self.player.pos.x -= 8
+
+
+            
             
 
         #si el jugador se cae de una plataforma 
@@ -227,7 +243,7 @@ class Game:
             airjump2 = pg.sprite.spritecollide(self.player2,self.powerup_airjump,True)
             faster = pg.sprite.spritecollide(self.player, self.powerup_faster, True)
             faster2 = pg.sprite.spritecollide(self.player2, self.powerup_faster, True)
-            temp_platform = pg.sprite.spritecollide(self.player, self.powerup_temp_platform,True)
+           
             if event.type == pg.QUIT:
                 if self.playing:
                     self.playing = False
@@ -286,9 +302,7 @@ class Game:
                 elif event.key == pg.K_v: #crea plataforma random
                     Platform(self,*PLATFORM_LIST[4],2)
                 """
-
-            if temp_platform:
-                Platform(self,*PLATFORM_LIST[4],1,"second")
+            
                 
             
 
@@ -369,6 +383,12 @@ class Game:
         text_rect.midtop = (x,y)
         self.screen.blit(text_surface,text_rect)
 
+
+    def countdown(self):
+        self.my_timer = 15 
+        for x in range(15):
+            self.my_timer -= 1
+            sleep(1)
 
 g = Game()
 g.show_start_screen()
