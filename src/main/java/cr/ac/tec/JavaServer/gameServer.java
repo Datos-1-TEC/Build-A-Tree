@@ -34,6 +34,9 @@ public class gameServer {
     private Socket client;
     private char[] buffer = new char[4096];
     private int BTreeOrder = 0;
+    private int depth = 0;
+    private int level = 0;
+    private int numElements = 0;
     Player player1;
     Player player2;
     
@@ -130,8 +133,7 @@ public class gameServer {
             int id = player.getID();
             int score = player.getScore();
             String message = "player" + String.valueOf(id) + ":" + String.valueOf(score);
-            sendMessage(message, this.client);
-            
+            sendMessage(message, this.client);            
         }
         else{
             setNewTree(player, this.currentChallenge);
@@ -194,7 +196,10 @@ public class gameServer {
         
         return message;   
     }
-
+    /**
+     * En este método se corre el hilo que está generando los retos cada cierto tiempo
+     * Se envía el JSON con los tokens y se envían las condiciones para ese reto
+     */
     public void gameTimer() throws IOException {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask(){
@@ -203,15 +208,40 @@ public class gameServer {
             @Override
             public void run() {
                 this.currentTime ++;
-                String enviado = generateTokens();
+                String enviado = "";
 
                 try {
-                    
-                    sendMessage(enviado, client);
+
+                    if (currentTime == 10){
+                        enviado = generateTokens();
+                        sendMessage(enviado, client);
+                        sendMessage(checkChallengeConditions(currentChallenge), client);
+                        //Verificar el tipo para mandar la especificación sobre si es profundidad orden o niveles, y cant elem
+                    }
+                    else if (currentTime == 20){
+                        enviado = generateTokens();
+                        sendMessage(enviado, client);
+                        sendMessage(checkChallengeConditions(currentChallenge), client);
+                        //Verificar el tipo para mandar la especificación sobre si es profundidad orden o niveles, y cant elem
+                    }
+                    else if (currentTime == 30){
+                        enviado = generateTokens();
+                        sendMessage(enviado, client);
+                        sendMessage(checkChallengeConditions(currentChallenge), client);
+                        //Verificar el tipo para mandar la especificación sobre si es profundidad orden o niveles, y cant elem
+                    }
+                    else if (currentTime == 40){
+                        enviado = generateTokens();
+                        sendMessage(enviado, client);
+                        sendMessage(checkChallengeConditions(currentChallenge), client);
+                        //Verificar el tipo para mandar la especificación sobre si es profundidad orden o niveles, y cant elem
+                    }
+   
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (this.currentTime > 3){
+
+                if (this.currentTime == 45){
                     try {
                         sendMessage("exit", client);
                         this.cancel();
@@ -223,10 +253,37 @@ public class gameServer {
                 }
             }
             
-        }, 1000, 3000);
+        }, 1000, 1000);
         sendMessage("True", this.client);
     }
-
+    
+    /**
+     * Este método chequea las condiciones del reto actual para dar formato a la info para indicar al cliente 
+     * dichas condiciones
+     * @param currentChallenge reto actual que determina las condiciones
+     * @return challengeParams
+     */
+    public String checkChallengeConditions(String currentChallenge){
+        String challengeParams = "";
+        if (currentChallenge.contains("Diamond")){
+            //Enviar profundidad
+            challengeParams = "Depth:" + String.valueOf(this.depth);                         
+        }
+        else if (currentChallenge.contains("Rectangle")){
+            //Enviar Orden y Niveles
+            challengeParams = "Order: " + String.valueOf(this.BTreeOrder) + ":Level:" + String.valueOf(this.level);               
+        }
+        else {
+            //Cantidad de elementos 
+            challengeParams = "numElements:" + String.valueOf(this.numElements);
+        }
+        return challengeParams;
+    }
+    /**
+     * Este método resetea el árbol del jugador en caso de que se equivoque de token según el reto en que se encuentre
+     * @param player jugador que se equivoca de token
+     * @param currentChallenge el reto actualmente
+     */
     public void setNewTree(Player player, String currentChallenge){
         if (currentChallenge.contains("Diamond")){
             BinarySearchTree myBST = new BinarySearchTree();
@@ -251,7 +308,6 @@ public class gameServer {
      * de manera que en MainTokens se encuentran los objetos del reto y el FillerTokens están otros tokens generados que 
      *  se muestran en la GUI 
      * Además, dentro de la instancia myChallenge se puede acceder a los valores árbol generado mediante una lista enlazada
-     *
      */
     public String generateTokens(){
         Json node = new Json();
@@ -260,9 +316,21 @@ public class gameServer {
         parseTokens parseTokens = new parseTokens();
         myChallenge.challengeSelector();
         this.currentChallenge = myChallenge.getChallengeShape();
+
         if (currentChallenge == "Rectangle"){
             this.BTreeOrder = myChallenge.getOrder();
+            this.level = myChallenge.getMyBTree().getLevel();
         }
+        else if (currentChallenge == "Diamond"){
+            this.depth = myChallenge.getMyBST().getMaxDepth();
+        }
+        else if (currentChallenge == "Circle"){
+            this.numElements = myChallenge.getMyAVL().getList().getLength();
+        }
+        else if (currentChallenge == "Triangle"){
+            this.numElements = myChallenge.getMySplay().getList().getLength();
+        }
+
         try {
             parseTokens.tokensWriter(myChallenge.getBstTokensList(), currentChallenge);
             parseTokens.tokensWriter(myChallenge.getAvlTokensList(), currentChallenge);

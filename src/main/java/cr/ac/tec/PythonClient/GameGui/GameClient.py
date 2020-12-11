@@ -28,6 +28,10 @@ class clientSide (Thread):
         self.mainTokens = [] #Lista de tokens principales del reto
         self.fillerTokens = [] #Lista de tokens de relleno
         self.onGame = False
+        self.level = 0
+        self.depth  = 0
+        self.order = 0
+        self.numElements = 0
 
         Thread.__init__(self)
 
@@ -45,9 +49,8 @@ class clientSide (Thread):
         print("Salida antes de enviar:", self.out.decode(format))
         self.sending = self.request.send(self.out)
         print("Se han enviado: {} bytes al servidor.".format(self.sending))
-    
+#-------------------------------------------------------------------------------------#    
     #Método para procesar los mensajes que mande el server
-
     def processReceived(self, message):
         self.message = message
         try:
@@ -67,46 +70,89 @@ class clientSide (Thread):
                 self.flag = False
                 self.request.close()
                 print("Terminado")
+            
             elif self.message == "True":
                 self.setOnGame(True)
                 print("Iniciar temporizador")
+                print("\n")
 
             elif "player1" in self.message:
-                splitted_Info =  self.message.split(":")
-                print("La info del puntaje es")
-                print(splitted_Info)
-                currentScore = int(splitted_Info[1])
-                self.player1.setScore(currentScore)
+                self.updatePlayerScore(self.player1, self.message)
                 print("El puntaje actual es: ")
                 print(self.player1.getScore())
 
             elif "player2" in self.message:
-                splitted_Info =  self.message.split(":")
-                print("La info del puntaje es")
-                print(splitted_Info)
-                currentScore = int(splitted_Info[1])
-                self.player2.setScore(currentScore)
+                self.updatePlayerScore(self.player2, self.message)
                 print("El puntaje actual es: ")
                 print(self.player2.getScore())
-                
+                print("\n")
+
+            elif "depth" in self.message:
+                splitted_message = self.message.split(":") 
+                newDepth = int(splitted_message[1])
+                self.setDepth(newDepth)
+                print("La profundidad es: " + str(self.getDepth))
+                print("\n")
+            elif "Order" in self.message and "Level" in self.message:
+                splitted_message = self.message.split(":")
+                order = int(splitted_message[1])
+                level = int(splitted_message[3])
+                self.setOrder(order)
+                self.setLevel(level)  
+                print("El orden del BTree es: " + str(self.getOrder()))
+                print("El nivel del BTree es: " + str(self.getLevel()))
+                print("\n")
+
+            elif "numElements" in self.message:
+                splitted_message = self.message.split(":") 
+                newNumElements = int(splitted_message[1])
+                self.setNumElements(newNumElements)
+                print("La cantidad de elementos del arbol es: " + str(self.getNumElements()))
+                print("\n")
+
             else:
                 print(self.message)    
         except IOError as e:
             print(e)
+#----------------------------------Bloque de getters----------------------------------#
     def getOnGame(self):
         return self.getOnGame
     def getMainTokens(self):
         return self.mainTokens
     def getFillerTokens(self):
-        return self.fillerTokens
-
+        return self.fillerTokens   
+    def getLevel(self):
+        return self.level
+    def getOrder(self):
+        return self.order
+    def getDepth(self):
+        return self.depth   
+    def getNumElements(self):
+        return self.numElements
+#----------------------------------Bloque de setters----------------------------------#
     def setMainTokens(self, mainTokens):
         self.mainTokens = mainTokens
     def setFillerTokens(self, fillerTokens):
         self.fillerTokens = fillerTokens
     def setOnGame(self, boolean):
-        self.onGame = boolean
+        self.onGame = boolean      
+    def setLevel(self, level):
+        self.level = level
+    def setOrder(self, order):
+        self.order = order
+    def setDepth(self, depth):
+        self.depth = depth
+    def setNumElements(self, numElements):
+        self.numElements = numElements
 
+#--------------------------Actualizar el puntaje del jugador--------------------------#
+    def updatePlayerScore(self, player, message):
+        splitted_Info =  message.split(":")
+        print("La info del puntaje es")
+        print(splitted_Info)
+        currentScore = int(splitted_Info[1])
+        player.setScore(currentScore)
+#-------------------------------------------------------------------------------------#
     #Método que recibe un token y una id de jugador y que retorna un 
     # mensaje formato json para mandarlo al server
     def sendToken(self, Token, playerID):
@@ -125,10 +171,11 @@ class clientSide (Thread):
         self.sendMessage(message)
         print(message)
         return message
+#-------------------------------------------------------------------------------------#    
     #Método que toma un diccionario con info de token para parsearlo a objeto de Python
     def jsonToToken(self, tokenDict): 
         return namedtuple('Token', tokenDict.keys())(*tokenDict.values())
-
+#-------------------------------------------------------------------------------------#
     #Esta función se encarga de leer el json donde están los tokens de ese reto
     #estos tokens se agregan a las listas mainTokens y fillerTokens
     def readChallenge(self, mainTokens, fillerTokens):
@@ -159,7 +206,7 @@ class clientSide (Thread):
         
         self.setMainTokens(mainTokens)
         self.setFillerTokens(fillerTokens)
-    
+#-------------------------------------------------------------------------------------#    
     def parsePlayer(self):
         pass
 

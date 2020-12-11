@@ -33,6 +33,9 @@ public class ChallengeGenerator {
     private int order = 0;
     private SinglyLinkedList<Token> splayTokensList = new SinglyLinkedList<>();
     private BinarySearchTree myBST = new BinarySearchTree();
+    private AVLTree myAVL = new AVLTree();
+    private BTree myBTree = new BTree();
+    private SplayTree mySplay = new SplayTree();
 
     // Metodo para generar los tokens
     /**
@@ -60,7 +63,7 @@ public class ChallengeGenerator {
 
         } else if (this.challenge == "AVL") {
             setChallengeShape("Circle");
-            AVLTree myAVL = new AVLTree();
+            
             myAVL.createAVL();
             System.out.println("Cantidad de elementos: " + myAVL.getList().getLength());
             int listLength = myAVL.getList().getLength();
@@ -70,7 +73,7 @@ public class ChallengeGenerator {
 
         } else if (this.challenge == "BTREE") {
             setChallengeShape("Rectangle");
-            BTree myBTree = new BTree();
+            
             myBTree.createB();
             setOrder(myBTree.getOrder()/2);
             int listLength = myBTree.getList().getLength();
@@ -82,7 +85,7 @@ public class ChallengeGenerator {
 
         } else if (this.challenge == "SPLAY") {
             setChallengeShape("Triangle");
-            SplayTree mySplay = new SplayTree();
+            
             mySplay.createSplay();
             int listLength = mySplay.getList().getLength();
             mainTokens(this.challenge, listLength, mySplay.getList());
@@ -306,5 +309,18 @@ public class ChallengeGenerator {
     public void setOrder(int order) {
         this.order = order;
     }
+
+    public AVLTree getMyAVL() {
+        return myAVL;
+    }
+
+    public BTree getMyBTree() {
+        return myBTree;
+    }
+    
+    public SplayTree getMySplay() {
+        return mySplay;
+    }
+
 
 }
