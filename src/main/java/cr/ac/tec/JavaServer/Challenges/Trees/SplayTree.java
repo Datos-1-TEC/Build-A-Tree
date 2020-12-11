@@ -187,7 +187,7 @@ public class SplayTree {
 
     private void preOrderHelper(Node node) {
         if (node != null) {
-            System.out.print(node.data + " ");
+           
             preOrderHelper(node.left);
             preOrderHelper(node.right);
         }
@@ -196,7 +196,6 @@ public class SplayTree {
     private void inOrderHelper(Node node) {
         if (node != null) {
             inOrderHelper(node.left);
-            System.out.print(node.data + " ");
             inOrderHelper(node.right);
         }
     }
@@ -205,7 +204,7 @@ public class SplayTree {
         if (node != null) {
             postOrderHelper(node.left);
             postOrderHelper(node.right);
-            System.out.print(node.data + " ");
+
         }
     }
 
@@ -336,11 +335,8 @@ public class SplayTree {
         int randomNum = rand.nextInt((6 - 4) + 1) + 4;
         int k = rand.nextInt(100);
         list.add(k);
-        System.out.println(k);
-
         for (int i=0; i < randomNum - 1; i++) {
             int q = rand.nextInt(100);
-            System.out.println(q);
             for (int j = 0; j < i+1; j++) {
                 if (q != list.getElementAt(j)) { 
                     if (j == i) {list.add(q);}                    

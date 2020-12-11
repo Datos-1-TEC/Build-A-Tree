@@ -168,11 +168,9 @@ public class BTree {
         int randomNum = rand.nextInt((6 - 4) + 1) + 4;
         int k = rand.nextInt(100);
         list.add(k);
-        System.out.println(k);
 
         for (int i=0; i < randomNum - 1; i++) {
             int q = rand.nextInt(100);
-            System.out.println(q);
             for (int j = 0; j < i+1; j++) {
                 if (q != list.getElementAt(j)) { 
                     if (j == i) {list.add(q);}                    
@@ -185,9 +183,9 @@ public class BTree {
         }
         //tree.setLevel(tree.root, level);
         setOrder(2 * tree.T);
-        System.out.println("El orden del arbol es: " + 2 * tree.T);
+
         setLevel(tree.getLevel());
-        System.out.println("El nivel del arbol es: " + tree.getLevel());
+       
         list.print();
         tree.Show();
         return tree;

@@ -41,7 +41,7 @@ public class BinarySearchTree {
     private void inOrderAux(NodeT root){
         if (root != null){
             inOrderAux(root.left);
-            System.out.println(root.key);
+            
             inOrderAux(root.right);
         }
 
@@ -112,7 +112,7 @@ public class BinarySearchTree {
         
         while(bst.getMaxDepth() < depth){
             newKey = getRandomNumber(10, 99);
-            System.out.println("Random key: "+ newKey);
+            
             if ( bst.isEmpty()){ //agrega el primer key
                 bst.insert(newKey);
 
@@ -122,7 +122,6 @@ public class BinarySearchTree {
                 bst.insert(newKey);             
                 position ++;
             } else{
-                System.out.println(newKey + " : Key is already in BST"); 
                 position --;
             } 
 

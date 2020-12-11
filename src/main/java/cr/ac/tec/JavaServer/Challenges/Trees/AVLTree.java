@@ -166,7 +166,6 @@ public class AVLTree {
          /  \     \
         10  25    50
         */
-        System.out.println("Preorder traversal" + " of constructed tree is : ");
         tree.preOrder(tree.root);
         return tree;
     }
