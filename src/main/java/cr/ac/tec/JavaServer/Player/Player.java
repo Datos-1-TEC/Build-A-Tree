@@ -13,7 +13,8 @@ public class Player {
     private BinarySearchTree myBST = new BinarySearchTree();
     private AVLTree myAVL = new AVLTree();
     private SplayTree mySplay = new SplayTree();
-    private BTree myBTree = new BTree(); 
+
+    private BTree myBTree ; 
     private int score;
     public Player(int ID, int lives, int score) {
             this.ID = ID;
@@ -70,7 +71,8 @@ public class Player {
         this.mySplay = mySplay;
     }
 
-    public BTree getMyBTree() {
+    public BTree getMyBTree(int T) {
+        this.myBTree = new BTree(T);
         return myBTree;
     }
 

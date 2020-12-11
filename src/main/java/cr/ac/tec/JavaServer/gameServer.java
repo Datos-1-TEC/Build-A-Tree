@@ -33,8 +33,10 @@ public class gameServer {
     private String currentChallenge;
     private Socket client;
     private char[] buffer = new char[4096];
+    private int BTreeOrder = 0;
     Player player1;
     Player player2;
+    
 
     public void listen(){
 
@@ -161,13 +163,13 @@ public class gameServer {
             System.out.println("Los puntos del jugador son: " + player.getScore());
         }
         else if (tokenShape.contains("Rectangle")){
-            player.getMyBTree().insert(tokenValue);
+            player.getMyBTree(this.BTreeOrder).insert(tokenValue);
             player.setScore(tokenPoints);  
             System.out.println("La forma es: " + tokenShape);
             System.out.println("Los puntos del jugador son: " + player.getScore());
         }
         else if (tokenShape.contains("Circle")){
-            player.getMyAVL().insert(player.getMyAVL().getRoot(), tokenValue);
+            player.getMyAVL().insert(tokenValue);
             player.setScore(tokenPoints);
             System.out.println("La forma es: " + tokenShape);
             System.out.println("Los puntos del jugador son: " + player.getScore());
@@ -209,7 +211,7 @@ public class gameServer {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (this.currentTime > 2){
+                if (this.currentTime > 3){
                     try {
                         sendMessage("exit", client);
                         this.cancel();
@@ -258,6 +260,9 @@ public class gameServer {
         parseTokens parseTokens = new parseTokens();
         myChallenge.challengeSelector();
         this.currentChallenge = myChallenge.getChallengeShape();
+        if (currentChallenge == "Rectangle"){
+            this.BTreeOrder = myChallenge.getOrder();
+        }
         try {
             parseTokens.tokensWriter(myChallenge.getBstTokensList(), currentChallenge);
             parseTokens.tokensWriter(myChallenge.getAvlTokensList(), currentChallenge);

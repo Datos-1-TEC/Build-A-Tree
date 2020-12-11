@@ -10,6 +10,7 @@ public class BTree {
     private SinglyLinkedList<Integer> list = new SinglyLinkedList<>();
     private int level = 0;
 
+
     // Node creation
     public class Node {
         int n;
@@ -161,7 +162,7 @@ public class BTree {
 
     public BTree createB() {
         Random rand = new Random();
-        int n = rand.nextInt((4 - 2) + 1) + 2;
+        int n = rand.nextInt(2) + 2;
         BTree tree = new BTree(n);
         
         int randomNum = rand.nextInt((6 - 4) + 1) + 4;
@@ -185,6 +186,7 @@ public class BTree {
         //tree.setLevel(tree.root, level);
         setOrder(2 * tree.T);
         System.out.println("El orden del arbol es: " + 2 * tree.T);
+        setLevel(tree.getLevel());
         System.out.println("El nivel del arbol es: " + tree.getLevel());
         list.print();
         tree.Show();

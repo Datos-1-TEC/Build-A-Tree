@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - ChallengeGenerator",
+            "request": "launch",
+            "mainClass": "cr.ac.tec.JavaServer.Challenges.ChallengeGenerator",
+            "projectName": "Build-A-Tree"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - SplayTree",
             "request": "launch",
             "mainClass": "cr.ac.tec.JavaServer.Challenges.Trees.SplayTree",

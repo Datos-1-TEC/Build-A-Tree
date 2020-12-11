@@ -30,6 +30,7 @@ public class ChallengeGenerator {
     private Rectangle bToken = new Rectangle();
     private SinglyLinkedList<Token> bTokensList = new SinglyLinkedList<>();
     private Triangle splayToken = new Triangle();
+    private int order = 0;
     private SinglyLinkedList<Token> splayTokensList = new SinglyLinkedList<>();
     private BinarySearchTree myBST = new BinarySearchTree();
 
@@ -71,6 +72,7 @@ public class ChallengeGenerator {
             setChallengeShape("Rectangle");
             BTree myBTree = new BTree();
             myBTree.createB();
+            setOrder(myBTree.getOrder()/2);
             int listLength = myBTree.getList().getLength();
             mainTokens(this.challenge, listLength, myBTree.getList());
             fillingTokens(5, this.challenge);
@@ -295,6 +297,14 @@ public class ChallengeGenerator {
 
     public void setChallengeShape(String challengeShape) {
         this.challengeShape = challengeShape;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 
 }
