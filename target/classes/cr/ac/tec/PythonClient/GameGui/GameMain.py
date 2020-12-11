@@ -4,36 +4,19 @@ import pygame as pg
 import random
 import pygame
 from math import *
+from time import *
+import threading
 from pygame.constants import K_w
 from sprites import *
 from settings import *
 vec = pg.math.Vector2
 bgs = ['resources/bg.jpg', 'resources/background2.jpg']
+my_timer = 5
+
 
 
 class Game:
-    """********************************************************************************
-                        Instituto Tecnologico de Costa Rica
-                                Ing. en computadores
-        @method __init__(self): Se encarga de iniciar la ventana del juego y cargar los datos pertenecientes a este.
-        
-        @method new(self): Se encarga de cargar los sprites de los componentes importantes del juego(proyectiles, jugadores, plataformas, entre otros) y se llama al metodo run().
-        
-        @method run(self): Llama a otros metodos que se encargan de la parte funcional del juego.
-        
-        @method update(self): En este metodo se crean los hitbox para los dos jugadores(toma en cuenta los power ups).
-        
-        @method events(self): En este metodo se establecen las acciones de cada boton.
-        
-        @method isColliding(self, player2x, player2y, playerx, playery): Es una funcion donde se crea un hitbox alternativo para cuando los dos jugadores agarren el power up 'push' y asi se puedan empujar en caso que choquen.
-
-        @method draw(self): Muestra en pantalla la imagen de fondo, puntajes y cantidad de vidas de ambos jugadores.
-
-        @method show_go_screen(self): Una vez que se hayan agotado las vidas del jugador 2(samus), se muestra en pantalla los puntajes finales y que el jugador 1(megaman) gano. Tambien si presiona una tecla, se inicia una nueva partida.
-
-        @method max_go_screen(self): Una vez que se hayan agotado las vidas del jugador 1(megaman), se muestra en pantalla los puntajes finales y que el jugador 2(samus) gano. Tambien si presiona una tecla, se inicia una nueva partida.
-
-    ********************************************************************************"""
+    #Se encarga de iniciar la ventana del juego y cargar los datos pertenecientes a este.
     def __init__(self):
         # inicializa la ventana 
         pg.init()
@@ -43,15 +26,20 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = True
         self.font_name = pg.font.match_font(FONT_NAME)
+        self.my_timer = 5
         self.load_data()
 
     def load_data(self):
         self.spritesheet = Spritesheet("resources/megamanstand.png")
 
+
+    #Se encarga de cargar los sprites de los componentes importantes del juego(proyectiles,
+    #jugadores, plataformas, entre otros) y se llama al metodo run().
     def new(self):
         # inicia un nuevo juego 
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
+        self.temp_platforms = pg.sprite.Group()
         self.powerups = pg.sprite.Group()
         self.projectiles_megaman = pg.sprite.Group()
         self.projectiles_samus = pg.sprite.Group()
@@ -71,15 +59,16 @@ class Game:
         #self.draw_text("Vidas: " + str(self.player.lives), 10, (0,0,0), 40, 20)
         #self.all_sprites.add(self.player2)
         #self.all_sprites.add(self.player)
-        Platform(self,*PLATFORM_LIST[0],0)
-        Platform(self,*PLATFORM_LIST[1],1)
-        Platform(self,*PLATFORM_LIST[2],1)
-        Platform(self,*PLATFORM_LIST[3],1)
-        Platform(self,*PLATFORM_LIST[5],1)
-        Platform(self,*PLATFORM_LIST[6],2)
-        Platform(self,*PLATFORM_LIST[7],2)
+        Platform(self,*PLATFORM_LIST[0],0,"first")
+        Platform(self,*PLATFORM_LIST[1],1,"first")
+        Platform(self,*PLATFORM_LIST[2],1,"first")
+        Platform(self,*PLATFORM_LIST[3],1,"first")
+        Platform(self,*PLATFORM_LIST[5],1,"first")
+        Platform(self,*PLATFORM_LIST[6],2,"first")
+        Platform(self,*PLATFORM_LIST[7],2,"first")
         self.run()
 
+    #Llama a otros metodos que se encargan de la parte funcional del juego.
     def run(self):
         # Game Loop para la partida 
         self.playing = True
@@ -88,7 +77,8 @@ class Game:
             self.events()
             self.update()
             self.draw()
-
+    
+    #En este metodo se crean los hitbox para los dos jugadores(toma en cuenta los power ups).
     def update(self):
         # actualiza los sprites 
         self.all_sprites.update()
@@ -99,6 +89,7 @@ class Game:
             pwrpshots = pg.sprite.spritecollide(self.player, self.powerup_shoot, True)
             shield = pg.sprite.spritecollide(self.player2, self.powerup_shield, True)
             push = pg.sprite.spritecollide(self.player, self.powerup_push, True)
+            temp_platform = pg.sprite.spritecollide(self.player, self.powerup_temp_platform,True)
 
             if hits:
                 lowest = hits[0]
@@ -141,8 +132,15 @@ class Game:
                         self.player2.pos.x += 8
                     elif self.player.pos.x >= self.player2.pos.x:
                         self.player2.pos.x -= 8
-            
-            
+
+            if temp_platform:
+                Platform(self,*PLATFORM_LIST[4],1,"second")
+                countdown_thread = threading.Thread(target = self.countdown)
+                countdown_thread.start()
+                while self.my_timer > 0:
+                    print("COUNTER WORKS...")
+                    #sleep(1)
+ 
         if self.player.rect.bottom > HEIGHT:
 
             #for sprite in self.all_sprites:
@@ -201,6 +199,9 @@ class Game:
                         self.player.pos.x += 8
                     elif self.player2.pos.x >= self.player.pos.x:
                         self.player.pos.x -= 8
+
+
+            
             
 
         #si el jugador se cae de una plataforma 
@@ -217,7 +218,7 @@ class Game:
                 self.show_go_screen()
                 self.playing = False
         
-
+    #En este metodo se establecen las acciones de cada boton.
     def events(self):
         # Game Loop - eventos de pygame 
         for event in pg.event.get():
@@ -226,6 +227,7 @@ class Game:
             airjump2 = pg.sprite.spritecollide(self.player2,self.powerup_airjump,True)
             faster = pg.sprite.spritecollide(self.player, self.powerup_faster, True)
             faster2 = pg.sprite.spritecollide(self.player2, self.powerup_faster, True)
+           
             if event.type == pg.QUIT:
                 if self.playing:
                     self.playing = False
@@ -284,9 +286,11 @@ class Game:
                 elif event.key == pg.K_v: #crea plataforma random
                     Platform(self,*PLATFORM_LIST[4],2)
                 """
+            
                 
             
-
+    #Es una funcion donde se crea un hitbox alternativo para cuando los dos jugadores agarren el power up 'push' 
+    #y asi se puedan empujar en caso que choquen.
     def isColliding(self, player2x, player2y, playerx, playery):
         distance = sqrt((pow(player2x-playerx,2))+(pow(player2y-playery,2)))
         if distance < 20:
@@ -294,6 +298,7 @@ class Game:
         else:
             return False         
 
+    #Muestra en pantalla la imagen de fondo, puntajes y cantidad de vidas de ambos jugadores.
     def draw(self):
         #Game Loop - dibuja en la ventana 
         self.bg = pg.image.load(bgs[0])
@@ -313,6 +318,9 @@ class Game:
         self.draw_text("Game Over",48, BLACK, WIDTH/2, HEIGHT/4)
         pass
 
+    #Una vez que se hayan agotado las vidas del jugador 2(samus), 
+    #se muestra en pantalla los puntajes finales y que el jugador 1(megaman) gano. 
+    #Tambien si presiona una tecla, se inicia una nueva partida.
     def show_go_screen(self):
         # game over 
         if not self.running:
@@ -328,7 +336,10 @@ class Game:
 
         self.wait_for_key()
         #pass
-
+    
+    #Una vez que se hayan agotado las vidas del jugador 1(megaman),  
+    #se muestra en pantalla los puntajes finales y que el jugador 2(samus) gano.
+    #Tambien si presiona una tecla, se inicia una nueva partida.
     def max_go_screen(self):
         # game over 
         if not self.running:
@@ -364,6 +375,12 @@ class Game:
         text_rect.midtop = (x,y)
         self.screen.blit(text_surface,text_rect)
 
+
+    def countdown(self):
+        self.my_timer = 15 
+        for x in range(15):
+            self.my_timer -= 1
+            sleep(1)
 
 g = Game()
 g.show_start_screen()
