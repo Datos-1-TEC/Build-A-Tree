@@ -52,6 +52,7 @@ class Game:
         # inicia un nuevo juego 
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
+        self.temp_platforms = pg.sprite.Group()
         self.powerups = pg.sprite.Group()
         self.projectiles_megaman = pg.sprite.Group()
         self.projectiles_samus = pg.sprite.Group()
@@ -71,13 +72,13 @@ class Game:
         #self.draw_text("Vidas: " + str(self.player.lives), 10, (0,0,0), 40, 20)
         #self.all_sprites.add(self.player2)
         #self.all_sprites.add(self.player)
-        Platform(self,*PLATFORM_LIST[0],0)
-        Platform(self,*PLATFORM_LIST[1],1)
-        Platform(self,*PLATFORM_LIST[2],1)
-        Platform(self,*PLATFORM_LIST[3],1)
-        Platform(self,*PLATFORM_LIST[5],1)
-        Platform(self,*PLATFORM_LIST[6],2)
-        Platform(self,*PLATFORM_LIST[7],2)
+        Platform(self,*PLATFORM_LIST[0],0,"first")
+        Platform(self,*PLATFORM_LIST[1],1,"first")
+        Platform(self,*PLATFORM_LIST[2],1,"first")
+        Platform(self,*PLATFORM_LIST[3],1,"first")
+        Platform(self,*PLATFORM_LIST[5],1,"first")
+        Platform(self,*PLATFORM_LIST[6],2,"first")
+        Platform(self,*PLATFORM_LIST[7],2,"first")
         self.run()
 
     def run(self):
@@ -226,6 +227,7 @@ class Game:
             airjump2 = pg.sprite.spritecollide(self.player2,self.powerup_airjump,True)
             faster = pg.sprite.spritecollide(self.player, self.powerup_faster, True)
             faster2 = pg.sprite.spritecollide(self.player2, self.powerup_faster, True)
+            temp_platform = pg.sprite.spritecollide(self.player, self.powerup_temp_platform,True)
             if event.type == pg.QUIT:
                 if self.playing:
                     self.playing = False
@@ -284,6 +286,9 @@ class Game:
                 elif event.key == pg.K_v: #crea plataforma random
                     Platform(self,*PLATFORM_LIST[4],2)
                 """
+
+            if temp_platform:
+                Platform(self,*PLATFORM_LIST[4],1,"second")
                 
             
 

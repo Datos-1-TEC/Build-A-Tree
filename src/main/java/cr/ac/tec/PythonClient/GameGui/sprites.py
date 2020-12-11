@@ -223,8 +223,12 @@ class Player(pg.sprite.Sprite):
 
  
 class Platform(pg.sprite.Sprite):
-    def __init__(self,game,x,y,platform_index):
-        self.groups = game.all_sprites, game.platforms
+    def __init__(self,game,x,y,platform_index,list_reference):
+        self.list_reference = list_reference
+        if self.list_reference == "first":
+            self.groups = game.all_sprites, game.platforms
+        else:
+            self.groups = game.all_sprites, game.temp_platforms, game.platforms
         #parametros de la clase 
         # x = posicion en x 
         # y = posicion en y 
