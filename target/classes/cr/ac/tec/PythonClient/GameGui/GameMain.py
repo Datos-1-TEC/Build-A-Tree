@@ -9,6 +9,8 @@ import threading
 from pygame.constants import K_w
 from sprites import *
 from settings import *
+from GameClient import * 
+from Player import * 
 vec = pg.math.Vector2
 bgs = ['resources/bg.jpg', 'resources/background2.jpg']
 my_timer = 5
@@ -46,6 +48,7 @@ class Game:
         self.tokens = pg.sprite.Group()
         self.playerslist = pg.sprite.Group()
         self.powerupslist = [] 
+        self.tokens_list = []
         self.powerup_shield = pg.sprite.Group()
         self.powerup_shoot = pg.sprite.Group()
         self.powerup_push = pg.sprite.Group()
@@ -55,6 +58,8 @@ class Game:
         self.powerup_extrapoints = pg.sprite.Group()
         self.player = Player(self,1)
         self.player2 = Player(self,2)
+        self.game_client = clientSide(self.player,self.player2)
+        self.game_client.start()
         #self.token = Token(self,2,"Diamond")
         #self.draw_text("Vidas: " + str(self.player.lives), 10, (0,0,0), 40, 20)
         #self.all_sprites.add(self.player2)
@@ -66,6 +71,7 @@ class Game:
         Platform(self,*PLATFORM_LIST[5],1,"first")
         Platform(self,*PLATFORM_LIST[6],2,"first")
         Platform(self,*PLATFORM_LIST[7],2,"first")
+
         self.run()
 
     #Llama a otros metodos que se encargan de la parte funcional del juego.
@@ -124,6 +130,13 @@ class Game:
                 shape = random.choice(["diamond","triangle","circle","square"])
                 rand_num = random.randrange(1,100)
                 self.token = Token(self,rand_num,shape)
+                print(len(self.tokens_list))
+
+                for token in self.tokens_list:
+                    if self.isColliding(self.player2.pos.x,self.player2.pos.y,token.pos.x,token.pos.y):
+                        print("Colliding with token " + token.shape + " Value is: " + str(token.value))
+                        self.tokens_list.remove(token)
+                        token.kill()
             
             #push
             if push:
@@ -135,11 +148,7 @@ class Game:
 
             if temp_platform:
                 Platform(self,*PLATFORM_LIST[4],1,"second")
-                countdown_thread = threading.Thread(target = self.countdown)
-                countdown_thread.start()
-                while self.my_timer > 0:
-                    print("COUNTER WORKS...")
-                    #sleep(1)
+                
  
         if self.player.rect.bottom > HEIGHT:
 
@@ -293,7 +302,7 @@ class Game:
     #y asi se puedan empujar en caso que choquen.
     def isColliding(self, player2x, player2y, playerx, playery):
         distance = sqrt((pow(player2x-playerx,2))+(pow(player2y-playery,2)))
-        if distance < 20:
+        if distance < 80:
             return True
         else:
             return False         

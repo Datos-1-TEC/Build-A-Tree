@@ -9,6 +9,8 @@ import threading
 from pygame.constants import K_w
 from sprites import *
 from settings import *
+from GameClient import * 
+from Player import * 
 vec = pg.math.Vector2
 bgs = ['resources/bg.jpg', 'resources/background2.jpg']
 my_timer = 5
@@ -56,6 +58,8 @@ class Game:
         self.powerup_extrapoints = pg.sprite.Group()
         self.player = Player(self,1)
         self.player2 = Player(self,2)
+        self.game_client = clientSide(self.player,self.player2)
+        self.game_client.start()
         #self.token = Token(self,2,"Diamond")
         #self.draw_text("Vidas: " + str(self.player.lives), 10, (0,0,0), 40, 20)
         #self.all_sprites.add(self.player2)
@@ -67,6 +71,7 @@ class Game:
         Platform(self,*PLATFORM_LIST[5],1,"first")
         Platform(self,*PLATFORM_LIST[6],2,"first")
         Platform(self,*PLATFORM_LIST[7],2,"first")
+
         self.run()
 
     #Llama a otros metodos que se encargan de la parte funcional del juego.
