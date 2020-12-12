@@ -47,6 +47,7 @@ class Game():
         self.my_timer = 5
         self.load_data()
         ###################  SOCKET SIDE ##################
+        """
         self.port = port
         self.flag = True
         self.host = host
@@ -63,6 +64,7 @@ class Game():
         self.depth  = 0
         self.order = 0
         self.numElements = 0
+        """
         
 
         
@@ -295,11 +297,6 @@ class Game():
             self.events()
             self.update()
             self.draw()
-            try:
-                self.decoded = self.request.recv(bts).decode(format)
-                self.processReceived(self.decoded)
-            except IOError as e:
-                print(e)
 
             
     

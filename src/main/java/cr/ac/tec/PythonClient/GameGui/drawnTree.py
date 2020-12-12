@@ -1,7 +1,6 @@
 from graphics import *
 from BTree import *
 from AVLTree import *
-from SplayTree import *
 import random
 
 

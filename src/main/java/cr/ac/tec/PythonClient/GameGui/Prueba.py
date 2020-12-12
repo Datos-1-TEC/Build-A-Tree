@@ -1,7 +1,7 @@
 from drawnTree import *
 a = AVLTree()
 a = BTree()
-a = SplayTree()
+
 
 a.insert(1)
 
