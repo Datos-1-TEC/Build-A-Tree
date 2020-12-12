@@ -8,9 +8,9 @@ from time import *
 import threading
 from pygame.constants import K_w
 from sprites import *
+from sprites import Player
 from settings import *
-from GameClient import * 
-from Player import * 
+from GameClient import *  
 vec = pg.math.Vector2
 bgs = ['resources/bg.jpg', 'resources/background2.jpg']
 my_timer = 5

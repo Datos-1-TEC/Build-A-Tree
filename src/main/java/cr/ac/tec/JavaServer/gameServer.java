@@ -20,6 +20,8 @@ import cr.ac.tec.JavaServer.Challenges.Trees.SplayTree;
 import cr.ac.tec.JavaServer.Player.Player;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import org.codehaus.plexus.util.StringOutputStream;
+
 /**
  * Esta clase es el servidor que se encarga de controlar el flujo de eventos durante el juego
  * tales como: Enviar retos basados en estruturas de datos como lo son los árboles binarios (BST, AVL, Splay) y los 
@@ -135,6 +137,21 @@ public class gameServer {
                 JsonNode tokenNode = Json.parse(this.recibido);
                 checkToken(this.player2, tokenNode);
            }
+
+        }
+        //Accumulatted:PlayerID:score
+        else if(this.recibido.contains("Accumulated")){
+            String[] message = this.recibido.split(":");
+            int accumulattedScore = Integer.parseInt(message[2]);
+            if (message[1].equals("ID1")){
+                player1.setAccumulatedScore(accumulattedScore);
+                System.out.println("Acumulado de jugador 1 es: " + accumulattedScore);
+            }
+            else{
+                player2.setAccumulatedScore(accumulattedScore);
+                System.out.println("Acumulado de jugador 2 es: " + accumulattedScore);
+            }
+
 
         }
         //En esta condición se cierra la conexión de forma segura
