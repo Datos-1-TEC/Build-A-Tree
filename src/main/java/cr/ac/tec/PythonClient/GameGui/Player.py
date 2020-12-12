@@ -1,4 +1,5 @@
 
+#Esta clase es una réplica del jugador en java
 class Player(object):
     def __init__(self, ID, score = 0, treeList = []):
         super().__init__()

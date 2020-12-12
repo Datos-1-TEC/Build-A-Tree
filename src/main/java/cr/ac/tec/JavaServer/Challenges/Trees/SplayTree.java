@@ -22,8 +22,6 @@ public class SplayTree {
 
     private Node root;
     private SinglyLinkedList<Integer> list = new SinglyLinkedList<>();
-    private int points = 700;
-
 
     public SplayTree() {
         root = null;
@@ -353,17 +351,8 @@ public class SplayTree {
         return tree;
     }
 
-    public static void main(String [] args) {
-        SplayTree a = new SplayTree();
-        a.createSplay();
-    }
-
     public SinglyLinkedList<Integer> getList() {
         return list;
-    }
-
-    public int getPoints() {
-        return points;
     }
 
 }

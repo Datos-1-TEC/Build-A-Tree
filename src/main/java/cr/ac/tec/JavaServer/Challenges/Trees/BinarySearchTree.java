@@ -7,9 +7,7 @@ public class BinarySearchTree {
     private int maxDepth = 0;
     private SinglyLinkedList<Integer> keysList = new SinglyLinkedList<>();
     private String shape = "Diamond";
-    private int points = 300;
- 
-
+    
     public boolean isEmpty() {
         return this.root == null;
     } 
@@ -95,18 +93,10 @@ public class BinarySearchTree {
         return random.nextInt(max - min) + min;
     }
 
-    public static void main(String[] args){
-        BinarySearchTree bst = new BinarySearchTree();
-        bst.createBST();    
-
-    }
-
     public BinarySearchTree createBST(){
         BinarySearchTree bst = new BinarySearchTree();
 
         int depth = getRandomNumber(2, 4);
-        //int maxInTree = (int) Math.pow(2,depth+1) - 1;
-        //int minInTree = depth + 1;
         int newKey;
         int position = 0;
         
@@ -135,10 +125,6 @@ public class BinarySearchTree {
 
     public String getShape() {
         return shape;
-    }
-
-    public int getPoints() {
-        return points;
     }
 
 }

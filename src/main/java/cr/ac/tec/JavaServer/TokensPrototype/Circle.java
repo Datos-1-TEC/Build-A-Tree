@@ -1,12 +1,16 @@
 package cr.ac.tec.JavaServer.TokensPrototype;
 
+/**
+ * Token tipo circulo destinado para el reto de AVL
+ * tiene un valor de 20 puntos
+ * @author Juan Peña
+ */
 public class Circle implements Token {
     private String shape = "Circle";
     private int value;
     private int points = 20;
 
     public Circle (){
-        System.out.println("Token circle created");
     }
 
     @Override

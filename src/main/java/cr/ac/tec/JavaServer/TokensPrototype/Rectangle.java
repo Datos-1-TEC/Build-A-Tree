@@ -1,12 +1,16 @@
 package cr.ac.tec.JavaServer.TokensPrototype;
-
+/**
+ * Token tipo rectangulo destinado para el reto de B Tree
+ * tiene un valor de 40 puntos
+ * @author Juan Peña
+ */
 public class Rectangle implements Token {
     private String shape = "Rectangle";
     private int value;
     private int points = 40;
 
     public Rectangle() {
-        System.out.println("Rectangle token created");
+        
     }
 
     @Override

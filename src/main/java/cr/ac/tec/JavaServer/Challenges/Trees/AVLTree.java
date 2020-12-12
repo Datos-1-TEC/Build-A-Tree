@@ -5,7 +5,7 @@ import java.util.Random;
 public class AVLTree {
     private NodeT root;
     private SinglyLinkedList<Integer> list = new SinglyLinkedList<>();
-    private int points = 500;
+  
 
     // A utility function to get the height of the tree
     int height(NodeT N) {
@@ -169,13 +169,6 @@ public class AVLTree {
         tree.preOrder(tree.root);
         return tree;
     }
-    
-    public static void main(String[] args) {
-        AVLTree a = new AVLTree();
-        a.createAVL();
-        //System.out.println("raiz del arbol es: " + a.createAVL().getRoot().key);
-        //System.out.println("Factor de balance es:" + a.createAVL().getBalance(a.createAVL().getRoot()));
-    }
 
     public SinglyLinkedList<Integer> getList() {
         return list;
@@ -185,8 +178,5 @@ public class AVLTree {
         return root;
     }
 
-    public int getPoints() {
-        return points;
-    }
 }
 

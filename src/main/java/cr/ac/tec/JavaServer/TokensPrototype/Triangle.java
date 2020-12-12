@@ -1,12 +1,16 @@
 package cr.ac.tec.JavaServer.TokensPrototype;
-
+/**
+ * Token tipo triagulo destinado para el reto de Splay
+ * tiene un valor de 20 puntos
+ * @author Juan Peña 
+ */
 public class Triangle implements Token{
     private String shape = "Triangle";
     private int value;
     private int points = 30; 
 
     public Triangle (){
-        System.out.println("Triangle token created");
+        
     }
 
     @Override

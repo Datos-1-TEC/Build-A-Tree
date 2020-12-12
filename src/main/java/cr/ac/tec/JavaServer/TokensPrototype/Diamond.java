@@ -1,13 +1,17 @@
 package cr.ac.tec.JavaServer.TokensPrototype;
 
+/**
+ * Token tipo rombo destinado para el reto de BST
+ * tiene un valor de 15 puntos
+ * @author Juan Peña
+ */
 public class Diamond implements Token{
     private String shape = "Diamond";
     private int value;
     private int points = 15;
 
     public Diamond(){
-        System.out.println("Diamond token created");
-
+       
     }
 
     @Override

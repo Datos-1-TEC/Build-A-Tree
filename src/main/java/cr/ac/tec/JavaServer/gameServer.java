@@ -18,29 +18,47 @@ import cr.ac.tec.JavaServer.Challenges.Trees.BTree;
 import cr.ac.tec.JavaServer.Challenges.Trees.BinarySearchTree;
 import cr.ac.tec.JavaServer.Challenges.Trees.SplayTree;
 import cr.ac.tec.JavaServer.Player.Player;
-import cr.ac.tec.JavaServer.TokensPrototype.Token;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
+/**
+ * Esta clase es el servidor que se encarga de controlar el flujo de eventos durante el juego
+ * tales como: Enviar retos basados en estruturas de datos como lo son los árboles binarios (BST, AVL, Splay) y los 
+ * árboles multi-way(B Tree)
+ * Estas estructuras almacenan un numero entero que pertenece al valor de un objeto token generado de forma aleatoria
+ * además puede recibir nuevos nodos especificados para cada jugador y un árbol objetivo
+ * En cuando al envío de datos, esta clase tiene como meta enviar las instrucciones que el cliente ejecutará a lo 
+ * largo de una partida, por ejemplo: cuando se genera un nuevo reto en la partida
+ * se necesita enviar un archivo JSON estructurado de tal manera que se pueda discriminar entre los tokens que son
+ * pertenecientes al reto actual y los tokens que se generan como relleno para los jugadores.
+ * Posteriormente a la creación de un reto es necesario enviar las especificaciones que requiere ese reto:
+ * si el reto es un BST, el servidor además de mandar una cantidad de tokens, debe indiciar qué profundidad tendrá
+ * este árbol para completarlo. 
+ * También envía el puntaje del jugador cada ver que el mismo toma un token, si el token pertenece al tipo de reto actual
+ * se aumenta su puntaje, de lo contrario se vuelve 0 
+ * @author Juan Peña
+ * 
+ */
 public class gameServer {
-    private String jsonChallenges = "";
-    private static int port = 6666;
     private String recibido = "", enviado = "";
-    private OutputStreamWriter  out;
-    private InputStreamReader in; 
-    private Boolean isOpen = true;
-    private ServerSocket server;
-    private String currentChallenge;
-    private Socket client;
     private char[] buffer = new char[4096];
+    private String jsonChallenges = "";
+    private OutputStreamWriter  out;
+    private String currentChallenge;
+    private static int port = 6666;
+    private Boolean isOpen = true;
+    private InputStreamReader in; 
+    private ServerSocket server;
+    private int numElements = 0;
     private int BTreeOrder = 0;
+    private Player player1;
+    private Player player2;
     private int depth = 0;
     private int level = 0;
-    private int numElements = 0;
-    Player player1;
-    Player player2;
+    private Socket client;
     
-
+    /**
+     * Método para crear el thread donde se encuentra escuchando el server a todo lo que envía el client
+     */
     public void listen(){
 
         Thread thread = new Thread(() -> {
@@ -60,7 +78,12 @@ public class gameServer {
         thread.start();
 
     }
-
+    /**
+     * Este método se encarga de enviar todos los mensajes al client 
+     * @param enviado String que se desea enviar
+     * @param client  cliente objetivo
+     * @throws IOException 
+     */
     private void sendMessage(String enviado, Socket client) throws IOException {
         this.out = new OutputStreamWriter(client.getOutputStream(), "UTF8");
         try {
@@ -71,20 +94,23 @@ public class gameServer {
             e.printStackTrace();
         }      
     }
- 
-    public void processMessage(Socket client) throws IOException {
+    
+    /**
+     * En este método se procesan todos los mensajes que manda el client así como se generan las respuestas a los mismos
+     * @param client cliente objetivo
+     * @throws IOException
+     */
+    private void processMessage(Socket client) throws IOException {
         this.in = new InputStreamReader(client.getInputStream(), "UTF8");
         this.recibido = readInput(this.in);
         System.out.println("String leido");
 
-        if (this.recibido.contains("Connected")){
+        if (this.recibido.contains("Connected")){ //Esta condición se cumple en cuanto el cliente se conecta
 
             player1 = new Player(1, 3, 0);
             player2 = new Player(2, 3, 0);
             //Hilo para llevar el cronómetro de cada cuanto se manda un reto y cuando se acaba la partida
-            //Thread startingThread = new Thread(); 
-            gameTimer();
-           
+            gameTimer(); 
         }
         /*
         En esta parte se verifica que el token que llega pertenece al del reto actual
@@ -111,6 +137,7 @@ public class gameServer {
            }
 
         }
+        //En esta condición se cierra la conexión de forma segura
         else if(recibido.contains("exit")){
             this.isOpen = false;
             recibido = "";
@@ -118,7 +145,12 @@ public class gameServer {
         }     
         this.buffer = new char[4096];             
     }
-
+/**
+ * En este método se chequea el token para responder al cliente que el jugador ganó x cantidad de puntos
+ * @param player jugador objetivo
+ * @param tokenNode JsonNode con los datos del token
+ * @throws IOException
+ */
     public void checkToken(Player player, JsonNode tokenNode) throws IOException {
         String tokenShape = tokenNode.get("ID1").get("Token").get("shape").asText();
         System.out.println("La forma del token recibido es: " + tokenShape);
@@ -126,9 +158,9 @@ public class gameServer {
         
         //condiciones para agregar el valor del token al árbol del jugador correspondiente y reenviarlo 
         //al cliente para que lo muestre en interfaz. Si el token no pertenece el reto actual
-        //se borra el progreso del reto actual para ese jugador y se mandan los valores para el árbol
-        // de nuevo
-        if (tokenShape.equals(currentChallenge)){
+        //se borra el progreso del reto actual para ese jugador
+        if (tokenShape.equals(currentChallenge)){ //Si el token coincide se agregan los valores al árbol
+            // y se suma el puntaje al jugador
             addTokenToTree(player, tokenNode, tokenShape);
             int id = player.getID();
             int score = player.getScore();
@@ -136,6 +168,7 @@ public class gameServer {
             sendMessage(message, this.client);            
         }
         else{
+            //Si se equivoca de token se resetea el árbol y el puntaje acumulado en el reto
             setNewTree(player, this.currentChallenge);
             player.setScore(0);
             int id = player.getID();
@@ -184,6 +217,13 @@ public class gameServer {
         }
     }
 
+    /**
+     * Este método se usa para leer una secuencia de caracteres provenientes de un Input Stream 
+     * enviado por el client
+     * @param inputStream mensaje serializado
+     * @return message mensaje Deserializado
+     * @throws IOException
+     */
     public String readInput(InputStreamReader inputStream) throws IOException {
         inputStream.read(buffer);
         String message = "";
@@ -261,7 +301,7 @@ public class gameServer {
      * Este método chequea las condiciones del reto actual para dar formato a la info para indicar al cliente 
      * dichas condiciones
      * @param currentChallenge reto actual que determina las condiciones
-     * @return challengeParams
+     * @return challengeParams String con los parámetros definidos según los árboles
      */
     public String checkChallengeConditions(String currentChallenge){
         String challengeParams = "";

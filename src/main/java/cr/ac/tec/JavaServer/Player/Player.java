@@ -5,7 +5,11 @@ import cr.ac.tec.JavaServer.Challenges.Trees.BTree;
 import cr.ac.tec.JavaServer.Challenges.Trees.BinarySearchTree;
 import cr.ac.tec.JavaServer.Challenges.Trees.SplayTree;
 
-
+/**
+ * Clase jugador que se inicializa con una identificación,
+ * 3 vidas, y puntaje 0. Además poseen un árbol de cada tipo
+ * para agregarle nodos cuando el cliente lo mande
+ */
 public class Player {
     private int ID;
     private int lives = 3;
