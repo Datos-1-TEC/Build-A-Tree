@@ -321,6 +321,7 @@ class Token(pg.sprite.Sprite):
         self.pos = vec2(randrange(50,1200),0)
         self.vel = vec2(0,0)
         self.acc = vec2(0,0)
+        self.game.tokens_list.append(self)
         self.update()
 
     def write(self,msg):

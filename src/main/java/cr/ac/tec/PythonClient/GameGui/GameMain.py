@@ -46,6 +46,7 @@ class Game:
         self.tokens = pg.sprite.Group()
         self.playerslist = pg.sprite.Group()
         self.powerupslist = [] 
+        self.tokens_list = []
         self.powerup_shield = pg.sprite.Group()
         self.powerup_shoot = pg.sprite.Group()
         self.powerup_push = pg.sprite.Group()
@@ -124,6 +125,13 @@ class Game:
                 shape = random.choice(["diamond","triangle","circle","square"])
                 rand_num = random.randrange(1,100)
                 self.token = Token(self,rand_num,shape)
+                print(len(self.tokens_list))
+
+                for token in self.tokens_list:
+                    if self.isColliding(self.player2.pos.x,self.player2.pos.y,token.pos.x,token.pos.y):
+                        print("Colliding with token " + token.shape + " Value is: " + str(token.value))
+                        self.tokens_list.remove(token)
+                        token.kill()
             
             #push
             if push:
@@ -135,11 +143,7 @@ class Game:
 
             if temp_platform:
                 Platform(self,*PLATFORM_LIST[4],1,"second")
-                countdown_thread = threading.Thread(target = self.countdown)
-                countdown_thread.start()
-                while self.my_timer > 0:
-                    print("COUNTER WORKS...")
-                    #sleep(1)
+                
  
         if self.player.rect.bottom > HEIGHT:
 
@@ -293,7 +297,7 @@ class Game:
     #y asi se puedan empujar en caso que choquen.
     def isColliding(self, player2x, player2y, playerx, playery):
         distance = sqrt((pow(player2x-playerx,2))+(pow(player2y-playery,2)))
-        if distance < 20:
+        if distance < 80:
             return True
         else:
             return False         
