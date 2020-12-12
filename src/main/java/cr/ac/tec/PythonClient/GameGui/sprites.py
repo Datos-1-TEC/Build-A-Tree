@@ -221,21 +221,6 @@ class Player(pg.sprite.Sprite):
                     self.samus_current_frame = (self.samus_current_frame + 1) % len(self.samus_standing_frame)
                     self.image = self.samus_standing_frame[self.samus_current_frame]
 
-    def getID(self):
-        return self.playerID
-
-    def getLives(self):
-        return self.lives
-
-    def getScore(self):
-        return self.score
-
-    def setLives(self, lives):
-        self.lives = lives
-
-    def setScore(self, score):
-        self.score = score
-
  
 class Platform(pg.sprite.Sprite):
     def __init__(self,game,x,y,platform_index,list_reference):
