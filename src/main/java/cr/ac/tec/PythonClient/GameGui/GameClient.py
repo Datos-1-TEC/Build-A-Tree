@@ -3,7 +3,7 @@ import socket as sk
 import json
 from threading import*
 from json import JSONEncoder
-from sprites import Player
+from Player import*
 from Token import*
 from collections import namedtuple
 host = "127.0.0.1"
@@ -28,7 +28,6 @@ class clientSide (Thread):
         self.mainTokens = [] #Lista de tokens principales del reto
         self.fillerTokens = [] #Lista de tokens de relleno
         self.onGame = False
-        self.onChallenge = False
         self.level = 0
         self.depth  = 0
         self.order = 0
@@ -130,8 +129,6 @@ class clientSide (Thread):
         return self.depth   
     def getNumElements(self):
         return self.numElements
-    def getOnChallenge(self):
-        return self.onChallenge
 #----------------------------------Bloque de setters----------------------------------#
     def setMainTokens(self, mainTokens):
         self.mainTokens = mainTokens
@@ -147,8 +144,6 @@ class clientSide (Thread):
         self.depth = depth
     def setNumElements(self, numElements):
         self.numElements = numElements
-    def setOnChallenge(self, boolean):
-        self.onChallenge = boolean
 
 #--------------------------Actualizar el puntaje del jugador--------------------------#
     def updatePlayerScore(self, player, message):
@@ -211,15 +206,11 @@ class clientSide (Thread):
         
         self.setMainTokens(mainTokens)
         self.setFillerTokens(fillerTokens)
-#-------------------------------------------------------------------------------------# 
-    def checkChallengeTime(self, boolean):
-        pass
-
-    
+#-------------------------------------------------------------------------------------#    
     def parsePlayer(self):
         pass
 
-""" def main():
+def main():
     player1 = Player(1)
     player2 = Player(2)
       
@@ -228,4 +219,4 @@ class clientSide (Thread):
 
 if __name__ == "__main__":
     main()
-print("Client closed....")  """
+print("Client closed....") 

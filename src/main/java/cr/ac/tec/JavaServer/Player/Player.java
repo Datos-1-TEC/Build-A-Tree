@@ -17,9 +17,9 @@ public class Player {
     private BinarySearchTree myBST = new BinarySearchTree();
     private AVLTree myAVL = new AVLTree();
     private SplayTree mySplay = new SplayTree();
+
     private BTree myBTree ; 
     private int score;
-    private int accumulatedScore = 0;
     public Player(int ID, int lives, int score) {
             this.ID = ID;
             this.lives = lives;
@@ -82,14 +82,6 @@ public class Player {
 
     public void setMyBTree(BTree myBTree) {
         this.myBTree = myBTree;
-    }
-
-    public int getAccumulatedScore() {
-        return accumulatedScore;
-    }
-
-    public void setAccumulatedScore(int accumulatedScore) {
-        this.accumulatedScore += accumulatedScore;
     }
     
 
