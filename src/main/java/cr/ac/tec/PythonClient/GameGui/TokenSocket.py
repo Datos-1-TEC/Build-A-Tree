@@ -5,7 +5,7 @@ from collections import namedtuple
 from json import JSONEncoder
 from types import SimpleNamespace
 
-class Token():
+class TokenSocket():
     """********************************************************************************************
                             Instituto Tecnologico de Costa Rica
                                     Ing. en computadores

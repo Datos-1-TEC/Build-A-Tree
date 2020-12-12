@@ -3,8 +3,8 @@ import socket as sk
 import json
 from threading import*
 from json import JSONEncoder
-from Player import*
-from Token import*
+from PlayerSocket import*
+from TokenSocket import*
 from collections import namedtuple
 host = "127.0.0.1"
 port = 6666
@@ -14,7 +14,7 @@ bts = 4096
 
 firstMessage = "Connected"
 class clientSide (Thread):
-    def __init__(self, player1, player2):
+    def __init__(self, player1_socket, player2_socket):
         
         self.port = port
         self.flag = True
@@ -23,8 +23,8 @@ class clientSide (Thread):
         self.request.connect((self.host, self.port))
         self.sendMessage(firstMessage)
         self.decoded = ""
-        self.player1 = player1 # Jugador uno creado en la GUI
-        self.player2 = player2 # Jugador dos creado en la GUI
+        self.player1_socket = player1_socket # Jugador uno creado en la GUI
+        self.player2_socket = player2_socket # Jugador dos creado en la GUI
         self.mainTokens = [] #Lista de tokens principales del reto
         self.fillerTokens = [] #Lista de tokens de relleno
         self.onGame = False
@@ -63,7 +63,7 @@ class clientSide (Thread):
                 self.fillerTokens = []
                 self.readChallenge(self.mainTokens, self.fillerTokens)
                 tokenToSend = self.mainTokens[0]
-                self.sendToken(tokenToSend, self.player1.getID())
+                self.sendToken(tokenToSend, self.player1_socket.getID())
 
             elif self.message == "exit":
                 self.sendMessage("exit")
@@ -77,14 +77,14 @@ class clientSide (Thread):
                 print("\n")
 
             elif "player1" in self.message:
-                self.updatePlayerScore(self.player1, self.message)
+                self.updatePlayerScore(self.player1_socket, self.message)
                 print("El puntaje actual es: ")
-                print(self.player1.getScore())
+                print(self.player1_socket.getScore())
 
             elif "player2" in self.message:
-                self.updatePlayerScore(self.player2, self.message)
+                self.updatePlayerScore(self.player2_socket, self.message)
                 print("El puntaje actual es: ")
-                print(self.player2.getScore())
+                print(self.player2_socket.getScore())
                 print("\n")
 
             elif "depth" in self.message:
@@ -192,14 +192,14 @@ class clientSide (Thread):
             token_dict = mainTokens_dict.get(key)
             token_string = json.dumps(token_dict)
             token_object = json.loads(token_string, object_hook=self.jsonToToken)
-            myFinalToken = Token(token_object.value, token_object.shape, token_object.points)
+            myFinalToken = TokenSocket(token_object.value, token_object.shape, token_object.points)
             mainTokens.append(myFinalToken)
         #Agregando filler tokens
         for key in fillerTokens_dict:
             token_dict = fillerTokens_dict.get(key)
             token_string = json.dumps(token_dict)
             token_object = json.loads(token_string, object_hook=self.jsonToToken)
-            myFinalToken = Token(token_object.value, token_object.shape, token_object.points)
+            myFinalToken = TokenSocket(token_object.value, token_object.shape, token_object.points)
             fillerTokens.append(myFinalToken) 
         for token in range(len(fillerTokens)):
             print(fillerTokens[token].getPoints())
@@ -211,10 +211,10 @@ class clientSide (Thread):
         pass
 
 def main():
-    player1 = Player(1)
-    player2 = Player(2)
+    player1_socket = PlayerSocket(1)
+    player2_socket = PlayerSocket(2)
       
-    c1 = clientSide(player1, player2)
+    c1 = clientSide(player1_socket, player2_socket)
     c1.start()
 
 if __name__ == "__main__":
